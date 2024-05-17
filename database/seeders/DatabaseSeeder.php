@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             Seeder_fecha_principal::class,
             Seeder_licencias::class,
             Seeder_permiso::class,
+            Tramite_seeder_configuracion::class,
         ]);
     }
 }

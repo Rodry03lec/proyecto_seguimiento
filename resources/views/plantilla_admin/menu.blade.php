@@ -248,6 +248,36 @@
                 </li>
             </ul>
         </li> --}}
+
+
+
+        <!--VAMOS A UTILIZAR DESDE EL 50 al 60  PARA LA PARTE DE LOS TRAMITES-->
+        <li class="menu-item @if ($menu == '50' || $menu == '51' || $menu == '52') open @endif">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-settings"></i>
+                <div data-i18n="Users">CONFIGURACIÓN TRAMITE</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item @if($menu == '50') active @endif">
+                    <a href="{{ route('ctc_tipoContato') }}" class="menu-link">
+                        Tipo de Tramite
+                    </a>
+                </li>
+                <li class="menu-item @if($menu == '51') active @endif">
+                    <a href="{{ route('xtc_tipocategoria') }}" class="menu-link">
+                        Tipo de prioridad
+                    </a>
+                </li>
+                <li class="menu-item @if($menu == '52') active @endif">
+                    <a href="{{ route('gac_index') }}" class="menu-link">
+                        Tipos de estado
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
+
+
+
 </aside>
 <!-- / Menu -->
