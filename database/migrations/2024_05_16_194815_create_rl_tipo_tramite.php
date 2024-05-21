@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre', 100);
             $table->string('sigla', 20);
-            $table->string('estado',20);
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
 
@@ -28,6 +28,7 @@ return new class extends Migration
         Schema::create('rl_tipo_estado', function (Blueprint $table) {
             $table->id();
             $table->string('nombre', 30);
+            $table->string('color')->unique();
             $table->timestamps();
         });
     }

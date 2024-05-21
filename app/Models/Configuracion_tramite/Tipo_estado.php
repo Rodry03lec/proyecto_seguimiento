@@ -12,6 +12,7 @@ class Tipo_estado extends Model
     protected $table = 'rl_tipo_estado';
     protected $fillable=[
         'nombre',
+        'color'
     ];
 
     //para que este en mayuscula

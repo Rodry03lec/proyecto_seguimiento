@@ -20,6 +20,7 @@ use App\Http\Controllers\Biometrico\Controlador_permiso;
 use App\Http\Controllers\Registro\Controlador_persona;
 use App\Http\Controllers\Registro\Controlador_contrato;
 use App\Http\Controllers\Reportes\Controlador_reporte_ausencia;
+use App\Http\Controllers\Tramite\Controlador_configuracion;
 
 //AQUI PARA LOS NO AUTENTICADOS DE LOS USUSARIOS
 Route::prefix('/')->middleware(['no_autenticados'])->group(function(){
@@ -392,4 +393,28 @@ Route::prefix('/admin')->middleware(['autenticados','rectroceder'])->group(funct
     Route::controller(Controlador_reporte_ausencia::class)->group(function(){
         Route::get('permisoboletapdf/{id}','permiso_boleta_pdf')->name('cra_permiso_boleta_pdf');
     });
+
+
+
+    //PARA LA PARTE DE SEGUIMIENTO
+    Route::controller(Controlador_configuracion::class)->group(function () {
+        //para la administracion del tipo de tramite
+        Route::get('tipotramite', 'tipo_tramite')->name('ttram_index');
+        Route::post('tipotramite_listar', 'tipo_tramite_listar')->name('ttram_listar');
+        Route::post('tipotramite_nuevo', 'tipo_tramite_nuevo')->name('ttram_nuevo');
+        Route::post('tipotramite_estado', 'tipotramite_estado')->name('ttram_estado');
+        Route::delete('tipotramite_eliminar', 'tipotramite_eliminar')->name('ttram_eliminar');
+        Route::post('tipotramite_editar', 'tipotramite_editar')->name('ttram_editar');
+        Route::post('tipotramite_update', 'tipotramite_update')->name('ttram_update');
+
+        //para la administracion de tipo de estado
+        Route::get('tipoestado', 'tipo_estado_tramite')->name('test_index');
+        Route::post('tipoestado_listar', 'tipo_estado_listar')->name('test_listar');
+        Route::post('tipoestado_nuevo', 'tipo_estado_nuevo')->name('test_nuevo');
+        Route::delete('tipoestado_eliminar', 'tipo_estado_eliminar')->name('test_eliminar');
+        Route::post('tipoestado_editar', 'tipo_estado_editar')->name('test_editar');
+        Route::post('tipoestado_update', 'tipo_estado_update')->name('test_update');
+    });
+    //FIN DE LA PARTE DEL SEGUIMIENTO
+
 });

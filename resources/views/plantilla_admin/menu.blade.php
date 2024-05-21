@@ -259,17 +259,12 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item @if($menu == '50') active @endif">
-                    <a href="{{ route('ctc_tipoContato') }}" class="menu-link">
+                    <a href="{{ route('ttram_index') }}" class="menu-link">
                         Tipo de Tramite
                     </a>
                 </li>
                 <li class="menu-item @if($menu == '51') active @endif">
-                    <a href="{{ route('xtc_tipocategoria') }}" class="menu-link">
-                        Tipo de prioridad
-                    </a>
-                </li>
-                <li class="menu-item @if($menu == '52') active @endif">
-                    <a href="{{ route('gac_index') }}" class="menu-link">
+                    <a href="{{ route('test_index') }}" class="menu-link">
                         Tipos de estado
                     </a>
                 </li>

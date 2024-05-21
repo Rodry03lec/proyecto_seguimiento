@@ -76,7 +76,7 @@ class Tramite_seeder_configuracion extends Seeder
             $nuevo_tipo_tramite         = new Tipo_tramite();
             $nuevo_tipo_tramite->nombre = $lis['nombre'];
             $nuevo_tipo_tramite->sigla  = $lis['sigla'];
-            $nuevo_tipo_tramite->estado = 'activo';
+            $nuevo_tipo_tramite->estado = true;
             $nuevo_tipo_tramite->save();
         }
 
@@ -95,17 +95,35 @@ class Tramite_seeder_configuracion extends Seeder
 
         //para el llenado de tipo de estado
         $tipos_estado = [
-            'PENDIENTE',
-            'SIN RECIBIR',
-            'RECIBIDA',
-            'SIN RECIBIR',
-            'CONCLUIDA',
-            'ELIMINADO',
-            'OBSERVADA',
+            [
+                'nombre'=>'PENDIENTE',
+                'color'=>'badge bg-primary bg-glow'
+            ],
+            [
+                'nombre'=>'SIN RECIBIR',
+                'color'=>'badge bg-danger bg-glow'
+            ],
+            [
+                'nombre'=>'RECIBIDA',
+                'color'=>'badge bg-success bg-glow'
+            ],
+            [
+                'nombre'=>'CONCLUIDA',
+                'color'=>'badge bg-warning bg-glow'
+            ],
+            [
+                'nombre'=>'ELIMINADO',
+                'color'=>'badge bg-dark bg-glow'
+            ],
+            [
+                'nombre'=>'OBSERVADA',
+                'color'=>'badge bg-info bg-glow'
+            ],
         ];
         foreach ($tipos_estado as $lis) {
-            $nuevo_tipo_estado = new Tipo_estado();
-            $nuevo_tipo_estado->nombre = $lis;
+            $nuevo_tipo_estado          = new Tipo_estado();
+            $nuevo_tipo_estado->nombre  = $lis['nombre'];
+            $nuevo_tipo_estado->color   = $lis['color'];
             $nuevo_tipo_estado->save();
         }
     }
