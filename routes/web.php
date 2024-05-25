@@ -248,11 +248,11 @@ Route::prefix('/admin')->middleware(['autenticados','rectroceder'])->group(funct
     Route::controller(Controlador_persona::class)->group(function(){
         Route::get('persona', 'persona')->name('per_index')->middleware('comprobar_permiso:persona_submenu');
         Route::post('persona_buscar', 'persona_buscar')->name('per_buscar');
-        Route::post('persona_nuevo', 'persona_nuevo')->name('per_nuevo')->middleware('comprobar_permiso:persona_submenu_nuevo');
+        Route::post('persona_nuevo', 'persona_nuevo')->name('per_nuevo')->middleware('comprobar_permiso:persona_nuevo');
         Route::post('persona_validar', 'persona_validar')->name('per_validar');
-        Route::post('persona_editar', 'persona_editar')->name('per_editar')->middleware('comprobar_permiso:persona_submenu_editar');
+        Route::post('persona_editar', 'persona_editar')->name('per_editar')->middleware('comprobar_permiso:persona_editar');
         Route::post('persona_editar_guardar', 'persona_editar_guardar')->name('per_editar_guardar');
-        Route::delete('persona_eliminar', 'persona_eliminar')->name('per_eliminar')->middleware('comprobar_permiso:persona_submenu_eliminar');
+        Route::delete('persona_eliminar', 'persona_eliminar')->name('per_eliminar')->middleware('comprobar_permiso:persona_eliminar');
     });
 
     //PARA LA ADMINISTRACION DE REGISTRO DE CONTRATOS
@@ -414,6 +414,17 @@ Route::prefix('/admin')->middleware(['autenticados','rectroceder'])->group(funct
         Route::delete('tipoestado_eliminar', 'tipo_estado_eliminar')->name('test_eliminar');
         Route::post('tipoestado_editar', 'tipo_estado_editar')->name('test_editar');
         Route::post('tipoestado_update', 'tipo_estado_update')->name('test_update');
+
+        //para la administracion para habilitar los tramites
+        Route::get('habilitaraTramite', 'habilitar_a_tramite')->name('htram_index');
+        Route::post('habilitaraTramite_listar', 'habilitar_a_tramite_listar')->name('htram_listar');
+        Route::post('habilitaraTramite_validar', 'habilitar_a_tramite_validar')->name('htram_validar');
+        Route::post('habilitaraTramite_habilita', 'habilitar_a_tramite_habilita')->name('htram_habilita');
+        Route::post('habilitaraTramite_vizualiza', 'habilitar_a_tramite_vizualiza')->name('htram_vizualizar');
+        Route::post('habilitaraTramite_vizualiza_listar', 'habilitar_a_tramite_vizualiza_listar')->name('htram_vizualizar_lis');
+        Route::post('habilitaraTramite_vizualiza_nuevo', 'habilitar_a_tramite_vizualiza_nuevo')->name('htram_vizualizar_nuevo');
+        Route::post('habilitaraTramite_vizualiza_estado', 'habilitar_a_tramite_vizualiza_estado')->name('htram_vizualizar_estado');
+
     });
     //FIN DE LA PARTE DEL SEGUIMIENTO
 

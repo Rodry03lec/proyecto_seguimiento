@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\Configuracion_tramite\User_cargo_tramite;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -77,5 +79,10 @@ class User extends Authenticatable
     //relacion revesa
     public function roles(){
         return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
+    }
+
+    //relacion de uno a muchos con
+    public function user_cargo_tramite(){
+        return $this->hasMany(User_cargo_tramite::class, 'id_usuario', 'id');
     }
 }

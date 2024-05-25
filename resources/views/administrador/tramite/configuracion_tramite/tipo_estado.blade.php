@@ -8,6 +8,7 @@
                 <i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Nuevo</span>
             </button>
         </div>
+
         <div class="table-responsive text-nowrap p-4">
             <table class="table table-hover" id="tabla_tipo_estado" style="width: 100%">
                 <thead class="table-dark">
@@ -78,7 +79,7 @@
                     onclick="cerrar_modal_tipo_estado()"></button>
                 <div class="modal-body">
                     <div class="text-center mb-4">
-                        <h3 class="mb-2">Nuevo Tipo de estado</h3>
+                        <h3 class="mb-2">Editar Tipo de estado</h3>
                     </div>
                     <form id="formulario_update_tipoestado" class="row" method="POST" autocomplete="off">
                         @csrf

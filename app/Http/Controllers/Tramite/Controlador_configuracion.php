@@ -3,10 +3,16 @@
 namespace App\Http\Controllers\Tramite;
 
 use App\Http\Controllers\Controller;
+use App\Models\Configuracion\Cargo_mae;
+use App\Models\Configuracion\Cargo_sm;
 use App\Models\Configuracion_tramite\Tipo_estado;
 use App\Models\Configuracion_tramite\Tipo_tramite;
+use App\Models\Configuracion_tramite\User_cargo_tramite;
+use App\Models\Registro\Persona;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Psy\CodeCleaner\ReturnTypePass;
 
 class Controlador_configuracion extends Controller
 {
@@ -213,5 +219,166 @@ class Controlador_configuracion extends Controller
 
     /**
      * FIN DE LA PARTE DE ADMINISTRACION DE LOS ESTADOS
+     */
+
+
+    /**ñl
+     * PARA LA ADMINISTRACION DEL HABILITAR EL TRAMITE
+    */
+    public function habilitar_a_tramite(){
+        $data['menu'] = '52';
+        return view('administrador.tramite.configuracion_tramite.habilitar_persona_tramite', $data);
+    }
+
+    //para listar la parte de los usuarios
+    public function  habilitar_a_tramite_listar(){
+        $usuarios = User::with(['user_cargo_tramite'=>function($userCargo){
+            $userCargo->with(['cargo_sm', 'cargo_mae', 'contrato', 'usuario']);
+        }])
+                    ->where('id', '!=', 1)
+                    ->where('estado', 'activo')
+                    ->where('deleted_at', null)
+                    ->OrderBy('id','desc')
+                    ->get();
+        return response()->json($usuarios);
+    }
+
+    //para la administracion de que si esta o no
+    public function  habilitar_a_tramite_validar(Request $request){
+        try {
+            $usuario = User::find($request->id);
+            $persona = Persona::with(['contrato'])->where('ci', $usuario->ci)->first();
+            if($persona->contrato && $persona->contrato[0]->estado == 'activo'){
+                $data = array(
+                    'tipo'      => 'success',
+                    'persona'   => $persona,
+                    'contrato'  => $persona->contrato[0],
+                    'usuario'   => $usuario
+                );
+            }else{
+                $data = mensaje_mostrar('error', 'Registre nuevo contrato o no tiene contrato vigente');
+            }
+        } catch (\Throwable $th) {
+            $data = mensaje_mostrar('error', 'Registre nuevo contrato o no tiene contrato vigente');
+        }
+        return response()->json($data);
+    }
+
+    //para registrar par los tramites
+    public function habilitar_a_tramite_habilita(Request $request){
+        $validar = Validator::make($request->all(),[
+            'id_contrato'   =>  'required',
+            'id_persona'    =>  'required',
+            'id_usuario'    =>  'required'
+        ]);
+
+        if($validar->fails()){
+            $data = mensaje_mostrar('errores', $validar->errors());
+        }else{
+            $user_cargo_tramite                 = new User_cargo_tramite();
+            $user_cargo_tramite->id_cargo_sm    = $request->id_cargo_sm;
+            $user_cargo_tramite->id_cargo_mae   = $request->id_cargo_mae;
+            $user_cargo_tramite->id_contrato    = $request->id_contrato;
+            $user_cargo_tramite->id_persona     = $request->id_persona;
+            $user_cargo_tramite->id_usuario     = $request->id_usuario;
+            $user_cargo_tramite->save();
+            if($user_cargo_tramite->id){
+                $data = mensaje_mostrar('success', 'Se habilito el cargo con éxito');
+            }else{
+                $data = mensaje_mostrar('error', 'Ocurrio un error al insertar !');
+            }
+        }
+        return response()->json($data);
+    }
+
+
+    //para vizualizar los cargos que va tener un usuario
+    public function habilitar_a_tramite_vizualiza(Request $request){
+        try {
+            $usuario = User::with(['user_cargo_tramite'=>function($uct){
+                $uct->with(['cargo_sm', 'cargo_mae', 'contrato', 'usuario']);
+                $uct->OrderBy('id', 'asc');
+            }])->find($request->id);
+            $usuario_tramite = $usuario->user_cargo_tramite[0];
+            $usuario_listar = $usuario->user_cargo_tramite;
+            $data = [
+                'tipo'              => 'success',
+                'usuario_tramite'   => $usuario_tramite,
+                'usuario_listar'    => $usuario_listar,
+            ];
+        } catch (\Throwable $th) {
+            $data = mensaje_mostrar('error', 'Error al svizualizar los cargos');
+        }
+        return response()->json($data);
+    }
+
+    //para listar todo los que tienen cargo
+    public function  habilitar_a_tramite_vizualiza_listar(Request $request){
+        $usuario_listar_cargos = User_cargo_tramite::with(['cargo_sm', 'cargo_mae', 'contrato', 'usuario'])
+            ->where('id_usuario', $request->id_usuario)
+            ->where('id_contrato', $request->id_contrato)
+            ->OrderBy('id', 'desc')
+            ->get();
+        return response()->json($usuario_listar_cargos);
+    }
+
+
+    //para el guardado de los cargos que estan pendientes
+    public function habilitar_a_tramite_vizualiza_nuevo(Request $request) {
+        $validar = Validator::make($request->all(),[
+            'nombre'   =>  'required',
+        ]);
+
+        if($validar->fails()){
+            $data = mensaje_mostrar('errores', $validar->errors());
+        }else{
+            //declaramos varables nulas
+            $id_cargo_primero = null;
+            $id_cargo_segundo = null;
+            //consultamos primero de cargo_sm
+            if($request->id_cargo_sm != null && $request->id_cargo_sm != ''){
+                $cargos_sm = Cargo_sm::find($request->id_cargo_sm);
+                //creamos el nuevo cargo
+                $new_cargo_sm                  = new Cargo_sm();
+                $new_cargo_sm->nombre          = $request->nombre;
+                $new_cargo_sm->id_direccion    = $cargos_sm->id_direccion;
+                $new_cargo_sm->id_unidad       = $cargos_sm->id_unidad;
+                $new_cargo_sm->save();
+                $id_cargo_primero = $new_cargo_sm->id;
+            }
+            //conusltamos del cargo_mae
+            if($request->id_cargo_mae != null && $request->id_cargo_mae != ''){
+                $cargos_mae = Cargo_mae::find($request->id_cargo_mae);
+                //se debe crear primero el nuevo cargo a lo mismo
+                $new_cargos_mae                 = new Cargo_mae();
+                $new_cargos_mae->nombre         = $request->nombre;
+                $new_cargos_mae->id_unidad      = $cargos_mae->id_unidad;
+                $new_cargos_mae->save();
+                $id_cargo_segundo = $new_cargos_mae->id;
+            }
+
+            //aqui creamos un nuevo User_cargo_tramite OK
+            $user_cargo_tramite                 = new User_cargo_tramite();
+            $user_cargo_tramite->id_cargo_sm    = $id_cargo_primero;
+            $user_cargo_tramite->id_cargo_mae   = $id_cargo_segundo;
+            $user_cargo_tramite->id_contrato    = $request->id_contrato;
+            $user_cargo_tramite->id_persona     = $request->id_persona;
+            $user_cargo_tramite->id_usuario     = $request->id_usuario;
+            $user_cargo_tramite->save();
+            if($user_cargo_tramite->id){
+                $data = [
+                    'tipo'              => 'success',
+                    'mensaje'           => 'Se creo el cargo con éxito',
+                    'id_contrato_lis'   => $request->id_contrato,
+                    'id_usuario_lis'    => $request->id_usuario,
+                ];
+            }else{
+                $data = mensaje_mostrar('error', 'Ocurrio un error al insertar !');
+            }
+        }
+        return response()->json($data);
+    }
+    /**
+     * FIN DE LA ADMINISTRACION DE HABILITAR EL TRAMITE
      */
 }

@@ -268,6 +268,11 @@
                         Tipos de estado
                     </a>
                 </li>
+                <li class="menu-item @if($menu == '52') active @endif">
+                    <a href="{{ route('htram_index') }}" class="menu-link">
+                        Habilitar a tramite
+                    </a>
+                </li>
             </ul>
         </li>
     </ul>
