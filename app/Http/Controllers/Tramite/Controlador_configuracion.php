@@ -325,56 +325,99 @@ class Controlador_configuracion extends Controller
 
     //para el guardado de los cargos que estan pendientes
     public function habilitar_a_tramite_vizualiza_nuevo(Request $request) {
-        $validar = Validator::make($request->all(),[
-            'nombre'   =>  'required',
-        ]);
+        try {
+            $validar = Validator::make($request->all(),[
+                'nombre'   =>  'required',
+            ]);
 
-        if($validar->fails()){
-            $data = mensaje_mostrar('errores', $validar->errors());
-        }else{
-            //declaramos varables nulas
-            $id_cargo_primero = null;
-            $id_cargo_segundo = null;
-            //consultamos primero de cargo_sm
-            if($request->id_cargo_sm != null && $request->id_cargo_sm != ''){
-                $cargos_sm = Cargo_sm::find($request->id_cargo_sm);
-                //creamos el nuevo cargo
-                $new_cargo_sm                  = new Cargo_sm();
-                $new_cargo_sm->nombre          = $request->nombre;
-                $new_cargo_sm->id_direccion    = $cargos_sm->id_direccion;
-                $new_cargo_sm->id_unidad       = $cargos_sm->id_unidad;
-                $new_cargo_sm->save();
-                $id_cargo_primero = $new_cargo_sm->id;
-            }
-            //conusltamos del cargo_mae
-            if($request->id_cargo_mae != null && $request->id_cargo_mae != ''){
-                $cargos_mae = Cargo_mae::find($request->id_cargo_mae);
-                //se debe crear primero el nuevo cargo a lo mismo
-                $new_cargos_mae                 = new Cargo_mae();
-                $new_cargos_mae->nombre         = $request->nombre;
-                $new_cargos_mae->id_unidad      = $cargos_mae->id_unidad;
-                $new_cargos_mae->save();
-                $id_cargo_segundo = $new_cargos_mae->id;
-            }
+            if($validar->fails()){
+                $data = mensaje_mostrar('errores', $validar->errors());
+            }else{
+                //declaramos varables nulas
+                $id_cargo_primero = null;
+                $id_cargo_segundo = null;
+                //consultamos primero de cargo_sm
+                if($request->id_cargo_sm != null && $request->id_cargo_sm != ''){
+                    $cargos_sm = Cargo_sm::find($request->id_cargo_sm);
+                    //creamos el nuevo cargo
+                    $new_cargo_sm                  = new Cargo_sm();
+                    $new_cargo_sm->nombre          = $request->nombre;
+                    $new_cargo_sm->id_direccion    = $cargos_sm->id_direccion;
+                    $new_cargo_sm->id_unidad       = $cargos_sm->id_unidad;
+                    $new_cargo_sm->save();
+                    $id_cargo_primero = $new_cargo_sm->id;
+                }
+                //conusltamos del cargo_mae
+                if($request->id_cargo_mae != null && $request->id_cargo_mae != ''){
+                    $cargos_mae = Cargo_mae::find($request->id_cargo_mae);
+                    //se debe crear primero el nuevo cargo a lo mismo
+                    $new_cargos_mae                 = new Cargo_mae();
+                    $new_cargos_mae->nombre         = $request->nombre;
+                    $new_cargos_mae->id_unidad      = $cargos_mae->id_unidad;
+                    $new_cargos_mae->save();
+                    $id_cargo_segundo = $new_cargos_mae->id;
+                }
 
-            //aqui creamos un nuevo User_cargo_tramite OK
-            $user_cargo_tramite                 = new User_cargo_tramite();
-            $user_cargo_tramite->id_cargo_sm    = $id_cargo_primero;
-            $user_cargo_tramite->id_cargo_mae   = $id_cargo_segundo;
-            $user_cargo_tramite->id_contrato    = $request->id_contrato;
-            $user_cargo_tramite->id_persona     = $request->id_persona;
-            $user_cargo_tramite->id_usuario     = $request->id_usuario;
-            $user_cargo_tramite->save();
-            if($user_cargo_tramite->id){
+                //aqui creamos un nuevo User_cargo_tramite OK
+                $user_cargo_tramite                 = new User_cargo_tramite();
+                $user_cargo_tramite->id_cargo_sm    = $id_cargo_primero;
+                $user_cargo_tramite->id_cargo_mae   = $id_cargo_segundo;
+                $user_cargo_tramite->id_contrato    = $request->id_contrato;
+                $user_cargo_tramite->id_persona     = $request->id_persona;
+                $user_cargo_tramite->id_usuario     = $request->id_usuario;
+                $user_cargo_tramite->save();
+                if($user_cargo_tramite->id){
+                    $data = [
+                        'tipo'              => 'success',
+                        'mensaje'           => 'Se creo el cargo con éxito',
+                        'id_contrato_lis'   => $request->id_contrato,
+                        'id_usuario_lis'    => $request->id_usuario,
+                    ];
+                }else{
+                    $data = mensaje_mostrar('error', 'Ocurrio un error al insertar !');
+                }
+            }
+        } catch (\Throwable $th) {
+            $data = mensaje_mostrar('error', 'Ocurrio un error! verifique');
+        }
+
+        return response()->json($data);
+    }
+
+    //para cambiar del cargo
+    public function habilitar_a_tramite_vizualiza_estado(Request $request){
+        try {
+            $tipo_cargo_usuario = User_cargo_tramite::find($request->id);
+            $tipo_cargo_usuario->estado = ($tipo_cargo_usuario->estado==true)? false : true;
+            $tipo_cargo_usuario->save();
+            if($tipo_cargo_usuario->id){
                 $data = [
-                    'tipo'              => 'success',
-                    'mensaje'           => 'Se creo el cargo con éxito',
-                    'id_contrato_lis'   => $request->id_contrato,
-                    'id_usuario_lis'    => $request->id_usuario,
+                    'tipo'      => 'success',
+                    'mensaje'   => 'Se guardo con exito el registro!',
+                    'id_usu'    => $request->id_usuario,
+                    'id_contra' => $request->id_contrato,
                 ];
             }else{
-                $data = mensaje_mostrar('error', 'Ocurrio un error al insertar !');
+                $data = mensaje_mostrar('error', 'Ocurrio un error al cambiar el estado');
             }
+        } catch (\Throwable $th) {
+            $data = mensaje_mostrar('error', 'Ocurrio un error al cambiar el estado');
+        }
+        return response()->json($data);
+    }
+
+    //para la edicion del registro
+    public function  habilitar_a_tramite_vizualiza_eliminar(Request $request){
+        try {
+            $user_cargo_tramite = User_cargo_tramite::with(['cargo_sm', 'cargo_mae'])->find($request->id);
+
+            if($user_cargo_tramite->delete()){
+                $data = mensaje_mostrar('success', 'Se elimino el registro con éxito!');
+            }else{
+                $data = mensaje_mostrar('error', 'Ocurrio un error');
+            }
+        } catch (\Throwable $th) {
+            $data = mensaje_mostrar('error', 'Ocurrio un error');
         }
         return response()->json($data);
     }

@@ -34,11 +34,13 @@
                     <div class="alert alert-success alert-dismissible" id="detalle_categoria" role="alert">
                     </div>
                     <form id="formulario_nuevo_cargo_tramite" method="post" autocomplete="off">
-                        <input type="text" name="id_cargo_sm" id="id_cargo_sm">
-                        <input type="text" name="id_cargo_mae" id="id_cargo_mae">
-                        <input type="text" name="id_contrato" id="id_contrato">
-                        <input type="text" name="id_persona" id="id_persona">
-                        <input type="text" name="id_usuario" id="id_usuario">
+                        <input type="hidden" name="id_cargo_sm" id="id_cargo_sm">
+                        <input type="hidden" name="id_cargo_mae" id="id_cargo_mae">
+                        <input type="hidden" name="id_contrato" id="id_contrato">
+                        <input type="hidden" name="id_persona" id="id_persona">
+                        <input type="hidden" name="id_usuario" id="id_usuario">
+
+                        <input type="hidden" name="id_usuario_cargo" id="id_usuario_cargo">
                         <div class="row">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
                                 <label for="nombre" class="form-label">Descripción</label>
@@ -85,7 +87,6 @@
                 },
             });
             let dato = await respuesta.json();
-            console.log(dato);
             let i = 1;
             $('#tabla_tipo_usuarios').DataTable({
                 responsive: true,
@@ -270,8 +271,8 @@
 
         //para vizualziar el traite
         async function vizualizar_para_tramite(id) {
-            console.log(id);
             $('#modal_listar_habilitar_tramite').modal('show');
+            document.getElementById('_nombre').innerHTML = '';
             try {
                 let respuesta = await fetch("{{ route('htram_vizualizar') }}",{
                     method: 'POST',
@@ -282,7 +283,8 @@
                     body: JSON.stringify({id:id})
                 });
                 let dato = await respuesta.json();
-                console.log(dato);
+                document.getElementById('nombre').value = '';
+                document.getElementById('id_usuario_cargo').value = '';
                 if(dato.tipo==='success'){
                     document.getElementById('id_cargo_sm').value    = dato.usuario_tramite.id_cargo_sm;
                     document.getElementById('id_cargo_mae').value   = dato.usuario_tramite.id_cargo_mae;
@@ -291,7 +293,6 @@
                     document.getElementById('id_usuario').value     = dato.usuario_tramite.id_usuario;
                     actulizar_tabla_cargos();
                     listar_cargos_contrato(dato.usuario_tramite.id_contrato, dato.usuario_tramite.id_usuario);
-
                 }
                 if(dato.tipo==='error'){
                     alerta_top(dato.tipo, dato.mensaje);
@@ -324,7 +325,6 @@
             });
             let dato = await respuesta.json();
             let i = 1;
-
             $('#tabla_listar_cargos_usuario').DataTable({
                 responsive: true,
                 data: dato,
@@ -363,7 +363,7 @@
                         render: function(data, type, row, meta) {
                             return `
                                 <label class="switch switch-primary">
-                                    <input onclick="estado_user_tipo_tramite('${row.id}')" type="checkbox" class="switch-input" ${row.estado === true ? 'checked' : ''} />
+                                    <input onclick="estado_user_tipo_tramite('${row.id}','${row.id_contrato}', '${row.id_usuario}')" type="checkbox" class="switch-input" ${row.estado === true ? 'checked' : ''} />
                                     <span class="switch-toggle-slider">
                                         <span class="switch-on">
                                             <i class="ti ti-check"></i>
@@ -382,11 +382,7 @@
                         render: function(data, type, row, meta) {
                             return `
                                 <div class="d-inline-block tex-nowrap">
-                                    <button class="btn btn-sm btn-icon" onclick="editar_tipo_estado('${row.id}')" type="button">
-                                        <i class="ti ti-edit" ></i>
-                                    </button>
-
-                                    <button class="btn btn-sm btn-icon" onclick="eliminar_tipo_estado('${row.id}')" type="button">
+                                    <button class="btn btn-sm btn-icon" onclick="eliminar_user_cargo('${row.id}','${row.id_contrato}', '${row.id_usuario}')" type="button">
                                         <i class="ti ti-trash" ></i>
                                     </button>
                                 </div>
@@ -395,49 +391,49 @@
                     }
                 ]
             });
-
-
-            //PARA GUARDAR EL REGISTRO
-            let btn_guardar_nuevo_cargo_tramite = document.getElementById('btn_guardar_nuevo_cargo_tramite');
-            let formulario_nuevo_cargo_tramite = document.getElementById('formulario_nuevo_cargo_tramite');
-
-            btn_guardar_nuevo_cargo_tramite.addEventListener('click', async ()=>{
-                let datos = Object.fromEntries(new FormData(formulario_nuevo_cargo_tramite).entries());
-                document.getElementById('nombre').value = '';
-                try {
-                    let respuesta = await fetch("{{ route('htram_vizualizar_nuevo') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': token
-                        },
-                        body: JSON.stringify(datos)
-                    });
-                    let dato = await respuesta.json();
-                    if (dato.tipo === 'errores') {
-                        let obj = dato.mensaje;
-                        for (let key in obj) {
-                            document.getElementById('_' + key).innerHTML = `<p class="text-sm text-danger" >` + obj[
-                                key] + `</p>`;
-                        }
-                    }
-                    if (dato.tipo === 'success') {
-                        alerta_top(dato.tipo, dato.mensaje);
-                        actulizar_tabla_cargos();
-                        listar_cargos_contrato(dato.id_contrato_lis, dato.id_usuario_lis);
-                    }
-                    if (dato.tipo === 'error') {
-                        alerta_top(dato.tipo, dato.mensaje);
-                    }
-                } catch (error) {
-                    console.log('Ocurrio un error :' + error);
-                }
-            });
         }
+
+        //PARA GUARDAR EL REGISTRO
+        let btn_guardar_nuevo_cargo_tramite = document.getElementById('btn_guardar_nuevo_cargo_tramite');
+        let formulario_nuevo_cargo_tramite = document.getElementById('formulario_nuevo_cargo_tramite');
+
+        btn_guardar_nuevo_cargo_tramite.addEventListener('click', async ()=>{
+            let datos = Object.fromEntries(new FormData(formulario_nuevo_cargo_tramite).entries());
+            try {
+                let respuesta = await fetch("{{ route('htram_vizualizar_nuevo') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify(datos)
+                });
+                let dato = await respuesta.json();
+                if (dato.tipo === 'errores') {
+                    let obj = dato.mensaje;
+                    for (let key in obj) {
+                        document.getElementById('_' + key).innerHTML = `<p class="text-sm text-danger" >` + obj[
+                            key] + `</p>`;
+                    }
+                }
+                if (dato.tipo === 'success') {
+                    alerta_top(dato.tipo, dato.mensaje);
+                    actulizar_tabla_cargos();
+                    listar_cargos_contrato(dato.id_contrato_lis, dato.id_usuario_lis);
+                    document.getElementById('nombre').value = '';
+                }
+                if (dato.tipo === 'error') {
+                    alerta_top(dato.tipo, dato.mensaje);
+                }
+            } catch (error) {
+                console.log('Ocurrio un error :' + error);
+            }
+        });
 
 
         //para cambiar el estado de
-        function estado_user_tipo_tramite(id){
+        function estado_user_tipo_tramite(id, id_contrato, id_usuario){
+            console.log(id+' => '+id_contrato+' => '+id_usuario);
             Swal.fire({
                 title: "¿Estás seguro de cambiar el estado?",
                 text: "¡Nota!",
@@ -459,26 +455,91 @@
                                 'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': token
                             },
-                            body: JSON.stringify({id:id})
+                            body: JSON.stringify({
+                                id:id,
+                                id_contrato:id_contrato,
+                                id_usuario:id_usuario
+                            })
                         });
                         let dato = await respuesta.json();
                         if(dato.tipo === 'success'){
-                            actulizar_tabla_genero();
-                            //mostrando la alerta
                             alerta_top(dato.tipo, dato.mensaje);
+                            actulizar_tabla_cargos();
+                            listar_cargos_contrato(dato.id_contra, dato.id_usu);
+                            actulizar_tabla();
                         }
                         if(dato.tipo === 'error'){
                             alerta_top(dato.tipo, dato.mensaje);
+                            actulizar_tabla_cargos();
+                            listar_cargos_contrato(id_contrato, id_usuario);
+                            actulizar_tabla();
                         }
                     } catch (error) {
                         console.log('Error de datos : '+error);
-                        actulizar_tabla_genero();
+                        actulizar_tabla_cargos();
+                        listar_cargos_contrato(id_contrato, id_usuario);
+                        actulizar_tabla();
                     }
                 } else {
                     alerta_top('error', 'Se cancelo');
-                    actulizar_tabla_genero();
+                    actulizar_tabla_cargos();
+                    listar_cargos_contrato(id_contrato, id_usuario);
+                    actulizar_tabla();
                 }
             });
+        }
+
+        //PARA LA EDICION DEL CARGO
+        async function eliminar_user_cargo(id, id_contrato, id_usuario) {
+            Swal.fire({
+                title: "¿Estás seguro de eliminar?",
+                text: "¡No podrás revertir esto!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, eliminarlo",
+                cancelButtonText: "Cancelar",
+                customClass: {
+                    confirmButton: "btn btn-primary me-3 waves-effect waves-light",
+                    cancelButton: "btn btn-label-secondary waves-effect waves-light"
+                },
+                buttonsStyling: false
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        let respuesta = await fetch("{{ route('htram_vizualizar_eliminar') }}",{
+                            method: "DELETE",
+                            headers:{
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': token
+                            },
+                            body: JSON.stringify({
+                                id:id,
+                            })
+                        });
+                        let dato = await respuesta.json();
+                        if (dato.tipo === 'success') {
+                            alerta_top(dato.tipo, dato.mensaje);
+                            actulizar_tabla_cargos();
+                            listar_cargos_contrato(id_contrato, id_usuario);
+                            actulizar_tabla();
+                        }
+                        if (dato.tipo === 'error') {
+                            alerta_top(dato.tipo, dato.mensaje);
+                        }
+                    } catch (error) {
+                        console.log('error de : '+ error);
+                    }
+                } else {
+                    alerta_top('error', 'Se cancelo');
+                }
+            });
+        }
+
+        //para cerrar el modal
+        async function  cerrar_modal_habilitar_tramite() {
+            $('#modal_listar_habilitar_tramite').modal('hide');
+            document.getElementById('nombre').value         = '';
+            document.getElementById('_nombre').innerHTML    = '';
         }
     </script>
 @endsection

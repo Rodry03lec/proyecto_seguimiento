@@ -424,6 +424,7 @@ Route::prefix('/admin')->middleware(['autenticados','rectroceder'])->group(funct
         Route::post('habilitaraTramite_vizualiza_listar', 'habilitar_a_tramite_vizualiza_listar')->name('htram_vizualizar_lis');
         Route::post('habilitaraTramite_vizualiza_nuevo', 'habilitar_a_tramite_vizualiza_nuevo')->name('htram_vizualizar_nuevo');
         Route::post('habilitaraTramite_vizualiza_estado', 'habilitar_a_tramite_vizualiza_estado')->name('htram_vizualizar_estado');
+        Route::delete('habilitaraTramite_vizualiza_eliminar', 'habilitar_a_tramite_vizualiza_eliminar')->name('htram_vizualizar_eliminar');
 
     });
     //FIN DE LA PARTE DEL SEGUIMIENTO
