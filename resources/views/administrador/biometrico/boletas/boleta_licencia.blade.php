@@ -11,12 +11,17 @@
                 <img src="{{ asset('admin_template/img/illustrations/bulb-light.png') }}"
                     class="img-fluid app-academy-img-height scaleX-n1-rtl" height="90" />
             </div>
-            <div class=" col-12 card-body d-flex align-items-md-center flex-column text-md-center">
+            <div class=" col-12 card-body d-flex align-items-md-center flex-column">
                 <h3 class="card-title mb-4 lh-sm px-md-5 lh-lg">
                     Busqueda por CI
                 </h3>
-                <div class="d-flex col-12">
-                    <input type="number" placeholder="Buscar por CI . . . . . . . . " class="form-control me-2" onkeyup="buscar_ci(this.value)" onkeypress="return soloNumeros(event)" id="ci_buscar" minlength="5" maxlength="15" autocomplete="off" />
+                <div class="select2-container">
+                    <select id="buscar_ci_persona" class="select2 " style="width: 100%" onchange="buscar_ci(this.value)">
+                        <option selected disabled>[ BUSQUEDA DE PERSONA ]</option>
+                        @foreach ($personas as $lis)
+                            <option value="{{ $lis->ci }}">{{ $lis->ci.' '.$lis->nombres.' '.$lis->ap_paterno.' '.$lis->ap_materno }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="app-academy-md-25 d-flex align-items-end justify-content-end">
@@ -101,7 +106,7 @@
                         <th>FECHA GENERADA</th>
                         <th>FECHA Y HORA INICIO</th>
                         <th>FECHA Y HORA FINAL</th>
-                        <th>DESCRIPCIÓN</th>
+                        {{-- <th>DESCRIPCIÓN</th> --}}
                         <th>APROBADO</th>
                         <th>CONSTANCIA</th>
                     </tr>
@@ -109,6 +114,7 @@
             </table>
         </div>
     </div>
+
 
 
 
@@ -458,13 +464,13 @@
                                             @endcan
 
                                             @can('boletas_generar_licencia_eliminar')
-                                                <button class="btn btn-sm btn-icon" onclick="eliminar_permiso_boleta('${row.id}')" type="button">
+                                                <button class="btn btn-sm btn-icon" onclick="eliminar_licencia_boleta('${row.id}')" type="button">
                                                     <i class="ti ti-trash" ></i>
                                                 </button>
                                             @endcan
 
                                             @can('boletas_generar_licencia_pdf')
-                                                <button class="btn btn-sm btn-icon" onclick="imprimir_boleta_permiso('${row.id}')" type="button">
+                                                <button class="btn btn-sm btn-icon" onclick="imprimir_boleta_licencia('${row.id}')" type="button">
                                                     <i class="ti ti-cloud-down" ></i>
                                                 </button>
                                             @endcan
@@ -496,10 +502,10 @@
                                         +fecha_literal(data.fecha_final, 4)+` `+data.hora_final+` </div>`;
                                 }
                             },
-                            {
+                            /* {
                                 data: 'descripcion',
                                 className: 'table-td'
-                            },
+                            }, */
                             {
                                 data: null,
                                 className: 'table-td',
@@ -584,6 +590,9 @@
                     desabilitar_habilitar(false);
                     actulizar_tabla();
                     listar_bolestas_licencias(dato.id_persona);
+                    setTimeout(() => {
+                            imprimir_boleta_licencia(dato.id_licencia_new);
+                        }, 1500);
                 }
                 if(dato.tipo === 'error'){
                     alerta_top(dato.tipo, dato.mensaje);
@@ -722,7 +731,7 @@
         }
 
         //PARA ELIMINAR LA LICENCIA
-        async function eliminar_permiso_boleta(id) {
+        async function eliminar_licencia_boleta(id) {
             Swal.fire({
                 title: "¿Estás seguro de eliminar?",
                 text: "¡No podrás revertir esto!",
@@ -881,6 +890,9 @@
                     actulizar_tabla();
                     listar_bolestas_licencias(dato.id_persona);
                     $('#modal_editar_licencia').modal('hide');
+
+
+
                 }
                 if(dato.tipo === 'error'){
                     alerta_top(dato.tipo, dato.mensaje);
@@ -895,6 +907,30 @@
                 actulizar_tabla();
             }
         });
+
+        //Para generar la boleta de la licencia
+        //para redireccionar el pdf
+        async function imprimir_boleta_licencia(id){
+            try {
+                let respuesta = await fetch("{{ route('enc_crypt') }}",{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify({id:id})
+                });
+                let dato = await respuesta.json();
+                alerta_top_end('success', 'Abriendo pdf con éxito, espere un momento!');
+                setTimeout(() => {
+                    let url_boleta_licencia = "{{ route('cra_licencia_boleta_pdf', ['id' => ':id']) }}";
+                    url_boleta_licencia     = url_boleta_licencia.replace(':id', dato.mensaje);
+                    window.open(url_boleta_licencia, '_blank');
+                }, 2000);
+            } catch (error) {
+                console.log('error : ' +error);
+            }
+        }
 
     </script>
 @endsection

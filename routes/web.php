@@ -21,6 +21,7 @@ use App\Http\Controllers\Registro\Controlador_persona;
 use App\Http\Controllers\Registro\Controlador_contrato;
 use App\Http\Controllers\Reportes\Controlador_reporte_ausencia;
 use App\Http\Controllers\Tramite\Controlador_configuracion;
+use App\Http\Controllers\Tramite\Controlador_tramite;
 
 //AQUI PARA LOS NO AUTENTICADOS DE LOS USUSARIOS
 Route::prefix('/')->middleware(['no_autenticados'])->group(function(){
@@ -392,11 +393,14 @@ Route::prefix('/admin')->middleware(['autenticados','rectroceder'])->group(funct
     //PARA LA PARTE DE LOS REPORTES
     Route::controller(Controlador_reporte_ausencia::class)->group(function(){
         Route::get('permisoboletapdf/{id}','permiso_boleta_pdf')->name('cra_permiso_boleta_pdf');
+        Route::get('licenciaboletapdf/{id}','licencia_boleta_pdf')->name('cra_licencia_boleta_pdf');
     });
 
 
 
     //PARA LA PARTE DE SEGUIMIENTO
+
+    //para la parte de la configuracion
     Route::controller(Controlador_configuracion::class)->group(function () {
         //para la administracion del tipo de tramite
         Route::get('tipotramite', 'tipo_tramite')->name('ttram_index');
@@ -427,6 +431,20 @@ Route::prefix('/admin')->middleware(['autenticados','rectroceder'])->group(funct
         Route::delete('habilitaraTramite_vizualiza_eliminar', 'habilitar_a_tramite_vizualiza_eliminar')->name('htram_vizualizar_eliminar');
 
     });
+
+
+    //para la vizualizacion de los cargos que tiene cada uno
+    Route::controller(Controlador_tramite::class)->group(function (){
+        //para la vizualizacion de todos los permisos
+        Route::get('vizualizarCargosTramite', 'vizualizar_cargos_tramite')->name('ctram_index');
+        Route::get('TramiteCargo/{id}','tramite_cargo')->name('tcar_cargos');
+        Route::get('Coresponcia/{id}','administrar_correspondencia')->name('ccorr_index');
+    });
+
     //FIN DE LA PARTE DEL SEGUIMIENTO
+
+
+
+
 
 });

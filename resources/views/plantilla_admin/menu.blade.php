@@ -275,6 +275,17 @@
                 </li>
             </ul>
         </li>
+
+
+        {{-- PARA LA ADMINISTRACION DE LOS PERMISOS DEL 60 PARA ARRIBA --}}
+        <li class="menu-item @if ($menu=='60') active @endif ">
+            <a href="{{ route('ctram_index') }}"  class="menu-link">
+                <i class="menu-icon tf-icons ti ti-filter"></i>
+                <div>TRAMITES</div>
+            </a>
+        </li>
+
+
     </ul>
 
 

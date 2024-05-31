@@ -11,13 +11,20 @@
                 <img src="{{ asset('admin_template/img/illustrations/bulb-light.png') }}"
                     class="img-fluid app-academy-img-height scaleX-n1-rtl" height="90" />
             </div>
-            <div class=" col-12 card-body d-flex align-items-md-center flex-column text-md-center">
+            <div class="col-12 card-body d-flex align-items-md-center flex-column" style="width: 100%">
                 <h3 class="card-title mb-4 lh-sm px-md-5 lh-lg">
                     Busqueda por CI
                 </h3>
-                <div class="d-flex col-12">
-                    <input type="text" placeholder="Buscar por CI . . . . . . . . " class="form-control me-2" onkeyup="buscar_ci(this.value)" onkeypress="return soloNumeros(event)" id="ci_buscar" minlength="5" maxlength="15" autocomplete="off" />
+
+                <div class="select2-container">
+                    <select id="buscar_ci_persona" class="select2 " style="width: 100%" onchange="buscar_ci(this.value)">
+                        <option selected disabled>[ BUSQUEDA DE PERSONA ]</option>
+                        @foreach ($personas as $lis)
+                            <option value="{{ $lis->ci }}">{{ $lis->ci.' '.$lis->nombres.' '.$lis->ap_paterno.' '.$lis->ap_materno }}</option>
+                        @endforeach
+                    </select>
                 </div>
+
             </div>
             <div class="app-academy-md-25 d-flex align-items-end justify-content-end">
                 <img src="{{ asset('admin_template/img/illustrations/pencil-rocket.png') }}" alt="pencil rocket"
@@ -496,6 +503,9 @@
                         desabilitar_habilitar(false);
                         actulizar_tabla();
                         listar_bolestas_permisos(dato.id_persona);
+                        setTimeout(() => {
+                            imprimir_boleta_permiso(dato.id_permiso_new);
+                        }, 1500);
                     }
                     if(dato.tipo === 'error'){
                         alerta_top(dato.tipo, dato.mensaje);

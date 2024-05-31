@@ -19,10 +19,10 @@ class Seeder_usuario extends Seeder
     public function run(): void{
         $usuario = new User();
         $usuario->usuario = 'admin';
-        $usuario->password = Hash::make('rodry');
-        $usuario->ci = '10028685';
-        $usuario->nombres = 'Rodrigo';
-        $usuario->apellidos = 'Lecoña Quispe';
+        $usuario->password = Hash::make('admin');
+        $usuario->ci = '8422512';
+        $usuario->nombres = 'Graice ';
+        $usuario->apellidos = 'Callizaya Chambi';
         $usuario->estado =  'activo';
         $usuario->id_persona = '0';
         $usuario->save();
@@ -32,11 +32,11 @@ class Seeder_usuario extends Seeder
 
 
         $usuario1 = new User();
-        $usuario1->usuario = 'admin1';
+        $usuario1->usuario = 'prueva';
         $usuario1->password = Hash::make('rodry');
-        $usuario1->ci = '10028685';
-        $usuario1->nombres = 'Rodrigo1';
-        $usuario1->apellidos = 'Lecoña1 Quispe1';
+        $usuario1->ci = '12345678';
+        $usuario1->nombres = 'Prueva';
+        $usuario1->apellidos = 'Prueva Prueva';
         $usuario1->estado =  'activo';
         $usuario1->id_persona = '0';
         $usuario1->save();

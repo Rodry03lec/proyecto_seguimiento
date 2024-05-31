@@ -5,6 +5,7 @@ namespace App\Models\Configuracion_tramite;
 use App\Models\Configuracion\Cargo_mae;
 use App\Models\Configuracion\Cargo_sm;
 use App\Models\Registro\Contrato;
+use App\Models\Registro\Persona;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -40,6 +41,11 @@ class User_cargo_tramite extends Model
     //relacion reversa con usuario
     public function usuario(){
         return $this->belongsTo(User::class, 'id_usuario', 'id');
+    }
+
+    //relacion reversa con persona
+    public function persona(){
+        return $this->belongsTo(Persona::class, 'id_persona', 'id');
     }
 
 }

@@ -5,9 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>BOLETA - PERMISO</title>
-
-
+    <title>BOLETA - LICENCIA</title>
     {{-- <link rel="stylesheet" href="rodry/estilos_pdf/pdf.css"> --}}
 
     <style>
@@ -52,10 +50,10 @@
             position: absolute;
             opacity: 0.8;
             top: 2%;
-            left: 15%;
+            left: 8%;
             transform: translate(-50%, -50%);
             z-index: -1;
-            width: 15%;
+            width: 14%;
         }
 
         .seccion {
@@ -77,7 +75,6 @@
             position: relative;
             margin-top: 20px;
             z-index: -1;
-            width: 25px;
         }
 
 
@@ -210,14 +207,14 @@
 
     <div style="text-align: center; padding-top:-60% ">
         <h4 class="text-primary">UNIDAD DE RECURSOS HUMANOS (RRHH)</h4>
-        <h3 class="text-primary">PERMISO - BOLETA</h3>
+        <h3 class="text-primary">LICENCIA - BOLETA</h3>
     </div>
 
     <div class="alinear_elemento_arriba">
         <div id="primer_encabezado_usuario">
             Fecha Impreso:. {{ date('d-m-Y H:i:s') }}
             <br>
-            Us:. {{ $permiso->usuario_creado->nombres.' '.$permiso->usuario_creado->apellidos }}
+            Us:. {{ $licencia->usuario_creado->nombres.' '.$licencia->usuario_creado->apellidos }}
         </div>
     </div>
 
@@ -230,68 +227,68 @@
                             <tr>
                                 <td id="borde_borrar_table"> CI</td>
                                 <td id="borde_borrar_table"> :
-                                    {{ $permiso->persona->ci . ' ' . $permiso->persona->complemento }}</td>
+                                    {{ $licencia->persona->ci . ' ' . $licencia->persona->complemento }}</td>
                             </tr>
 
                             <tr>
                                 <td id="borde_borrar_table"> NOMBRES Y APELLIDOS</td>
                                 <td id="borde_borrar_table"> :
-                                    {{ $permiso->contrato->grado_academico->abreviatura . ' ' . $permiso->persona->nombres . ' ' . $permiso->persona->ap_paterno . ' ' . $permiso->persona->ap_materno }}
+                                    {{ $licencia->contrato->grado_academico->abreviatura . ' ' . $licencia->persona->nombres . ' ' . $licencia->persona->ap_paterno . ' ' . $licencia->persona->ap_materno }}
                                 </td>
                             </tr>
 
 
 
-                            @if ($permiso->contrato->id_cargo_mae != null)
+                            @if ($licencia->contrato->id_cargo_mae != null)
                                 <!-- para la administrcion del mae -->
                                 <!-- NOMBRE MAE -->
                                 <tr>
                                     <td id="borde_borrar_table" style="padding:8px"> MAE</td>
                                     <td id="borde_borrar_table"> :
-                                        {{  $permiso->contrato->cargo_mae->unidad_mae->mae->nombre }}
+                                        {{  $licencia->contrato->cargo_mae->unidad_mae->mae->nombre }}
                                     </td>
                                 </tr>
                                 <!-- UNIDAD -->
                                 <tr>
                                     <td id="borde_borrar_table"> CORESPONDE </td>
                                     <td id="borde_borrar_table"> :
-                                        {{  $permiso->contrato->cargo_mae->unidad_mae->descripcion }}
+                                        {{  $licencia->contrato->cargo_mae->unidad_mae->descripcion }}
                                     </td>
                                 </tr>
                                 <!-- CARGO -->
                                 <tr>
                                     <td id="borde_borrar_table"> CARGO</td>
                                     <td id="borde_borrar_table"> :
-                                        {{  $permiso->contrato->cargo_mae->nombre }}
+                                        {{  $licencia->contrato->cargo_mae->nombre }}
                                     </td>
                                 </tr>
                             @endif
 
-                            @if ($permiso->contrato->id_cargo_sm != null)
+                            @if ($licencia->contrato->id_cargo_sm != null)
                                 <tr>
                                     <td id="borde_borrar_table"> SECRETARIA</td>
                                     <td id="borde_borrar_table"> :
-                                        {{ '(' . $permiso->contrato->cargo_sm->direccion->secretaria_municipal->sigla . ')' . ' ' . $permiso->contrato->cargo_sm->direccion->secretaria_municipal->nombre }}
+                                        {{ '(' . $licencia->contrato->cargo_sm->direccion->secretaria_municipal->sigla . ')' . ' ' . $licencia->contrato->cargo_sm->direccion->secretaria_municipal->nombre }}
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td id="borde_borrar_table"> DIRECCIÓN</td>
                                     <td id="borde_borrar_table"> :
-                                        {{ '(' . $permiso->contrato->cargo_sm->direccion->sigla . ')' . ' ' . $permiso->contrato->cargo_sm->direccion->nombre }}
+                                        {{ '(' . $licencia->contrato->cargo_sm->direccion->sigla . ')' . ' ' . $licencia->contrato->cargo_sm->direccion->nombre }}
                                     </td>
                                 </tr>
 
-                                {{-- <tr>
+                                <tr>
                                     <td id="borde_borrar_table"> UNIDAD / JEFATURA</td>
                                     <td id="borde_borrar_table"> :
-                                        {{ '(' . $permiso->contrato->cargo_sm->unidades_admnistrativas->sigla . ')' . ' ' . $permiso->contrato->cargo_sm->unidades_admnistrativas->nombre }}
+                                        {{ '(' . $licencia->contrato->cargo_sm->unidades_admnistrativas->sigla . ')' . ' ' . $licencia->contrato->cargo_sm->unidades_admnistrativas->nombre }}
                                     </td>
-                                </tr> --}}
+                                </tr>
 
                                 <tr>
                                     <td id="borde_borrar_table"> CARGO</td>
-                                    <td id="borde_borrar_table"> : {{ $permiso->contrato->cargo_sm->nombre }}</td>
+                                    <td id="borde_borrar_table"> : {{ $licencia->contrato->cargo_sm->nombre }}</td>
                                 </tr>
                             @endif
 
@@ -300,18 +297,20 @@
 
                             <tr>
                                 <td id="borde_borrar_table"> TIPO</td>
-                                <td id="borde_borrar_table"> : {{ $permiso->permiso_desglose->tipo_permiso->nombre }}
+                                <td id="borde_borrar_table"> : {{ $licencia->tipo_licencia->motivo }}
                                 </td>
                             </tr>
 
                             <tr>
-                                <td id="borde_borrar_table"> DESCIPCIÓN PERMISO </td>
-                                <td id="borde_borrar_table"> : {{ $permiso->permiso_desglose->nombre }}</td>
+                                <td id="borde_borrar_table"> DESCRIPCIÓN</td>
+                                <td id="borde_borrar_table"> : {{ $licencia->tipo_licencia->jornada_laboral }}
+                                </td>
                             </tr>
+
 
                             <tr>
                                 <td style="border: none;"> MOTIVO</td>
-                                <td style="border: none; font-size: 6px; word-break: break-word;">: {{ $permiso->descripcion }} </td>
+                                <td style="border: none; font-size: 6px; word-break: break-word;">: {{ $licencia->descripcion }} </td>
                             </tr>
                         </table>
 
@@ -326,15 +325,15 @@
                             <tbody>
                                 <tr>
                                     <th id="border_abajo">
-                                        {{ fecha_literal($permiso->fecha, 4) }}
+                                        {{ fecha_literal($licencia->fecha, 4) }}
                                     </th>
                                     <th id="border_abajo">
-                                        {{ fecha_literal($permiso->fecha_inicio, 4) }}
-                                        {{ $permiso->hora_inicio . ' ' . determinar_am_pm($permiso->hora_inicio) }}
+                                        {{ fecha_literal($licencia->fecha_inicio, 4) }}
+                                        {{ $licencia->hora_inicio . ' ' . determinar_am_pm($licencia->hora_inicio) }}
                                     </th>
                                     <th id="border_abajo">
-                                        {{ fecha_literal($permiso->fecha_final, 4) }}
-                                        {{ $permiso->hora_final . ' ' . determinar_am_pm($permiso->hora_final) }}
+                                        {{ fecha_literal($licencia->fecha_final, 4) }}
+                                        {{ $licencia->hora_final . ' ' . determinar_am_pm($licencia->hora_final) }}
                                     </th>
                                 </tr>
                             </tbody>
@@ -355,7 +354,7 @@
                     <th id="firmas_debajo">
                         -----------------------------------------------------------
                         <br>
-                        {{ $permiso->contrato->grado_academico->abreviatura . ' ' . $permiso->persona->nombres . ' ' . $permiso->persona->ap_paterno . ' ' . $permiso->persona->ap_materno }}
+                        {{ $licencia->contrato->grado_academico->abreviatura . ' ' . $licencia->persona->nombres . ' ' . $licencia->persona->ap_paterno . ' ' . $licencia->persona->ap_materno }}
                         <br>
                         FIRMA DEL SOLICITANTE
                     </th>
@@ -375,7 +374,7 @@
         </table>
     </div>
 
-    <div  style="text-align: center; margin-top: 60px; padding: 30px;">
+    <div  style="text-align: center; margin-top: 75px; padding: 30px;">
         <img src="{{ $imagen_logo_gradiante }}" style="width: 100%; height: 5px;" />
     </div>
 
@@ -384,14 +383,14 @@
     </div>
 
     <div class="seccion_2">
-        <img src="{{ $imagen_logo }}" class="img_fondo">
+        <img src="{{ $imagen_logo }}" class="img_fondo" >
         <!-- Contenido de la primera sección -->
     </div>
 
 
     <div style="text-align: center;">
         <h4 class="text-primary">UNIDAD DE RECURSOS HUMANOS (RRHH)</h4>
-        <h3 class="text-primary">PERMISO - BOLETA</h3>
+        <h3 class="text-primary">LICENCIA - BOLETA</h3>
         <div class=" ms-auto position-relative">
         </div>
     </div>
@@ -400,7 +399,7 @@
         <div id="primer_encabezado_usuario">
             Fecha Impreso:. {{ date('d-m-Y H:i:s') }}
             <br>
-            Us:. {{ $permiso->usuario_creado->nombres.' '.$permiso->usuario_creado->apellidos }}
+            Us:. {{ $licencia->usuario_creado->nombres.' '.$licencia->usuario_creado->apellidos }}
         </div>
     </div>
 
@@ -414,88 +413,85 @@
                             <tr>
                                 <td id="borde_borrar_table"> CI</td>
                                 <td id="borde_borrar_table"> :
-                                    {{ $permiso->persona->ci . ' ' . $permiso->persona->complemento }}</td>
+                                    {{ $licencia->persona->ci . ' ' . $licencia->persona->complemento }}</td>
                             </tr>
 
                             <tr>
                                 <td id="borde_borrar_table"> NOMBRES Y APELLIDOS</td>
                                 <td id="borde_borrar_table"> :
-                                    {{ $permiso->contrato->grado_academico->abreviatura . ' ' . $permiso->persona->nombres . ' ' . $permiso->persona->ap_paterno . ' ' . $permiso->persona->ap_materno }}
+                                    {{ $licencia->contrato->grado_academico->abreviatura . ' ' . $licencia->persona->nombres . ' ' . $licencia->persona->ap_paterno . ' ' . $licencia->persona->ap_materno }}
                                 </td>
                             </tr>
 
 
 
-                            @if ($permiso->contrato->id_cargo_mae != null)
+                            @if ($licencia->contrato->id_cargo_mae != null)
                                 <!-- para la administrcion del mae -->
                                 <!-- NOMBRE MAE -->
                                 <tr>
                                     <td id="borde_borrar_table" style="padding:8px"> MAE</td>
                                     <td id="borde_borrar_table"> :
-                                        {{  $permiso->contrato->cargo_mae->unidad_mae->mae->nombre }}
+                                        {{  $licencia->contrato->cargo_mae->unidad_mae->mae->nombre }}
                                     </td>
                                 </tr>
                                 <!-- UNIDAD -->
                                 <tr>
                                     <td id="borde_borrar_table"> CORESPONDE </td>
                                     <td id="borde_borrar_table"> :
-                                        {{  $permiso->contrato->cargo_mae->unidad_mae->descripcion }}
+                                        {{  $licencia->contrato->cargo_mae->unidad_mae->descripcion }}
                                     </td>
                                 </tr>
                                 <!-- CARGO -->
                                 <tr>
                                     <td id="borde_borrar_table"> CARGO</td>
                                     <td id="borde_borrar_table"> :
-                                        {{  $permiso->contrato->cargo_mae->nombre }}
+                                        {{  $licencia->contrato->cargo_mae->nombre }}
                                     </td>
                                 </tr>
                             @endif
 
-                            @if ($permiso->contrato->id_cargo_sm != null)
+                            @if ($licencia->contrato->id_cargo_sm != null)
                                 <tr>
                                     <td id="borde_borrar_table"> SECRETARIA</td>
                                     <td id="borde_borrar_table"> :
-                                        {{ '(' . $permiso->contrato->cargo_sm->direccion->secretaria_municipal->sigla . ')' . ' ' . $permiso->contrato->cargo_sm->direccion->secretaria_municipal->nombre }}
+                                        {{ '(' . $licencia->contrato->cargo_sm->direccion->secretaria_municipal->sigla . ')' . ' ' . $licencia->contrato->cargo_sm->direccion->secretaria_municipal->nombre }}
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td id="borde_borrar_table"> DIRECCIÓN</td>
                                     <td id="borde_borrar_table"> :
-                                        {{ '(' . $permiso->contrato->cargo_sm->direccion->sigla . ')' . ' ' . $permiso->contrato->cargo_sm->direccion->nombre }}
+                                        {{ '(' . $licencia->contrato->cargo_sm->direccion->sigla . ')' . ' ' . $licencia->contrato->cargo_sm->direccion->nombre }}
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td id="borde_borrar_table"> UNIDAD / JEFATURA</td>
                                     <td id="borde_borrar_table"> :
-                                        {{ '(' . $permiso->contrato->cargo_sm->unidades_admnistrativas->sigla . ')' . ' ' . $permiso->contrato->cargo_sm->unidades_admnistrativas->nombre }}
+                                        {{ '(' . $licencia->contrato->cargo_sm->unidades_admnistrativas->sigla . ')' . ' ' . $licencia->contrato->cargo_sm->unidades_admnistrativas->nombre }}
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td id="borde_borrar_table"> CARGO</td>
-                                    <td id="borde_borrar_table"> : {{ $permiso->contrato->cargo_sm->nombre }}</td>
+                                    <td id="borde_borrar_table"> : {{ $licencia->contrato->cargo_sm->nombre }}</td>
                                 </tr>
                             @endif
-
-
-
-
                             <tr>
                                 <td id="borde_borrar_table"> TIPO</td>
-                                <td id="borde_borrar_table"> : {{ $permiso->permiso_desglose->tipo_permiso->nombre }}
+                                <td id="borde_borrar_table"> : {{ $licencia->tipo_licencia->motivo }}
                                 </td>
                             </tr>
 
                             <tr>
-                                <td id="borde_borrar_table"> DESCIPCIÓN PERMISO </td>
-                                <td id="borde_borrar_table"> : {{ $permiso->permiso_desglose->nombre }}</td>
+                                <td id="borde_borrar_table"> DESCRIPCIÓN</td>
+                                <td id="borde_borrar_table"> : {{ $licencia->tipo_licencia->jornada_laboral }}
+                                </td>
                             </tr>
 
                             <tr>
                                 <td style="border: none;"> MOTIVO</td>
-                                <td style="border: none; font-size: 6px; word-break: break-word;">: {{ $permiso->descripcion }} </td>
+                                <td style="border: none; font-size: 6px; word-break: break-word;">: {{ $licencia->descripcion }} </td>
                             </tr>
                         </table>
 
@@ -510,15 +506,15 @@
                             <tbody>
                                 <tr>
                                     <th id="border_abajo">
-                                        {{ fecha_literal($permiso->fecha, 4) }}
+                                        {{ fecha_literal($licencia->fecha, 4) }}
                                     </th>
                                     <th id="border_abajo">
-                                        {{ fecha_literal($permiso->fecha_inicio, 4) }}
-                                        {{ $permiso->hora_inicio . ' ' . determinar_am_pm($permiso->hora_inicio) }}
+                                        {{ fecha_literal($licencia->fecha_inicio, 4) }}
+                                        {{ $licencia->hora_inicio . ' ' . determinar_am_pm($licencia->hora_inicio) }}
                                     </th>
                                     <th id="border_abajo">
-                                        {{ fecha_literal($permiso->fecha_final, 4) }}
-                                        {{ $permiso->hora_final . ' ' . determinar_am_pm($permiso->hora_final) }}
+                                        {{ fecha_literal($licencia->fecha_final, 4) }}
+                                        {{ $licencia->hora_final . ' ' . determinar_am_pm($licencia->hora_final) }}
                                     </th>
                                 </tr>
                             </tbody>
@@ -539,7 +535,7 @@
                     <th id="firmas_debajo">
                         -----------------------------------------------------------
                         <br>
-                        {{ $permiso->contrato->grado_academico->abreviatura . ' ' . $permiso->persona->nombres . ' ' . $permiso->persona->ap_paterno . ' ' . $permiso->persona->ap_materno }}
+                        {{ $licencia->contrato->grado_academico->abreviatura . ' ' . $licencia->persona->nombres . ' ' . $licencia->persona->ap_paterno . ' ' . $licencia->persona->ap_materno }}
                         <br>
                         FIRMA DEL SOLICITANTE
                     </th>
@@ -571,5 +567,3 @@
 </body>
 
 </html>
-
-

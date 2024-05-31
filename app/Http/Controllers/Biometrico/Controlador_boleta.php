@@ -37,9 +37,23 @@ class Controlador_boleta extends Controller
     /**
      * PARA LA ADMINISTRACION DE GENERAR PERMISOS
     */
+
+    public function  buscarPersona(Request $request){
+        $query = $request->input('q');
+        $personas = Persona::where('nombres', 'LIKE', "%$query%")
+                            ->orWhere('ci', 'LIKE', "%$query%")
+                            ->orWhere('ap_paterno', 'LIKE', "%$query%")
+                            ->orWhere('ap_materno', 'LIKE', "%$query%")
+                            ->get();
+
+        return response()->json($personas);
+    }
+
+
     public function boleta_permiso(){
         $data['menu'] = '18';
         $data['tipo_permiso'] = Tipo_permiso::where('estado', 'activo')->OrderBy('id', 'asc')->get();
+        $data['personas'] = Persona::where('estado', 'activo')->OrderBy('id', 'asc')->get();
         return view('administrador.biometrico.boletas.boleta_permiso', $data);
     }
 
@@ -135,9 +149,10 @@ class Controlador_boleta extends Controller
                 $permiso->save();
                 if($permiso->id){
                     $data = array(
-                        'tipo'          => 'success',
-                        'mensaje'       => 'Se guardo con exito el registro!',
-                        'id_persona'    => $request->id_persona,
+                        'tipo'              => 'success',
+                        'mensaje'           => 'Se guardo con exito el registro!',
+                        'id_persona'        => $request->id_persona,
+                        'id_permiso_new'    => $permiso->id
                     );
                 }else{
                     $data = array(
@@ -345,6 +360,7 @@ class Controlador_boleta extends Controller
         $data['licencias'] = Tipo_licencia::where('estado', 'activo')
                                         ->OrderBy('id', 'desc')
                                         ->get();
+        $data['personas'] = Persona::where('estado', 'activo')->OrderBy('id', 'asc')->get();
         return view('administrador.biometrico.boletas.boleta_licencia', $data);
     }
 
@@ -400,10 +416,13 @@ class Controlador_boleta extends Controller
                 $licencia->save();
                 if($licencia->id){
                     $data = array(
-                        'tipo'          => 'success',
-                        'mensaje'       => 'Se guardo con exito el registro!',
-                        'id_persona'    => $request->id_persona,
+                        'tipo'              => 'success',
+                        'mensaje'           => 'Se guardo con exito el registro!',
+                        'id_persona'        => $request->id_persona,
+                        'id_licencia_new'   => $licencia->id
                     );
+
+
                 }else{
                     $data = array(
                         'tipo'              => 'error',
