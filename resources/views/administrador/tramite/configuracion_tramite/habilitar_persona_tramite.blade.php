@@ -126,9 +126,11 @@
                                 data.user_cargo_tramite.forEach(elem => {
                                     if(elem.cargo_sm != null){
                                         badges += `<span class="badge bg-success">${elem.cargo_sm.nombre}</span> `;
+                                    }else{
+
                                     }
                                     if(elem.cargo_mae != null){
-                                        badges += `<span class="badge bg-success">${elem.cargo_sm.nombre}</span> `;
+                                        badges += `<span class="badge bg-success">${elem.cargo_mae.nombre}</span> `;
                                     }
                                 });
                                 // Devuelve el HTML generado

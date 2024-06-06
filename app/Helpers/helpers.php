@@ -632,9 +632,9 @@
 
     function numero_a_ordinal($numero) {
         $unidades = [
-            1 => 'primero',
+            1 => 'primer',
             2 => 'segundo',
-            3 => 'tercero',
+            3 => 'tercer',
             4 => 'cuarto',
             5 => 'quinto',
             6 => 'sexto',
@@ -670,15 +670,15 @@
         ];
 
         if (isset($unidades[$numero])) {
-            return mb_strtoupper($unidades[$numero]);
+            return mb_strtoupper($unidades[$numero] . ' DESTINATARIO');
         }
 
         if (isset($decenas[$numero])) {
-            return mb_strtoupper($decenas[$numero]);
+            return mb_strtoupper($decenas[$numero] . ' DESTINATARIO');
         }
 
         if (isset($miles[$numero])) {
-            return mb_strtoupper($miles[$numero]);
+            return mb_strtoupper($miles[$numero] . ' DESTINATARIO');
         }
 
         // Descomponer el número en unidades, decenas, centenas y millares
@@ -687,84 +687,82 @@
         $c = ($numero % 1000) - $d - $u;
         $m = $numero - $c - $d - $u;
 
-        if ($m > 0 && isset($miles[$m])) {
-            if ($c == 0 && $d == 0 && $u == 0) {
-                return mb_strtoupper($miles[$m]);
-            } elseif ($c == 0 && $d == 0) {
-                if ($u == 1) {
-                    return mb_strtoupper($miles[$m] . ' primero');
-                } elseif ($u == 3) {
-                    return mb_strtoupper($miles[$m] . ' tercero');
-                } else {
-                    return mb_strtoupper($miles[$m] . ' ' . $unidades[$u]);
-                }
-            } elseif ($c == 0) {
-                if (isset($decenas[$d])) {
-                    if ($u == 1) {
-                        return mb_strtoupper($miles[$m] . ' ' . $decenas[$d] . ' primero');
-                    } elseif ($u == 3) {
-                        return mb_strtoupper($miles[$m] . ' ' . $decenas[$d] . ' tercero');
-                    } else {
-                        return mb_strtoupper($miles[$m] . ' ' . $decenas[$d] . ' ' . $unidades[$u]);
-                    }
-                }
-            } else {
-                if (isset($decenas[$c])) {
-                    if ($d == 0) {
-                        if ($u == 1) {
-                            return mb_strtoupper($miles[$m] . ' ' . $decenas[$c] . ' primero');
-                        } elseif ($u == 3) {
-                            return mb_strtoupper($miles[$m] . ' ' . $decenas[$c] . ' tercero');
-                        } else {
-                            return mb_strtoupper($miles[$m] . ' ' . $decenas[$c] . ' ' . $unidades[$u]);
-                        }
-                    } elseif (isset($decenas[$d])) {
-                        if ($u == 1) {
-                            return mb_strtoupper($miles[$m] . ' ' . $decenas[$c] . ' ' . $decenas[$d] . ' primero');
-                        } elseif ($u == 3) {
-                            return mb_strtoupper($miles[$m] . ' ' . $decenas[$c] . ' ' . $decenas[$d] . ' tercero');
-                        } else {
-                            return mb_strtoupper($miles[$m] . ' ' . $decenas[$c] . ' ' . $decenas[$d] . ' ' . $unidades[$u]);
-                        }
-                    }
-                }
-            }
+        $resultado = '';
+
+        if ($m > 0) {
+            $resultado .= $miles[$m];
         }
 
-        if ($c > 0 && isset($decenas[$c])) {
-            if ($d == 0 && $u == 0) {
-                return mb_strtoupper($decenas[$c]);
-            } elseif ($d == 0) {
-                if ($u == 1) {
-                    return mb_strtoupper($decenas[$c] . ' primero');
-                } elseif ($u == 3) {
-                    return mb_strtoupper($decenas[$c] . ' tercero');
-                } else {
-                    return mb_strtoupper($decenas[$c] . ' ' . $unidades[$u]);
-                }
-            } elseif ($u == 0) {
-                return mb_strtoupper($decenas[$c] . ' ' . $decenas[$d]);
-            } else {
-                if ($u == 1) {
-                    return mb_strtoupper($decenas[$c] . ' ' . $decenas[$d] . ' primero');
-                } elseif ($u == 3) {
-                    return mb_strtoupper($decenas[$c] . ' ' . $decenas[$d] . ' tercero');
-                } else {
-                    return mb_strtoupper($decenas[$c] . ' ' . $decenas[$d] . ' ' . $unidades[$u]);
-                }
-            }
+        if ($c > 0) {
+            $resultado .= ' ' . $decenas[$c];
         }
 
-        if ($d > 0 && isset($decenas[$d])) {
-            if ($u == 1) {
-                return mb_strtoupper($decenas[$d] . ' primero');
-            } elseif ($u == 3) {
-                return mb_strtoupper($decenas[$d] . ' tercero');
-            } else {
-                return mb_strtoupper($decenas[$d] . ' ' . $unidades[$u]);
-            }
+        if ($d > 0) {
+            $resultado .= ' ' . $decenas[$d];
         }
 
-        return 'NÚMERO FUERA DE RANGO';
+        if ($u > 0) {
+            $resultado .= ' ' . $unidades[$u];
+        }
+
+        // Reemplazar 'primer' y 'tercer' por 'primero' y 'tercero'
+        if (strpos($resultado, 'primer') !== false || strpos($resultado, 'tercer') !== false) {
+            $resultado = str_replace(['primer', 'tercer'], ['primer', 'tercer'], $resultado);
+        }
+
+        return mb_strtoupper(trim($resultado) . ' DESTINATARIO');
     }
 
+
+
+    //para la abreviacion de palabras
+    function abreviarCargo($cadena) {
+        // Divide la cadena en palabras
+        $palabras = explode(' ', $cadena);
+        // Define las palabras de enlace que deben eliminarse
+        $palabras_a_eliminar = ['DE', 'Y'];
+        // Recorre las palabras y reemplaza por sus abreviaciones
+        $abreviada = [];
+        foreach ($palabras as $palabra) {
+            // Si la palabra es una palabra de enlace, se elimina
+            if (in_array($palabra, $palabras_a_eliminar)) {
+                continue;
+            }
+            // Abrevia cada palabra tomando las tres primeras letras y agregando un punto
+            if (strlen($palabra) > 2) {
+                $abreviada[] = substr($palabra, 0, 3) . '.';
+            } else {
+                $abreviada[] = $palabra;
+            }
+        }
+        // Junta las palabras abreviadas en una sola cadena
+        return implode(' ', $abreviada);
+    }
+
+    function abreviarCargo_tres($cadena) {
+        // Divide la cadena en palabras
+        $palabras = explode(' ', $cadena);
+        // Define las palabras de enlace que deben eliminarse
+        $palabras_a_eliminar = ['DE', 'Y'];
+        // Recorre las primeras tres palabras y reemplaza por sus abreviaciones
+        $abreviada = [];
+        $contador = 0;
+        foreach ($palabras as $palabra) {
+            if ($contador >= 3) {
+                break;
+            }
+            // Si la palabra es una palabra de enlace, se elimina
+            if (in_array($palabra, $palabras_a_eliminar)) {
+                continue;
+            }
+            // Abrevia cada palabra tomando las tres primeras letras y agregando un punto
+            if (strlen($palabra) > 2) {
+                $abreviada[] = substr($palabra, 0, 3) . '.';
+            } else {
+                $abreviada[] = $palabra;
+            }
+            $contador++;
+        }
+        // Junta las palabras abreviadas en una sola cadena
+        return implode(' ', $abreviada);
+    }

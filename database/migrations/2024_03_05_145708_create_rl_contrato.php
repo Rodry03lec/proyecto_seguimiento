@@ -41,7 +41,7 @@ return new class extends Migration
             $table->date('fecha_inicio')->required();
             $table->date('fecha_conclusion')->nullable();
             $table->string('numero_contrato')->nullable();
-            $table->decimal('haber_basico', 100, 2)->required()->nullable();
+            $table->decimal('haber_basico', 10, 2)->required()->nullable();
             $table->string('estado', 20);
             $table->unsignedBigInteger('id_nivel');
             $table->unsignedBigInteger('id_tipo_contrato');

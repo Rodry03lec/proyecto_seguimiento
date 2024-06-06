@@ -35,7 +35,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('rl_genero')
                 ->onDelete('restrict');
-        
+
             $table->foreign('id_estado_civil')
                 ->references('id')
                 ->on('rl_estado_civil')

@@ -71,6 +71,6 @@ class Kernel extends HttpKernel
         'rectroceder'=>\App\Http\Middleware\Retroceder::class,
 
         //para la parte de los permisos
-        'comprobar_permiso'=>\App\Http\Middleware\Comprobar_Permiso::class,
+        'comprobar_permiso'=>\App\Http\Middleware\Comprobar_permiso::class,
     ];
 }

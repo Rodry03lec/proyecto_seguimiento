@@ -437,8 +437,33 @@ Route::prefix('/admin')->middleware(['autenticados','rectroceder'])->group(funct
     Route::controller(Controlador_tramite::class)->group(function (){
         //para la vizualizacion de todos los permisos
         Route::get('vizualizarCargosTramite', 'vizualizar_cargos_tramite')->name('ctram_index');
+
+        //PARA LA PARTE DE LA CORESPONDECIA
         Route::get('TramiteCargo/{id}','tramite_cargo')->name('tcar_cargos');
-        Route::get('Coresponcia/{id}','administrar_correspondencia')->name('ccorr_index');
+        Route::post('correspondencia_tipo_sigla','correspondencia_tipo_sigla')->name('corres_tipo_sigla');
+        Route::post('correspondencia_nuevo','correspondencia_nuevo')->name('corres_nuevo');
+        Route::post('correspondencia_listar','correspondencia_listar')->name('corres_listar');
+        Route::post('correspondencia_vizualizar','correspondencia_vizualizar')->name('corres_vizualizar');
+
+
+        //PARA LA PARTE DE BANDEJA DE ENTRADA
+        Route::get('BandejaEntrada/{id}','bandeja_entrada')->name('tcar_bandeja_entrada');
+
+
+        //PARA LA PARTE DE LOS RECIBIDOS
+        Route::get('Recibidos/{id}','recibidos')->name('tcar_recibidos');
+
+
+        //PARA LA PARTE DE LOS ENVIADOS
+        Route::get('Enviados/{id}','enviados')->name('tcar_enviados');
+
+
+        //PARA LA PARTE DE LOS OBSERVADOS
+        Route::get('Observados/{id}','observados')->name('tcar_observados');
+
+
+        //PARA LA PARTE DE LOS ARCHIVADOS
+        Route::get('Archivados/{id}','archivados')->name('tcar_archivados');
     });
 
     //FIN DE LA PARTE DEL SEGUIMIENTO

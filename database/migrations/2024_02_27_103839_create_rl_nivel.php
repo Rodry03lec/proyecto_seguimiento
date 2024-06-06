@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nivel', 10)->required();
             $table->string('descripcion', 100);
-            $table->decimal('haber_basico', 100, 2)->required();
+            $table->decimal('haber_basico', 10, 2)->required();
             $table->unsignedBigInteger('id_categoria');
             $table->timestamp('creado_el');
             $table->timestamp('editado_el');

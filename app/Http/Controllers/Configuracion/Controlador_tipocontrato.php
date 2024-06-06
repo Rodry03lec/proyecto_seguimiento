@@ -17,11 +17,6 @@ class Controlador_tipocontrato extends Controller
      * @param Controlador Administrar los TIPOS DE CONTRATO - TIPOS DE CATEGORIA - NIVELES GERARQUICOS
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */
-
-    public function __construct() {
-        $this->middleware('comprobar_permiso:configuracion_menu');
-    }
-
     /**
      * PARA LA ADMINISTRACION DE LOS TIPOS DE CONTRATO
      */

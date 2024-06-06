@@ -1,6 +1,6 @@
 
 <div class="card  mb-2">
-    USUARIO : {{ $cargo_enum->id_usuario }}
+    {{-- USUARIO : {{ $cargo_enum->id_usuario }}
     <br>
     ID CARGO :
     @if ($cargo_enum->cargo_sm != null)
@@ -9,7 +9,7 @@
 
     @if ($cargo_enum->cargo_mae != null)
         {{ 'CARGO MAE : '.$cargo_enum->id_cargo_mae }}
-    @endif
+    @endif --}}
 
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">:::::::: CARGO ::
@@ -18,10 +18,11 @@
     </div>
 </div>
 
+
 <div class="row">
     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-4">
         <div class="card card-border-shadow-secondary h-100">
-            <a type="button">
+            <a href="{{ route('tcar_cargos', ['id' => encriptar($id_user_cargo_tram)]) }}" type="button">
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-2 pb-1">
                         <div class="avatar me-2">
@@ -39,7 +40,7 @@
 
     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-4">
         <div class="card card-border-shadow-success h-100">
-            <a type="button"  >
+            <a href="{{ route('tcar_bandeja_entrada', ['id' => encriptar($id_user_cargo_tram)]) }}" type="button"  >
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-2 pb-1">
                         <div class="avatar me-2">
@@ -56,7 +57,7 @@
 
     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-4">
         <div class="card card-border-shadow-primary h-100">
-            <a type="button"  >
+            <a href="{{ route('tcar_recibidos', ['id' => encriptar($id_user_cargo_tram)]) }}" type="button"  >
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-2 pb-1">
                         <div class="avatar me-2">
@@ -72,7 +73,7 @@
 
     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-4">
         <div class="card card-border-shadow-info h-100">
-            <a type="button">
+            <a href="{{ route('tcar_enviados', ['id' => encriptar($id_user_cargo_tram)]) }}" type="button"  >
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-2 pb-1">
                         <div class="avatar me-2">
@@ -89,7 +90,7 @@
 
     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-4">
         <div class="card card-border-shadow-danger h-100">
-            <a type="button">
+            <a href="{{ route('tcar_observados', ['id' => encriptar($id_user_cargo_tram)]) }}" type="button"  >
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-2 pb-1">
                         <div class="avatar me-2">
@@ -105,7 +106,7 @@
 
     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-4">
         <div class="card card-border-shadow-warning h-100">
-            <a type="button">
+            <a href="{{ route('tcar_archivados', ['id' => encriptar($id_user_cargo_tram)]) }}" type="button"  >
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-2 pb-1">
                         <div class="avatar me-2">
