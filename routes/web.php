@@ -444,18 +444,19 @@ Route::prefix('/admin')->middleware(['autenticados','rectroceder'])->group(funct
         Route::post('correspondencia_nuevo','correspondencia_nuevo')->name('corres_nuevo');
         Route::post('correspondencia_listar','correspondencia_listar')->name('corres_listar');
         Route::post('correspondencia_vizualizar','correspondencia_vizualizar')->name('corres_vizualizar');
+        Route::post('correspondencia_listar_hoja_ruta','correspondencia_listar_hoja_ruta')->name('corres_lis_ruta');
 
 
         //PARA LA PARTE DE BANDEJA DE ENTRADA
         Route::get('BandejaEntrada/{id}','bandeja_entrada')->name('tcar_bandeja_entrada');
+        Route::post('BandejaEntrada_listar','bandeja_entrada_listar')->name('tcar_bandeja_entrada_listar');
+        Route::post('BandejaEntrada_recibir','bandeja_entrada_recibir')->name('tcar_bandeja_entrada_recibir');
 
 
         //PARA LA PARTE DE LOS RECIBIDOS
         Route::get('Recibidos/{id}','recibidos')->name('tcar_recibidos');
-
-
-        //PARA LA PARTE DE LOS ENVIADOS
-        Route::get('Enviados/{id}','enviados')->name('tcar_enviados');
+        Route::post('Recibidos_listar','listar_tramite_recibido')->name('tcar_recibidos_listar');
+        Route::post('Recibidos_reenviar','recibidos_tramite_reenviar')->name('tcar_recibidos_reenviar');
 
 
         //PARA LA PARTE DE LOS OBSERVADOS
@@ -464,6 +465,8 @@ Route::prefix('/admin')->middleware(['autenticados','rectroceder'])->group(funct
 
         //PARA LA PARTE DE LOS ARCHIVADOS
         Route::get('Archivados/{id}','archivados')->name('tcar_archivados');
+        Route::post('Archivados_guardar','archivados_guardar')->name('tcar_archivados_save');
+        Route::post('Archivados_listar','archivados_listar')->name('tcar_archivados_listar');
     });
 
     //FIN DE LA PARTE DEL SEGUIMIENTO

@@ -7,6 +7,9 @@ use App\Models\Configuracion_tramite\Tipo_tramite;
 use App\Models\Configuracion_tramite\User_cargo_tramite;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Tramite\Tramite;
+use App\Models\Tramite\Ruta_archivado;
+
 
 class Hojas_ruta extends Model
 {
@@ -47,6 +50,11 @@ class Hojas_ruta extends Model
 
     //relacion reversa con tramite
     public function tramite(){
-        return $this->belongsTo(Tipo_tramite::class, 'tramite_id', 'id');
+        return $this->belongsTo(Tramite::class, 'tramite_id', 'id');
+    }
+
+    //relacion de uno a uno
+    public function ruta_archivado(){
+        return $this->hasOne(Ruta_archivado::class, 'id_hoja_ruta', 'id');
     }
 }

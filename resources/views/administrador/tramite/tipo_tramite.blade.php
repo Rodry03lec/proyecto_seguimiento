@@ -30,7 +30,7 @@
                                 <i class="ti ti-layout ti-md"></i>
                             </span>
                         </div>
-                        <h4 class="ms-1 mb-0">42</h4>
+                        <h4 class="ms-1 mb-0">{{ $contar_num_tramite }} </h4>
                     </div>
                     <p class="mb-1">CORRESPONDENCIA</p>
                 </div>
@@ -47,7 +47,7 @@
                             <span class="avatar-initial rounded bg-label-success"><i
                                     class='ti ti-alert-triangle ti-md'></i></span>
                         </div>
-                        <h4 class="ms-1 mb-0">8</h4>
+                        <h4 class="ms-1 mb-0">{{ $contar_bandeja_entrada }}</h4>
                     </div>
                     <p class="mb-1">BANDEJA DE ENTRADA</p>
                 </div>
@@ -63,7 +63,7 @@
                         <div class="avatar me-2">
                             <span class="avatar-initial rounded bg-label-primary"><i class='ti ti-cloud-down ti-md'></i></span>
                         </div>
-                        <h4 class="ms-1 mb-0">27</h4>
+                        <h4 class="ms-1 mb-0">{{ $contar_bandeja_recibido }}</h4>
                     </div>
                     <p class="mb-1">RECIBIDOS</p>
                 </div>
@@ -71,22 +71,6 @@
         </div>
     </div>
 
-    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-4">
-        <div class="card card-border-shadow-info h-100">
-            <a href="{{ route('tcar_enviados', ['id' => encriptar($id_user_cargo_tram)]) }}" type="button"  >
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-2 pb-1">
-                        <div class="avatar me-2">
-                            <span class="avatar-initial rounded bg-label-info"><i class='ti ti-cloud-up ti-md'></i></span>
-                        </div>
-                        <h4 class="ms-1 mb-0">4</h4>
-                    </div>
-                    <p class="mb-1">ENVIADOS</p>
-                </div>
-            </a>
-
-        </div>
-    </div>
 
     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-4">
         <div class="card card-border-shadow-danger h-100">
@@ -96,7 +80,7 @@
                         <div class="avatar me-2">
                             <span class="avatar-initial rounded bg-label-danger"><i class='ti ti-thumb-down ti-md'></i></span>
                         </div>
-                        <h4 class="ms-1 mb-0">8</h4>
+                        <h4 class="ms-1 mb-0">{{ $contar_bandeja_observado }}</h4>
                     </div>
                     <p class="mb-1">OBSERVADOS</p>
                 </div>
@@ -120,3 +104,52 @@
         </div>
     </div>
 </div>
+
+
+<!-- vizualizar de tramite -->
+<div class="modal fade" id="modal_vizualizar" aria-hidden="true" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content modal-xl">
+            <button type="button" class="btn-close btn-pinned" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <h3 class="mb-2">VIZUALIZAR RUTA</h3>
+                </div>
+
+                <div class="alert alert-primary alert-dismissible d-flex align-items-baseline" role="alert">
+                    <span class="alert-icon alert-icon-lg text-primary me-2">
+                        <i class="ti ti-layout ti-sm"></i>
+                    </span>
+                    <div id="contenido_correspondencia">
+
+                    </div>
+                </div>
+
+                <div class="table-responsive text-nowrap p-3">
+                    <table class="table table-hover" style="width: 100%">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nº</th>
+                                <th>FECHA<br>INGRESO</th>
+                                <th>FECHA<br>SALIDA</th>
+                                <th>UNIDAD</th>
+                                <th>CARGO</th>
+                                <th>FUNCIONARIO</th>
+                                <th>INSTRUCTIVO</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listar_hojas_ruta">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="contenido_txt" class="py-2">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ vizualizar tramite -->

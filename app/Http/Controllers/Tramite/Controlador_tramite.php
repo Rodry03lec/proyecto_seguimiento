@@ -7,6 +7,7 @@ use App\Models\Configuracion_tramite\Tipo_prioridad;
 use App\Models\Configuracion_tramite\Tipo_tramite;
 use App\Models\Configuracion_tramite\User_cargo_tramite;
 use App\Models\Tramite\Hojas_ruta;
+use App\Models\Tramite\Ruta_archivado;
 use App\Models\Tramite\Tramite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
 class Controlador_tramite extends Controller{
+
     //Para la administracion de los tramites
     public function  vizualizar_cargos_tramite() {
         $data['menu'] = 60;
@@ -36,7 +38,23 @@ class Controlador_tramite extends Controller{
         $data['cargo_enum']         = $cargo;
         $data['id_user_cargo_tram'] = $id_descript;
         $data['titulo_menu']        = 'CORRESPONDENCIA';
-        $data['menu'] = 60;
+        $data['menu']               = 60;
+
+
+        $data['contar_num_tramite']     = Tramite::where('user_cargo_id', $id_descript)
+                                        ->count();
+
+        $data['contar_bandeja_entrada'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 2)
+                                        ->count();
+
+        $data['contar_bandeja_recibido'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 3)
+                                        ->count();
+
+        $data['contar_bandeja_observado'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 6)
+                                        ->count();
 
         $data['tipo_tramite']       = Tipo_tramite::where('estado', 1)->get();
         $data['tipo_prioridad']     = Tipo_prioridad::get();
@@ -74,6 +92,8 @@ class Controlador_tramite extends Controller{
         }
         return response()->json($data);
     }
+
+
 
     //para listar los tramites del cargo de la persona
     public function correspondencia_listar(Request $request){
@@ -178,7 +198,7 @@ class Controlador_tramite extends Controller{
                 $hoja_ruta->instructivo = $request->instructivo;
                 $hoja_ruta->nro_hojas_ingreso = $request->numero_hojas;
                 $hoja_ruta->nro_anexos_ingreso = $request->numero_anexos;
-                $hoja_ruta->fecha_ingreso = date('Y-m-d H:m:s');
+                //$hoja_ruta->fecha_ingreso = null;
                 $hoja_ruta->fecha_salida = date('Y-m-d H:m:s');
                 $hoja_ruta->fecha_envio = date('Y-m-d H:m:s');
                 $hoja_ruta->actual = 1;
@@ -230,7 +250,11 @@ class Controlador_tramite extends Controller{
                     $ru_con->with(['grado_academico']);
                 }, 'usuario', 'persona']);
             }, 'destinatario_user'=>function($des_user){
-                $des_user->with(['cargo_sm', 'cargo_mae','contrato'=>function($de_con){
+                $des_user->with(['cargo_sm'=>function($des_csm){
+                    $des_csm->with(['unidades_admnistrativas', 'direccion']);
+                }, 'cargo_mae'=>function($desca_m){
+                    $desca_m->with(['unidad_mae']);
+                },'contrato'=>function($de_con){
                     $de_con->with(['grado_academico']);
                 }]);
             }, 'estado_tipo', 'tramite'])
@@ -245,6 +269,28 @@ class Controlador_tramite extends Controller{
             $data = mensaje_mostrar('error', 'Ocurrio un problema');
         }
             return response()->json($data);
+    }
+
+    //para listar las hojas de ruta
+    public function correspondencia_listar_hoja_ruta(Request $request){
+        $listar_hojas_ruta = Hojas_ruta::with(['ruta_archivado','remitente_user'=>function($rem_user){
+            $rem_user->with(['cargo_sm', 'cargo_mae', 'contrato'=>function($ru_con){
+                $ru_con->with(['grado_academico']);
+            }, 'usuario', 'persona']);
+        }, 'destinatario_user'=>function($des_user){
+            $des_user->with(['cargo_sm'=>function($des_csm){
+                $des_csm->with(['unidades_admnistrativas', 'direccion']);
+            }, 'cargo_mae'=>function($desca_m){
+                $desca_m->with(['unidad_mae']);
+            },'contrato'=>function($de_con){
+                $de_con->with(['grado_academico']);
+            },'persona']);
+        }, 'estado_tipo', 'tramite'])
+            ->where('tramite_id', $request->id)
+            ->OrderBy('id', 'asc')
+            ->get();
+
+        return response()->json($listar_hojas_ruta);
     }
     /**
      * FIN DE LA PARTE DE CORRESPONDENCIA
@@ -261,8 +307,210 @@ class Controlador_tramite extends Controller{
         $data['id_user_cargo_tram'] = $id_descript;
         $data['titulo_menu']        = 'BANDEJA DE ENTRADA';
         $data['menu'] = 60;
+
+
+
+        $data['contar_num_tramite'] = Tramite::where('user_cargo_id', $id_descript)
+                                        ->count();
+
+        $data['contar_bandeja_entrada'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 2)
+                                        ->count();
+
+        $data['contar_bandeja_recibido'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 3)
+                                        ->count();
+
+        $data['contar_bandeja_observado'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 6)
+                                        ->count();
+
+
+
+
         return view('administrador.tramite.correspondencia.bandeja_entrada', $data);
+
     }
+
+    //para listar la bandeja de entrada
+    public function bandeja_entrada_listar(Request $request) {
+        $hoja_ruta_listar = Hojas_ruta::with([
+            'remitente_user' => function($rem_us) {
+                $rem_us->with([
+                    'cargo_sm' => function($re_car_sm) {
+                        $re_car_sm->with([
+                            'unidades_admnistrativas',
+                            'direccion' => function($ca_direc) {
+                                $ca_direc->with('secretaria_municipal');
+                            }
+                        ]);
+                    },
+                    'cargo_mae' => function($car_mae) {
+                        $car_mae->with([
+                            'unidad_mae' => function($un_mae) {
+                                $un_mae->with('mae');
+                            }
+                        ]);
+                    },
+                    'contrato' => function($con) {
+                        $con->with('grado_academico');
+                    },
+                    'persona'
+                ]);
+            },
+            'destinatario_user' => function($des_user) {
+                $des_user->with([
+                    'cargo_sm' => function($des_car_sm) {
+                        $des_car_sm->with([
+                            'unidades_admnistrativas',
+                            'direccion' => function($des_car_direc) {
+                                $des_car_direc->with('secretaria_municipal');
+                            }
+                        ]);
+                    },
+                    'cargo_mae' => function($des_car_mae) {
+                        $des_car_mae->with([
+                            'unidad_mae' => function($des_car_unid) {
+                                $des_car_unid->with('mae');
+                            }
+                        ]);
+                    },
+                    'contrato' => function($des_car_con) {
+                        $des_car_con->with('grado_academico');
+                    },
+                    'persona'
+                ]);
+            },
+            'estado_tipo',
+            'tramite' => function($des_car_trami) {
+                $des_car_trami->with([
+                    'hojas_ruta' => function($tram_hoja) {
+                        $tram_hoja->where('actual', 1)->with([
+                            'remitente_user' => function($tram_hoja_rem) {
+                                $tram_hoja_rem->with([
+                                    'cargo_sm' => function($tram_carsm) {
+                                        $tram_carsm->with([
+                                            'unidades_admnistrativas',
+                                            'direccion' => function($tram_direc) {
+                                                $tram_direc->with('secretaria_municipal');
+                                            }
+                                        ]);
+                                    },
+                                    'cargo_mae' => function($tram_carmae) {
+                                        $tram_carmae->with([
+                                            'unidad_mae' => function($tra_car_unida_mae) {
+                                                $tra_car_unida_mae->with('mae');
+                                            }
+                                        ]);
+                                    },
+                                    'contrato' => function($tra_con_con) {
+                                        $tra_con_con->with('grado_academico');
+                                    },
+                                    'persona'
+                                ]);
+                            },
+                            'destinatario_user' => function($des_us) {
+                                $des_us->with([
+                                    'cargo_sm' => function($des_car_sm) {
+                                        $des_car_sm->with([
+                                            'unidades_admnistrativas',
+                                            'direccion' => function($des_dirrec) {
+                                                $des_dirrec->with('secretaria_municipal');
+                                            }
+                                        ]);
+                                    },
+                                    'cargo_mae' => function($des_cargo_mae) {
+                                        $des_cargo_mae->with([
+                                            'unidad_mae' => function($des_uni_mae) {
+                                                $des_uni_mae->with('mae');
+                                            }
+                                        ]);
+                                    },
+                                    'contrato' => function($des_contra) {
+                                        $des_contra->with('grado_academico');
+                                    }
+                                ]);
+                            },
+                            'estado_tipo'
+                        ]);
+                    },
+                    'tipo_prioridad',
+                    'tipo_tramite',
+                    'estado_tipo',
+                    'remitente_user'=>function($rem_user){
+                        $rem_user->with(['cargo_sm'=>function($car_sm){
+                            $car_sm->with([
+                                'unidades_admnistrativas',
+                                'direccion' => function($ca_direc) {
+                                    $ca_direc->with('secretaria_municipal');
+                                }
+                            ]);
+                        },
+                        'cargo_mae'=>function($car_mae){
+                            $car_mae->with([
+                                'unidad_mae' => function($un_mae) {
+                                    $un_mae->with('mae');
+                                }
+                            ]);
+                        },
+                        'contrato'=>function($con){
+                            $con->with('grado_academico');
+                        },
+                        'persona']);
+                    },
+                    'destinatario_user'=>function($des_user){
+                        $des_user->with(['cargo_sm'=>function($car_sm){
+                            $car_sm->with([
+                                'unidades_admnistrativas',
+                                'direccion' => function($ca_direc) {
+                                    $ca_direc->with('secretaria_municipal');
+                                }
+                            ]);
+                        },
+                        'cargo_mae'=>function($car_mae){
+                            $car_mae->with([
+                                'unidad_mae' => function($un_mae) {
+                                    $un_mae->with('mae');
+                                }
+                            ]);
+                        },
+                        'contrato'=>function($con){
+                            $con->with('grado_academico');
+                        },
+                        'persona']);
+                    },
+                    'user_cargo_tramite'
+                ]);
+            }
+        ])->where('destinatario_id', $request->id)
+        ->where('actual', 1)
+        ->where('estado_id', 2)
+        ->get();
+
+        return response()->json($hoja_ruta_listar);
+    }
+
+
+    //para recivir el tramite
+    public function bandeja_entrada_recibir(Request $request){
+        try {
+            $hora_ruta                  = Hojas_ruta::find($request->id_ruta);
+            $hora_ruta->fecha_ingreso   = date('Y-m-d H:m:s');
+            $hora_ruta->estado_id       = 3;
+            $hora_ruta->save();
+
+            if($hora_ruta->id){
+                $data = mensaje_mostrar('success', 'Se recibio con éxito');
+            }else{
+                $data = mensaje_mostrar('error', 'Ocurrio un error');
+            }
+
+        } catch (\Throwable $th) {
+            $data = mensaje_mostrar('error', 'Ocurrio un error');
+        }
+        return response()->json($data);
+    }
+
     /**
      * FIN DE LA PARTE DE BANDEJA DE ENTRADA
      */
@@ -277,28 +525,256 @@ class Controlador_tramite extends Controller{
         $data['id_user_cargo_tram'] = $id_descript;
         $data['titulo_menu']        = 'RECIBIDOS';
         $data['menu'] = 60;
+
+        $data['contar_num_tramite'] = Tramite::where('user_cargo_id', $id_descript)
+                                        ->count();
+
+        $data['contar_bandeja_entrada'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 2)
+                                        ->count();
+
+        $data['contar_bandeja_recibido'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 3)
+                                        ->count();
+
+        $data['contar_bandeja_observado'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 6)
+                                        ->count();
+
+
+        $data['destinatario']    = User_cargo_tramite::with(['cargo_sm', 'cargo_mae', 'usuario', 'persona','contrato'=>function($con){
+            $con->with(['grado_academico']);
+        }])->where('estado', 1)->get();
+
         return view('administrador.tramite.correspondencia.recibidos', $data);
     }
+
+    //para listar los tramites recividos
+    public function listar_tramite_recibido(Request $request){
+        $hoja_ruta_listar = Hojas_ruta::with([
+            'remitente_user' => function($rem_us) {
+                $rem_us->with([
+                    'cargo_sm' => function($re_car_sm) {
+                        $re_car_sm->with([
+                            'unidades_admnistrativas',
+                            'direccion' => function($ca_direc) {
+                                $ca_direc->with('secretaria_municipal');
+                            }
+                        ]);
+                    },
+                    'cargo_mae' => function($car_mae) {
+                        $car_mae->with([
+                            'unidad_mae' => function($un_mae) {
+                                $un_mae->with('mae');
+                            }
+                        ]);
+                    },
+                    'contrato' => function($con) {
+                        $con->with('grado_academico');
+                    },
+                    'persona'
+                ]);
+            },
+            'destinatario_user' => function($des_user) {
+                $des_user->with([
+                    'cargo_sm' => function($des_car_sm) {
+                        $des_car_sm->with([
+                            'unidades_admnistrativas',
+                            'direccion' => function($des_car_direc) {
+                                $des_car_direc->with('secretaria_municipal');
+                            }
+                        ]);
+                    },
+                    'cargo_mae' => function($des_car_mae) {
+                        $des_car_mae->with([
+                            'unidad_mae' => function($des_car_unid) {
+                                $des_car_unid->with('mae');
+                            }
+                        ]);
+                    },
+                    'contrato' => function($des_car_con) {
+                        $des_car_con->with('grado_academico');
+                    },
+                    'persona'
+                ]);
+            },
+            'estado_tipo',
+            'tramite' => function($des_car_trami) {
+                $des_car_trami->with([
+                    'hojas_ruta' => function($tram_hoja) {
+                        $tram_hoja->where('actual', 1)->with([
+                            'remitente_user' => function($tram_hoja_rem) {
+                                $tram_hoja_rem->with([
+                                    'cargo_sm' => function($tram_carsm) {
+                                        $tram_carsm->with([
+                                            'unidades_admnistrativas',
+                                            'direccion' => function($tram_direc) {
+                                                $tram_direc->with('secretaria_municipal');
+                                            }
+                                        ]);
+                                    },
+                                    'cargo_mae' => function($tram_carmae) {
+                                        $tram_carmae->with([
+                                            'unidad_mae' => function($tra_car_unida_mae) {
+                                                $tra_car_unida_mae->with('mae');
+                                            }
+                                        ]);
+                                    },
+                                    'contrato' => function($tra_con_con) {
+                                        $tra_con_con->with('grado_academico');
+                                    },
+                                    'persona'
+                                ]);
+                            },
+                            'destinatario_user' => function($des_us) {
+                                $des_us->with([
+                                    'cargo_sm' => function($des_car_sm) {
+                                        $des_car_sm->with([
+                                            'unidades_admnistrativas',
+                                            'direccion' => function($des_dirrec) {
+                                                $des_dirrec->with('secretaria_municipal');
+                                            }
+                                        ]);
+                                    },
+                                    'cargo_mae' => function($des_cargo_mae) {
+                                        $des_cargo_mae->with([
+                                            'unidad_mae' => function($des_uni_mae) {
+                                                $des_uni_mae->with('mae');
+                                            }
+                                        ]);
+                                    },
+                                    'contrato' => function($des_contra) {
+                                        $des_contra->with('grado_academico');
+                                    }
+                                ]);
+                            },
+                            'estado_tipo'
+                        ]);
+                    },
+                    'tipo_prioridad',
+                    'tipo_tramite',
+                    'estado_tipo',
+                    'remitente_user'=>function($rem_user){
+                        $rem_user->with(['cargo_sm'=>function($car_sm){
+                            $car_sm->with([
+                                'unidades_admnistrativas',
+                                'direccion' => function($ca_direc) {
+                                    $ca_direc->with('secretaria_municipal');
+                                }
+                            ]);
+                        },
+                        'cargo_mae'=>function($car_mae){
+                            $car_mae->with([
+                                'unidad_mae' => function($un_mae) {
+                                    $un_mae->with('mae');
+                                }
+                            ]);
+                        },
+                        'contrato'=>function($con){
+                            $con->with('grado_academico');
+                        },
+                        'persona']);
+                    },
+                    'destinatario_user'=>function($des_user){
+                        $des_user->with(['cargo_sm'=>function($car_sm){
+                            $car_sm->with([
+                                'unidades_admnistrativas',
+                                'direccion' => function($ca_direc) {
+                                    $ca_direc->with('secretaria_municipal');
+                                }
+                            ]);
+                        },
+                        'cargo_mae'=>function($car_mae){
+                            $car_mae->with([
+                                'unidad_mae' => function($un_mae) {
+                                    $un_mae->with('mae');
+                                }
+                            ]);
+                        },
+                        'contrato'=>function($con){
+                            $con->with('grado_academico');
+                        },
+                        'persona']);
+                    },
+                    'user_cargo_tramite'
+                ]);
+            }
+        ])->where('destinatario_id', $request->id)
+        ->where('actual', 1)
+        ->where('estado_id', 3)
+        ->get();
+        return response()->json($hoja_ruta_listar);
+    }
+
+    //para reeviar y responder con correspondiente
+    public function recibidos_tramite_reenviar(Request $request)  {
+        $validar = Validator::make($request->all(), [
+            'destinatario'  => ['required', 'not_in:0'],
+            'instructivo'          => 'required',
+        ]);
+
+        if ($validar->fails()) {
+            $data = mensaje_mostrar('errores', $validar->errors());
+        }else{
+            try {
+                // Inicia una transacción
+               DB::beginTransaction();
+
+                //la hoja de ruta actual
+                $hoja_ruta_actual = Hojas_ruta::find($request->id_hoja_ruta);
+                $hoja_ruta_actual->actual =  0;
+                $hoja_ruta_actual->estado_id =  4;
+                $hoja_ruta_actual->save();
+
+                // Fetch the Tramite along with its hojas_ruta
+                $tramite = Tramite::with('hojas_ruta')->find($request->id_tramite_resp);
+
+                // Count the hojas_ruta
+                $hojasRutaCount = $tramite->hojas_ruta->count() + 1;
+
+                //para crear la nueva hoja de ruta
+                $hoja_ruta_new = new Hojas_ruta();
+                // Guardar las hojas de ruta
+                $hoja_ruta_new                      = new Hojas_ruta();
+                $hoja_ruta_new->paso                = $hojasRutaCount;
+                $hoja_ruta_new->paso_txt            = numero_a_ordinal($hojasRutaCount);
+                $hoja_ruta_new->instructivo         = $request->instructivo;
+                $hoja_ruta_new->nro_hojas_ingreso   = $request->numero_hojas;
+                $hoja_ruta_new->nro_anexos_ingreso  = $request->numero_anexos;
+                $hoja_ruta_new->fecha_salida        = date('Y-m-d H:m:s');
+                $hoja_ruta_new->fecha_envio         = date('Y-m-d H:m:s');
+                $hoja_ruta_new->actual              = 1;
+                $hoja_ruta_new->remitente_id        = $request->id_remitente;
+                $hoja_ruta_new->destinatario_id     = $request->destinatario;
+                $hoja_ruta_new->estado_id           = 2;
+                $hoja_ruta_new->tramite_id          = $request->id_tramite_resp;
+                $hoja_ruta_new->save();
+
+
+                // Confirmar la transacción
+                DB::commit();
+
+                // Verifica si se guardó la hoja de ruta
+                if ($hoja_ruta_new->id) {
+                    $data = mensaje_mostrar('success', 'Se respondio con éxito!');
+                } else {
+                    $data = mensaje_mostrar('error', 'Error al crear el trámite');
+                }
+
+            } catch (\Exception $e) {
+                // Revertir la transacción si algo falla
+                DB::rollBack();
+                $data = mensaje_mostrar('error', 'Error al crear el trámite: ' . $e->getMessage());
+            }
+        }
+        return response()->json($data);
+    }
+
     /**
      * FIN DE LA PARTE DE LOS RECIVIDOS
      */
 
 
-    /**
-     * PARA LA PARTE DE LOS ENVIADOS
-     */
-    public function enviados($id){
-        $id_descript                = desencriptar($id);
-        $cargo                      = User_cargo_tramite::with(['cargo_sm', 'cargo_mae'])->find($id_descript);
-        $data['cargo_enum']         = $cargo;
-        $data['id_user_cargo_tram'] = $id_descript;
-        $data['titulo_menu']        = 'RECIBIDOS';
-        $data['menu'] = 60;
-        return view('administrador.tramite.correspondencia.enviados', $data);
-    }
-    /**
-     * FIN DE LA PARTE DE LOS ENVIADOS
-     */
 
 
     /**
@@ -309,8 +785,28 @@ class Controlador_tramite extends Controller{
         $cargo                      = User_cargo_tramite::with(['cargo_sm', 'cargo_mae'])->find($id_descript);
         $data['cargo_enum']         = $cargo;
         $data['id_user_cargo_tram'] = $id_descript;
-        $data['titulo_menu']        = 'RECIBIDOS';
-        $data['menu'] = 60;
+        $data['titulo_menu']        = 'OBSERVADOS';
+        $data['menu']               = 60;
+
+
+        $data['contar_num_tramite'] = Tramite::where('user_cargo_id', $id_descript)
+                                        ->count();
+
+        $data['contar_bandeja_entrada'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 2)
+                                        ->count();
+
+        $data['contar_bandeja_recibido'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 3)
+                                        ->count();
+
+        $data['contar_bandeja_observado'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 6)
+                                        ->count();
+
+        //PARA LISTAR LOS TRAMITES CORRESPONDIENTES
+
+
         return view('administrador.tramite.correspondencia.observados', $data);
     }
     /**
@@ -328,8 +824,217 @@ class Controlador_tramite extends Controller{
         $data['cargo_enum']         = $cargo;
         $data['id_user_cargo_tram'] = $id_descript;
         $data['titulo_menu']        = 'ARCHIVADOS';
-        $data['menu'] = 60;
+        $data['menu']               = 60;
+
+
+        $data['contar_num_tramite'] = Tramite::where('user_cargo_id', $id_descript)
+                                        ->where('id_estado', 2)
+                                        ->count();
+
+        $data['contar_bandeja_entrada'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 2)
+                                        ->count();
+
+        $data['contar_bandeja_recibido'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 3)
+                                        ->count();
+
+        $data['contar_bandeja_observado'] = Hojas_ruta::where('destinatario_id', $id_descript)
+                                        ->where('estado_id', 6)
+                                        ->count();
+
+        //PARA LISTAR LOS TRAMITES CORRESPONDIENTES
+
         return view('administrador.tramite.correspondencia.archivados', $data);
+    }
+
+    //para archivar los tramites hojas de ruta
+    public function archivados_guardar(Request $request){
+        $validar = Validator::make($request->all(), [
+            'descripcion_archivar'  => 'required',
+        ]);
+
+        if ($validar->fails()) {
+            $data = mensaje_mostrar('errores', $validar->errors());
+        }else{
+            $hoja_ruta              = Hojas_ruta::find($request->id_hoja_ruta_rec);
+            $hoja_ruta->estado_id   = 4;
+
+            $tramite = Tramite::find($hoja_ruta->tramite_id);
+            $tramite->id_estado     = 4;
+            $tramite->save();
+
+            $hoja_ruta->save();
+            //para crear el archivo de archivado
+            $archivado = new Ruta_archivado();
+            $archivado->descripcion = $request->descripcion_archivar;
+            $archivado->id_hoja_ruta = $request->id_hoja_ruta_rec;
+            $archivado->save();
+
+            if($archivado->id){
+                $data = mensaje_mostrar('success', 'Se archivo con exito');
+            }else{
+                $data = mensaje_mostrar('error', 'Ocurrio un error');
+            }
+        }
+        return response()->json($data);
+    }
+
+    public function archivados_listar(Request $request){
+        $hoja_ruta_listar = Hojas_ruta::with([
+            'ruta_archivado',
+            'remitente_user' => function($rem_us) {
+                $rem_us->with([
+                    'cargo_sm' => function($re_car_sm) {
+                        $re_car_sm->with([
+                            'unidades_admnistrativas',
+                            'direccion' => function($ca_direc) {
+                                $ca_direc->with('secretaria_municipal');
+                            }
+                        ]);
+                    },
+                    'cargo_mae' => function($car_mae) {
+                        $car_mae->with([
+                            'unidad_mae' => function($un_mae) {
+                                $un_mae->with('mae');
+                            }
+                        ]);
+                    },
+                    'contrato' => function($con) {
+                        $con->with('grado_academico');
+                    },
+                    'persona'
+                ]);
+            },
+            'destinatario_user' => function($des_user) {
+                $des_user->with([
+                    'cargo_sm' => function($des_car_sm) {
+                        $des_car_sm->with([
+                            'unidades_admnistrativas',
+                            'direccion' => function($des_car_direc) {
+                                $des_car_direc->with('secretaria_municipal');
+                            }
+                        ]);
+                    },
+                    'cargo_mae' => function($des_car_mae) {
+                        $des_car_mae->with([
+                            'unidad_mae' => function($des_car_unid) {
+                                $des_car_unid->with('mae');
+                            }
+                        ]);
+                    },
+                    'contrato' => function($des_car_con) {
+                        $des_car_con->with('grado_academico');
+                    },
+                    'persona'
+                ]);
+            },
+            'estado_tipo',
+            'tramite' => function($des_car_trami) {
+                $des_car_trami->with([
+                    'hojas_ruta' => function($tram_hoja) {
+                        $tram_hoja->where('actual', 1)->with([
+                            'remitente_user' => function($tram_hoja_rem) {
+                                $tram_hoja_rem->with([
+                                    'cargo_sm' => function($tram_carsm) {
+                                        $tram_carsm->with([
+                                            'unidades_admnistrativas',
+                                            'direccion' => function($tram_direc) {
+                                                $tram_direc->with('secretaria_municipal');
+                                            }
+                                        ]);
+                                    },
+                                    'cargo_mae' => function($tram_carmae) {
+                                        $tram_carmae->with([
+                                            'unidad_mae' => function($tra_car_unida_mae) {
+                                                $tra_car_unida_mae->with('mae');
+                                            }
+                                        ]);
+                                    },
+                                    'contrato' => function($tra_con_con) {
+                                        $tra_con_con->with('grado_academico');
+                                    },
+                                    'persona'
+                                ]);
+                            },
+                            'destinatario_user' => function($des_us) {
+                                $des_us->with([
+                                    'cargo_sm' => function($des_car_sm) {
+                                        $des_car_sm->with([
+                                            'unidades_admnistrativas',
+                                            'direccion' => function($des_dirrec) {
+                                                $des_dirrec->with('secretaria_municipal');
+                                            }
+                                        ]);
+                                    },
+                                    'cargo_mae' => function($des_cargo_mae) {
+                                        $des_cargo_mae->with([
+                                            'unidad_mae' => function($des_uni_mae) {
+                                                $des_uni_mae->with('mae');
+                                            }
+                                        ]);
+                                    },
+                                    'contrato' => function($des_contra) {
+                                        $des_contra->with('grado_academico');
+                                    }
+                                ]);
+                            },
+                            'estado_tipo'
+                        ]);
+                    },
+                    'tipo_prioridad',
+                    'tipo_tramite',
+                    'estado_tipo',
+                    'remitente_user'=>function($rem_user){
+                        $rem_user->with(['cargo_sm'=>function($car_sm){
+                            $car_sm->with([
+                                'unidades_admnistrativas',
+                                'direccion' => function($ca_direc) {
+                                    $ca_direc->with('secretaria_municipal');
+                                }
+                            ]);
+                        },
+                        'cargo_mae'=>function($car_mae){
+                            $car_mae->with([
+                                'unidad_mae' => function($un_mae) {
+                                    $un_mae->with('mae');
+                                }
+                            ]);
+                        },
+                        'contrato'=>function($con){
+                            $con->with('grado_academico');
+                        },
+                        'persona']);
+                    },
+                    'destinatario_user'=>function($des_user){
+                        $des_user->with(['cargo_sm'=>function($car_sm){
+                            $car_sm->with([
+                                'unidades_admnistrativas',
+                                'direccion' => function($ca_direc) {
+                                    $ca_direc->with('secretaria_municipal');
+                                }
+                            ]);
+                        },
+                        'cargo_mae'=>function($car_mae){
+                            $car_mae->with([
+                                'unidad_mae' => function($un_mae) {
+                                    $un_mae->with('mae');
+                                }
+                            ]);
+                        },
+                        'contrato'=>function($con){
+                            $con->with('grado_academico');
+                        },
+                        'persona']);
+                    },
+                    'user_cargo_tramite'
+                ]);
+            }
+        ])->where('destinatario_id', $request->id)
+        ->where('actual', 1)
+        ->where('estado_id', 4)
+        ->get();
+        return response()->json($hoja_ruta_listar);
     }
     /**
      * FIN DE LA PARTE DE LOS ARCHIVADOS
