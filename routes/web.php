@@ -20,6 +20,7 @@ use App\Http\Controllers\Biometrico\Controlador_permiso;
 use App\Http\Controllers\Registro\Controlador_persona;
 use App\Http\Controllers\Registro\Controlador_contrato;
 use App\Http\Controllers\Reportes\Controlador_reporte_ausencia;
+use App\Http\Controllers\Reportes\Controlador_reporte_tramite;
 use App\Http\Controllers\Tramite\Controlador_configuracion;
 use App\Http\Controllers\Tramite\Controlador_tramite;
 
@@ -467,6 +468,12 @@ Route::prefix('/admin')->middleware(['autenticados','rectroceder'])->group(funct
         Route::get('Archivados/{id}','archivados')->name('tcar_archivados');
         Route::post('Archivados_guardar','archivados_guardar')->name('tcar_archivados_save');
         Route::post('Archivados_listar','archivados_listar')->name('tcar_archivados_listar');
+    });
+
+
+    //PARA LA PARTE DE LOS REPORTES
+    Route::controller(Controlador_reporte_tramite::class)->group(function(){
+        Route::get('ReporteTramite/{id}','reporte_tramite_pdf')->name('crt_reporte_tramite');
     });
 
     //FIN DE LA PARTE DEL SEGUIMIENTO

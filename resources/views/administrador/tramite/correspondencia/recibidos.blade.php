@@ -180,6 +180,9 @@
                                         <button type="button" onclick="archivar_tramite('${row.id}')" class="btn btn-icon rounded-pill btn-outline-success" data-toggle="tooltip" data-placement="top" title="ARCHIVAR">
                                             <i class="tf-icons ti ti-layout"></i>
                                         </button>
+                                        <button type="button" onclick="vertramite_pdf('${row.tramite.id}')" class="btn btn-icon rounded-pill btn-outline-danger" data-toggle="tooltip" data-placement="top" title="IMPRIMIR PDF">
+                                            <i class="tf-icons ti ti-clipboard"></i>
+                                        </button>
                                     </div>
                                 </div>
                             `;
@@ -631,5 +634,29 @@
             });
 
         });
+
+
+        //PARA LA IMPRESION DEL PDF DE LA HOJA DE RUTA
+        async function vertramite_pdf(id_tramite){
+            try {
+                let respuesta = await fetch("{{ route('enc_crypt') }}",{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify({id:id_tramite})
+                });
+                let dato = await respuesta.json();
+                alerta_top_end('success', 'Abriendo pdf con éxito, espere un momento!');
+                setTimeout(() => {
+                    let url_permiso = "{{ route('crt_reporte_tramite', ['id' => ':id']) }}";
+                    url_permiso     = url_permiso.replace(':id', dato.mensaje);
+                    window.open(url_permiso, '_blank');
+                }, 2000);
+            } catch (error) {
+                console.log('error : ' +error);
+            }
+        }
     </script>
 @endsection

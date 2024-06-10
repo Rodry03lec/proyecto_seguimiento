@@ -21,11 +21,6 @@ class Controlador_usuario extends Controller
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */
 
-    //el contructor par la parte de los permisos de laravel
-    public function __construct() {
-        $this->middleware('comprobar_permiso:admin_usuario_menu');
-    }
-
 
     //ENCRIPTAR
     public function encriptar(Request $request){

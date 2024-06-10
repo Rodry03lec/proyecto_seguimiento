@@ -206,7 +206,6 @@
                         })
                     });
                     let dato = await respuesta.json();
-                    console.log(dato);
                     if (dato.tipo === 'success') {
                         let para_cite_value;
                         if (dato.user_cargo_tram.cargo_sm != null) {
@@ -337,7 +336,6 @@
                 })
             });
             let dato = await respuesta.json();
-            console.log(dato);
             let i = 1;
             $('#tabla_tramite').DataTable({
                 responsive: true,
@@ -357,6 +355,9 @@
                                         </button>
                                         <button type="button" onclick="ver_tramite('${row.id}')" class="btn btn-icon rounded-pill btn-outline-vimeo" data-placement="top" title="VIZUALIZAR">
                                             <i class="tf-icons ti ti ti-eye"></i>
+                                        </button>
+                                        <button type="button" onclick="vertramite_pdf('${row.id}')" class="btn btn-icon rounded-pill btn-outline-danger" data-toggle="tooltip" data-placement="top" title="IMPRIMIR PDF">
+                                            <i class="tf-icons ti ti-clipboard"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -507,7 +508,6 @@
 
         //para vizualizar un tramite en donde va con un modal solo ver
         async function ver_tramite(id) {
-            console.log(id);
             let detalles_correspondencia = document.getElementById('contenido_correspondencia');
             try {
                 let respuesta = await fetch("{{ route('corres_vizualizar') }}", {
@@ -521,7 +521,6 @@
                     })
                 });
                 let dato = await respuesta.json();
-                console.log(dato);
                 if (dato.tipo === 'success') {
                     $('#modal_vizualizar').modal('show');
                     detalles_correspondencia.innerHTML = `
@@ -632,11 +631,36 @@
                             `+archivado_resp+`
                         </div>
                     `;
+                }else{
+                    document.getElementById('contenido_txt').innerHTML = '';
                 }
 
 
             } catch (error) {
                 console.log('error : '+error);
+            }
+        }
+
+        //PARA LA IMPRESION DEL PDF DE LA HOJA DE RUTA
+        async function vertramite_pdf(id_tramite){
+            try {
+                let respuesta = await fetch("{{ route('enc_crypt') }}",{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify({id:id_tramite})
+                });
+                let dato = await respuesta.json();
+                alerta_top_end('success', 'Abriendo pdf con éxito, espere un momento!');
+                setTimeout(() => {
+                    let url_permiso = "{{ route('crt_reporte_tramite', ['id' => ':id']) }}";
+                    url_permiso     = url_permiso.replace(':id', dato.mensaje);
+                    window.open(url_permiso, '_blank');
+                }, 2000);
+            } catch (error) {
+                console.log('error : ' +error);
             }
         }
     </script>
