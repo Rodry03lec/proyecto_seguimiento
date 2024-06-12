@@ -15,7 +15,7 @@ class Controlador_ambito_profesional extends Controller
 
     /**
      * @version 1.0
-     * @author  Rodrigo Lecoña Quispe <rodrigolecona03@gmail.com>
+     * @author   Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
      * @param Controlador Administrar la parte de AMBITO PROFESIONALES Y TODAS LAS PROFESIONES QUE EXISTE
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */
@@ -70,7 +70,7 @@ class Controlador_ambito_profesional extends Controller
         try {
             $ambito = Ambito::find($request->id);
             if($ambito){
-                $data = mensaje_mostrar('success', $ambito);  
+                $data = mensaje_mostrar('success', $ambito);
             }else{
                 $data = mensaje_mostrar('error', 'Ocurrio un problema al editar el registro');
             }
@@ -160,10 +160,10 @@ class Controlador_ambito_profesional extends Controller
             if($profesion){
                 $data = mensaje_mostrar('success', $profesion);
             }else{
-                $data = mensaje_mostrar('error', 'Ocurrio un error al editar'); 
+                $data = mensaje_mostrar('error', 'Ocurrio un error al editar');
             }
         } catch (\Throwable $th) {
-            $data = mensaje_mostrar('error', 'Ocurrio un error al editar');  
+            $data = mensaje_mostrar('error', 'Ocurrio un error al editar');
         }
         return response()->json($data);
     }

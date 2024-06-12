@@ -228,7 +228,7 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('mae_unidad_vizualizar')
-                                        <button class="btn btn-sm btn-icon" onclick="vista_unidad('${row.id}')" type="button">
+                                        <button type="button" onclick="vista_unidad('${row.id}')" class="btn btn-icon rounded-pill btn-info" data-toggle="tooltip" data-placement="top" title="VIZUALIZAR UNIDADES">
                                             <i class="ti ti-eye" ></i>
                                         </button>
                                     @endcan
@@ -243,13 +243,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('mae_unidad_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_mae('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_mae('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('mae_unidad_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_mae('${row.id}')" type="button">
+                                        <button type="button" onclick="eliminar_mae('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan
@@ -475,13 +475,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('mae_unidad_vizualizar_unidades_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_mae_unidad('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_mae_unidad('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('mae_unidad_vizualizar_unidades_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_mae_unidad('${row.id}',${row.id_mae})" type="button">
+                                        <button type="button" onclick="eliminar_mae_unidad('${row.id}',${row.id_mae})" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan

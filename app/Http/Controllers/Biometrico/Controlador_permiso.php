@@ -13,7 +13,7 @@ class Controlador_permiso extends Controller
 {
     /**
      * @version 1.0
-     * @author  Rodrigo Lecoña Quispe <rodrigolecona03@gmail.com>
+     * @author  Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
      * @param Controlador Administrar la parte de LA ADMINISTRACION DE LOS TIPOS DE PERMISOS
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */

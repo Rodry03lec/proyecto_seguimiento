@@ -15,7 +15,7 @@ class Controlador_persona extends Controller
 {
     /**
      * @version 1.0
-     * @author  Rodrigo Lecoña Quispe <rodrigolecona03@gmail.com>
+     * @author  Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
      * @param Controlador Administrar la parte de LA ADMINISTRACION DE LAS PERSONAS QUE ESTEN REGISTRADAS
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */
@@ -33,7 +33,7 @@ class Controlador_persona extends Controller
     public function persona_buscar(Request $request){
         $persona = Persona::with(['genero','estado_civil'])->where('ci', $request->ci)->get();
         if(!$persona->isEmpty()){
-            $data['listar_persona'] = $persona; 
+            $data['listar_persona'] = $persona;
         }else{
             $data['listar_persona'] = null;
         }
@@ -63,7 +63,7 @@ class Controlador_persona extends Controller
             $persona->ci                = $request->ci;
             $persona->complemento       = $request->complemento;
             $persona->nit               = $request->nit;
-            $persona->nombres           = $request->nombres; 
+            $persona->nombres           = $request->nombres;
             $persona->ap_paterno        = $request->apellido_paterno;
             $persona->ap_materno        = $request->apellido_materno;
             $persona->fecha_nacimiento  = $request->fecha_nacimiento;
@@ -93,7 +93,7 @@ class Controlador_persona extends Controller
     public function persona_validar(Request $request){
         $persona = Persona::where('ci', $request->ci)->first();
         if(!$persona){
-            $data = mensaje_mostrar('success', 'Puede seguir con el registro !'); 
+            $data = mensaje_mostrar('success', 'Puede seguir con el registro !');
         }else{
             $numeroContratos = Contrato::where('id_persona', $persona->id)
                 ->where('estado', 'activo')
@@ -105,7 +105,7 @@ class Controlador_persona extends Controller
                 'contar_contratos'  =>  $numeroContratos,
                 'id_encript_per'    =>  encriptar($persona->id),
                 'mensaje_persona'   =>  "YA HAY UN CONTRATO NO DADO DE BAJA, PORFAVOR VERIFIQUE Y DE DE BAJA Y VUELVA A REGISTRAR EL NUEVO CONTRATO !",
-            ); 
+            );
         }
         return response()->json($data);
     }
@@ -123,7 +123,7 @@ class Controlador_persona extends Controller
         }
         return response()->json($data);
     }
-    //para guardar el registro 
+    //para guardar el registro
     public function persona_editar_guardar(Request $request){
         $validar = Validator::make($request->all(),[
             'fecha_nacimiento_'  => 'required|date|before_or_equal:' . now()->format('Y-m-d'),
@@ -144,7 +144,7 @@ class Controlador_persona extends Controller
         }else{
             $persona                    = Persona::find($request->id_persona);
             $persona->nit               = $request->nit_;
-            $persona->nombres           = $request->nombres_; 
+            $persona->nombres           = $request->nombres_;
             $persona->ap_paterno        = $request->apellido_paterno_;
             $persona->ap_materno        = $request->apellido_materno_;
             $persona->fecha_nacimiento  = $request->fecha_nacimiento_;
@@ -172,7 +172,7 @@ class Controlador_persona extends Controller
         try {
             $persona = Persona::find($request->id);
             if($persona->delete()){
-                $data = mensaje_mostrar('success', 'Se elimino con exito el registro'); 
+                $data = mensaje_mostrar('success', 'Se elimino con exito el registro');
             }else{
                 $data = mensaje_mostrar('error', 'Ocurrio un error al eliminar el registro');
             }

@@ -12,7 +12,7 @@ class Controlador_genero_estado extends Controller
 {
     /**
      * @version 1.0
-     * @author  Rodrigo Lecoña Quispe <rodrigolecona03@gmail.com>
+     * @author  Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
      * @param Controlador Administrar la parte de EL GENERO Y EL ESTADO CIVL DE CADA PERSONA
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */
@@ -60,7 +60,7 @@ class Controlador_genero_estado extends Controller
                 $data = mensaje_mostrar('success', 'Se elimino el genero con éxito');
             }else{
                 $data = mensaje_mostrar('error', 'Ocurrio un error eliminar!');
-            } 
+            }
         } catch (\Throwable $th) {
             $data = mensaje_mostrar('error', 'Ocurrio un error eliminar!');
         }
@@ -121,7 +121,7 @@ class Controlador_genero_estado extends Controller
     /**
      * FIN PARA LA ADMINISTRACION DE LOS GENEROS
      */
-    
+
 
 
 
@@ -160,7 +160,7 @@ class Controlador_genero_estado extends Controller
                 $data = mensaje_mostrar('success', 'Se elimino el estado civil con éxito');
             }else{
                 $data = mensaje_mostrar('error', 'Ocurrio un error eliminar!');
-            } 
+            }
         } catch (\Throwable $th) {
             $data = mensaje_mostrar('error', 'Ocurrio un error eliminar!');
         }

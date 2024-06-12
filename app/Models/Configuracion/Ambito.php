@@ -24,4 +24,7 @@ class Ambito extends Model
             get: fn ($value) => mb_strtoupper($value),
         );
     }
+    public function profesion(){
+        return $this->hasMany(Profesion::class, 'id_ambito', 'id');
+    }
 }

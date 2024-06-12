@@ -24,4 +24,9 @@ class Mae extends Model
             get: fn ($value) => mb_strtoupper($value),
         );
     }
+
+    //para listar las unidades que tiene
+    public function unidades_mae(){
+        return $this->hasMany(Unidad_mae::class, 'id_mae', 'id');
+    }
 }

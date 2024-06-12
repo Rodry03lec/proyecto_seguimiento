@@ -52,7 +52,7 @@
             position: absolute;
             opacity: 0.8;
             top: 2%;
-            left: 15%;
+            left: 8%;
             transform: translate(-50%, -50%);
             z-index: -1;
             width: 15%;
@@ -77,7 +77,6 @@
             position: relative;
             margin-top: 20px;
             z-index: -1;
-            width: 25px;
         }
 
 
@@ -186,7 +185,7 @@
         $img_logo_gradiante = public_path('rodry/img_logos/gradiante.jpg');
         $imagen_logo_gradiante = 'data:image/png;base64,' . base64_encode(file_get_contents($img_logo_gradiante));
 
-        $img_logo_caranavi = public_path('rodry/img_logos/logo_oficialb.jpg');
+        $img_logo_caranavi = public_path('rodry/img_logos/logo_oficial.jpg');
         $imagen_logo_caranavi = 'data:image/png;base64,' . base64_encode(file_get_contents($img_logo_caranavi));
 
     @endphp
@@ -203,9 +202,9 @@
         <!-- Contenido de la primera sección -->
     </div>
 
-    <div class="imagen_oficial_a">
-        <img src="{{ $imagen_logo_caranavi }}" alt="" style="width: 400px; height: 400px">
-    </div>
+    {{-- <div class="imagen_oficial_a">
+        <img src="{{ $imagen_logo_caranavi }}" alt="">
+    </div> --}}
 
 
     <div style="text-align: center; padding-top:-60% ">
@@ -282,12 +281,12 @@
                                     </td>
                                 </tr>
 
-                                {{-- <tr>
+                                <tr>
                                     <td id="borde_borrar_table"> UNIDAD / JEFATURA</td>
                                     <td id="borde_borrar_table"> :
                                         {{ '(' . $permiso->contrato->cargo_sm->unidades_admnistrativas->sigla . ')' . ' ' . $permiso->contrato->cargo_sm->unidades_admnistrativas->nombre }}
                                     </td>
-                                </tr> --}}
+                                </tr>
 
                                 <tr>
                                     <td id="borde_borrar_table"> CARGO</td>
@@ -375,13 +374,10 @@
         </table>
     </div>
 
-    <div  style="text-align: center; margin-top: 60px; padding: 30px;">
+    <div  style="text-align: center; margin-top: 50px; padding: 30px;">
         <img src="{{ $imagen_logo_gradiante }}" style="width: 100%; height: 5px;" />
     </div>
 
-    <div class="imagen_oficial_b">
-        <img src="{{ $imagen_logo_caranavi }}" alt="" style="width: 400px; height: 400px">
-    </div>
 
     <div class="seccion_2">
         <img src="{{ $imagen_logo }}" class="img_fondo">
@@ -478,10 +474,6 @@
                                     <td id="borde_borrar_table"> : {{ $permiso->contrato->cargo_sm->nombre }}</td>
                                 </tr>
                             @endif
-
-
-
-
                             <tr>
                                 <td id="borde_borrar_table"> TIPO</td>
                                 <td id="borde_borrar_table"> : {{ $permiso->permiso_desglose->tipo_permiso->nombre }}
@@ -571,5 +563,3 @@
 </body>
 
 </html>
-
-

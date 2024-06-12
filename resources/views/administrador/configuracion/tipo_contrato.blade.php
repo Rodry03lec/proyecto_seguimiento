@@ -190,13 +190,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('tipo_contrato_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_tipocontrato('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_tipocontrato('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('tipo_contrato_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_tipocontrato('${row.id}')" type="button">
+                                        <button type="button" onclick="eliminar_tipocontrato('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan

@@ -287,7 +287,7 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('horarios_vizualizar')
-                                        <button class="btn btn-sm btn-icon" onclick="vista_especicacion_horas('${row.id}')" type="button">
+                                        <button type="button" onclick="vista_especicacion_horas('${row.id}')" class="btn btn-icon rounded-pill btn-info" data-toggle="tooltip" data-placement="top" title="VIZUALIZAR ESPECIFICACION DE HORAS">
                                             <i class="ti ti-eye" ></i>
                                         </button>
                                     @endcan
@@ -302,13 +302,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('horarios_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_horario('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_horario('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('horarios_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_horario('${row.id}')" type="button">
+                                        <button type="button" onclick="eliminar_horario('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan
@@ -560,19 +560,19 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('horarios_vizualizar_especificacion_horas_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_turno_hora('${row.id}')" type="button">
+                                        <button type="button"  onclick="editar_turno_hora('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('horarios_vizualizar_especificacion_horas_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_turno_hora('${row.id}',${row.id_horario})" type="button">
+                                        <button type="button" onclick="eliminar_turno_hora('${row.id}',${row.id_horario})" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan
 
                                     @can('horarios_vizualizar_especificacion_horas_excepciones')
-                                        <button class="btn btn-sm btn-icon" onclick="asignar_especial('${row.id}')" type="button">
+                                        <button type="button" onclick="asignar_especial('${row.id}')" class="btn btn-icon rounded-pill btn-info" data-toggle="tooltip" data-placement="top" title="EXCEPCIONES - ESPECIALES">
                                             <i class="ti ti-settings" ></i>
                                         </button>
                                     @endcan

@@ -26,7 +26,7 @@
                         @endcan
                     </div>
                     <div class="table-responsive text-nowrap p-4">
-                        <table class="table table-hover table-responsive" id="tabla_genero" style="width: 100%">
+                        <table class="table table-hover" id="tabla_genero" style="width: 100%">
                             <thead class="table-dark">
                                 <tr>
                                     <th scope="col" class="table-th">Nº</th>
@@ -43,7 +43,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">:::::::: TIPOS DE ESTADO CIVIL :::::::: </h5>
                         @can('estado_civil_nuevo')
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_tipo_estado_civil">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_estado_civil">
                                 <i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Nuevo</span>
                             </button>
                         @endcan
@@ -329,13 +329,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('genero_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_genero('${row.id}')" type="button">
+                                        <button type="button"  onclick="editar_genero('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('genero_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_genero('${row.id}')" type="button">
+                                        <button type="button"  onclick="eliminar_genero('${row.id}')"class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan
@@ -566,14 +566,14 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('estado_civil_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_estado_civil('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_estado_civil('${row.id}')"class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('estado_civil_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_estado_civil('${row.id}')" type="button">
-                                            <i class="ti ti-trash" ></i>
+                                        <button type="button" onclick="eliminar_estado_civil('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
+                                            <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
@@ -600,9 +600,9 @@
 
         //para cerrar el modal de estado civil
         function cerrar_modal_nuevo_estado_civil(){
-            abrir_estado_civil_modal_nuevo.classList.add('hidden');
             vaciar_formulario(form_estado_civil_nuevo);
             vaciar_errores_estado_civil();
+            $('#modal_estado_civil').modal('hide');
         }
         //para vaciar errores de estado civil
         function vaciar_errores_estado_civil(){

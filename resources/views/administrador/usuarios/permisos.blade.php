@@ -119,16 +119,18 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('permisos_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_permiso('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_permiso('${row.id}')" class="btn btn-icon rounded-pill btn-outline-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
-                                    @can('permisos_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_permiso('${row.id}')" type="button">
-                                        <i class="ti ti-trash" ></i>
+
+                                    @can('permisos_editar')
+                                        <button type="button" onclick="eliminar_permiso( '${row.id}')" class="btn btn-icon rounded-pill btn-outline-danger" data-placement="top" title="ELIMINAR">
+                                            <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan
                                 </div>
+
                             `;
                         }
                     }

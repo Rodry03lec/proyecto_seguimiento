@@ -215,13 +215,13 @@
                                 return `
                                     <div class="d-inline-block tex-nowrap">
                                         @can('especial_feriado_editar')
-                                            <button class="btn btn-sm btn-icon" onclick="editar_feriado('${row.id}')" type="button">
+                                            <button type="button" onclick="editar_feriado('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                                 <i class="ti ti-edit" ></i>
                                             </button>
                                         @endcan
 
                                         @can('especial_feriado_eliminar')
-                                            <button class="btn btn-sm btn-icon" onclick="eliminar_feriado('${row.id}')" type="button">
+                                            <button type="button" onclick="eliminar_feriado('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                                 <i class="ti ti-trash" ></i>
                                             </button>
                                         @endcan
@@ -232,8 +232,8 @@
                                 return `
                                     @can('especial_feriado_nuevo')
                                         <div class="d-inline-block tex-nowrap">
-                                            <button class="btn btn-sm btn-icon" onclick="nuevo_feriado('${row.id}')" type="button">
-                                            <i class="ti ti-plus" ></i>
+                                            <button type="button" onclick="nuevo_feriado('${row.id}')" class="btn btn-icon rounded-pill btn-info" data-toggle="tooltip" data-placement="top" title="VIZUALIZAR">
+                                                <i class="ti ti-plus" ></i>
                                             </button>
                                         </div>
                                     @endcan
@@ -262,6 +262,7 @@
                     $('#modal_feriado_nuevo').modal('show');
                     document.getElementById('detalle_fecha').innerHTML = `<strong class="ltr:mr-1 rtl:ml-1">`+obtener_fecha_literal(dato.mensaje.fecha)+`</strong>`;
                     document.getElementById('id_fecha_principal').value = dato.mensaje.id;
+                    document.getElementById('descripcion').value = '';
                 }
                 if(dato.tipo==='error'){
                     alerta_top_end(dato.tipo, dato.mensaje);

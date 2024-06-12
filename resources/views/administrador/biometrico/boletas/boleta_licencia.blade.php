@@ -216,6 +216,8 @@
                 noCalendar: true,
                 dateFormat: "H:i",
                 defaultDate: "08:00",
+                minTime: "08:00",
+                maxTime: "19:00"
             });
         }
 
@@ -451,27 +453,28 @@
                                 render: function(data, type, row, meta) {
                                     return `
                                         <div class="d-inline-block tex-nowrap">
+
+                                            @can('boletas_generar_licencia_pdf')
+                                                <button type="button" onclick="imprimir_boleta_licencia('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="IMPRIMIR PDF">
+                                                    <i class="ti ti-cloud-down" ></i>
+                                                </button>
+                                            @endcan
+
                                             @can('boletas_generar_licencia_editar')
-                                                <button class="btn btn-sm btn-icon" onclick="editar_licencia_boleta('${row.id}')" type="button">
+                                                <button type="button" onclick="editar_licencia_boleta('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                                     <i class="ti ti-edit" ></i>
                                                 </button>
                                             @endcan
 
                                             @can('boletas_generar_licencia_vizualizar')
-                                                <button class="btn btn-sm btn-icon" onclick="vizualizar_detalles_licencia('${row.id}')" type="button">
+                                                <button type="button" onclick="vizualizar_detalles_licencia('${row.id}')" class="btn btn-icon rounded-pill btn-info" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                                     <i class="ti ti-eye" ></i>
                                                 </button>
                                             @endcan
 
                                             @can('boletas_generar_licencia_eliminar')
-                                                <button class="btn btn-sm btn-icon" onclick="eliminar_licencia_boleta('${row.id}')" type="button">
+                                                <button type="button" onclick="eliminar_licencia_boleta('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="VIZUALIZAR">
                                                     <i class="ti ti-trash" ></i>
-                                                </button>
-                                            @endcan
-
-                                            @can('boletas_generar_licencia_pdf')
-                                                <button class="btn btn-sm btn-icon" onclick="imprimir_boleta_licencia('${row.id}')" type="button">
-                                                    <i class="ti ti-cloud-down" ></i>
                                                 </button>
                                             @endcan
 
@@ -513,7 +516,7 @@
                                     return `
                                         @can('boletas_generar_licencia_aprobado')
                                             <label class="switch switch-primary">
-                                                <input onclick="licencia_aprobado('${row.id}', '${row.id_persona}')" type="checkbox" class="switch-input" ${row.aprobado === true ? 'checked' : ''} />
+                                                <input onclick="licencia_aprobado('${row.id}', '${row.id_persona}')" type="checkbox" class="switch-input" ${row.aprobado === 1 || row.aprobado === true ? 'checked' : ''} />
                                                 <span class="switch-toggle-slider">
                                                     <span class="switch-on">
                                                         <i class="ti ti-check"></i>
@@ -534,7 +537,7 @@
                                     return `
                                         @can('boletas_generar_licencia_constancia')
                                             <label class="switch switch-primary">
-                                                <input onclick="licencia_constancia('${row.id}', '${row.id_persona}')" type="checkbox" class="switch-input" ${row.constancia === true ? 'checked' : ''} />
+                                                <input onclick="licencia_constancia('${row.id}', '${row.id_persona}')" type="checkbox" class="switch-input" ${row.constancia === 1 || row.constancia === true ? 'checked' : ''} />
                                                 <span class="switch-toggle-slider">
                                                     <span class="switch-on">
                                                         <i class="ti ti-check"></i>
@@ -591,8 +594,9 @@
                     actulizar_tabla();
                     listar_bolestas_licencias(dato.id_persona);
                     setTimeout(() => {
-                            imprimir_boleta_licencia(dato.id_licencia_new);
-                        }, 1500);
+                        imprimir_boleta_licencia(dato.id_licencia_id);
+                    }, 1500);
+
                 }
                 if(dato.tipo === 'error'){
                     alerta_top(dato.tipo, dato.mensaje);

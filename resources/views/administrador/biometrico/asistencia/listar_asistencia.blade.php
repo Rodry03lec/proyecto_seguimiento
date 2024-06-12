@@ -7,8 +7,20 @@
                 <div class="card-header d-flex justify-content-between align-items-center" >
                     <h5 class="mb-0">:::::::: ASISTENCIA :::::::: </h5>
                 </div>
+
                 <div class="card-body">
-                    <form method="post" action="{{ route('asist_generar') }}" autocomplete="off">
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger mb-0 alert-dismissible" role="alert">
+                            <span class="alert-icon text-danger me-2">
+                                <i class="ti ti-ban ti-xs"></i>
+                            </span>
+                            ¡Ups! los campos son obligatorios!!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    <form method="get" action="{{ route('asist_generar') }}" autocomplete="off">
                         @csrf
                         <div class="row">
                             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 py-2">

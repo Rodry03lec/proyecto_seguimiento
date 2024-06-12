@@ -242,7 +242,7 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('tipo_categoria_vizualizar')
-                                        <button class="btn btn-sm btn-icon" onclick="vista_niveles('${row.id}')" type="button">
+                                        <button type="button" onclick="vista_niveles('${row.id}')" class="btn btn-icon rounded-pill btn-info" data-toggle="tooltip" data-placement="top" title="VIZUALIZAR">
                                             <i class="ti ti-eye" ></i>
                                         </button>
                                     @endcan
@@ -257,13 +257,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('tipo_categoria_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_tipocategoria('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_tipocategoria('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('tipo_categoria_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_tipocategoria('${row.id}')" type="button">
+                                        <button type="button" onclick="eliminar_tipocategoria('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan
@@ -476,13 +476,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('tipo_categoria_vizualizar_nivel_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_nivel('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_nivel('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('tipo_categoria_vizualizar_nivel_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_nivel('${row.id}', '${row.id_categoria}')" type="button">
+                                        <button type="button" onclick="eliminar_nivel('${row.id}', '${row.id_categoria}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan

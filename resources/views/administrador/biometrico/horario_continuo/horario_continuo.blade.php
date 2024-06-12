@@ -289,13 +289,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('especial_horario_continuo_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_horario_continuo('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_horario_continuo('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('especial_horario_continuo_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_horario_continuo('${row.id}')" type="button">
+                                        <button type="button" onclick="eliminar_horario_continuo('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan

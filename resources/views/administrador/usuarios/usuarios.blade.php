@@ -223,13 +223,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('usuario_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_usuario('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_usuario('${row.id}')" class="btn btn-icon rounded-pill btn-outline-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('usuario_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_usuario('${row.id}')" type="button">
+                                        <button type="button" onclick="eliminar_usuario( '${row.id}')" class="btn btn-icon rounded-pill btn-outline-danger" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan

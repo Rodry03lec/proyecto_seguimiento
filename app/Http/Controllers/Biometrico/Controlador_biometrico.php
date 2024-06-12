@@ -18,7 +18,7 @@ class Controlador_biometrico extends Controller
 {
     /**
      * @version 1.0
-     * @author  Rodrigo Lecoña Quispe <rodrigolecona03@gmail.com>
+     * @author  Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
      * @param Controlador Administrar la parte de SUBIDA DEL BIOMETRICO AL REGISTRO A LA BASE DE DATOS
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */
@@ -276,7 +276,7 @@ class Controlador_biometrico extends Controller
             // Inicializar las variables de hora con los valores por defecto
             $hora_inicio2       = $hora_inicio_default2;
             $hora_final2        = $hora_final_default2;
-
+            $hora_final_new2    = $hora_final_default2;
             // Verificar si existe una excepción de horario
             if ($excepcion_horario_segundo) {
                 // Verificar si la fecha principal está dentro del rango de la excepción creada
@@ -290,16 +290,18 @@ class Controlador_biometrico extends Controller
 
                     // Si coincide, utilizar el horario de excepción
                     if (!empty($dia_semana_excepcion)) {
-                        $hora_inicio2       = $contrato->horario->rango_hora[1]->hora_inicio;
-                        $hora_final2        = $excepcion_horario_segundo->hora;
+                        $hora_inicio2       = $excepcion_horario_segundo->hora;
+                        $hora_final2        = $contrato->horario->rango_hora[1]->hora_final;
+                        $hora_final_new2    = date("H:i:s", strtotime($hora_final2) + 30 * 60);
                     }
                 }
             }
 
-            // Verificar si la hora actual está dentro del rango de salida de la mañana
-            if ($hora >= $hora_inicio2 && $hora <= $hora_final2) {
+            // Verificar si la hora actual está dentro del rango de ingreso de la mañana
+            if ($hora >= $hora_inicio2 && $hora <= $hora_final_new2) {
                 $biometrico->hora_salida_ma = $hora;
             }
+
 
 
 
@@ -358,7 +360,7 @@ class Controlador_biometrico extends Controller
             // Inicializar las variables de hora con los valores por defecto
             $hora_inicio4       = $hora_inicio_default4;
             $hora_final4        = $hora_final_default4;
-
+            $hora_final_new4	= $hora_final_default4;
             // Verificar si existe una excepción de horario
             if ($excepcion_horario_cuarto) {
                 // Verificar si la fecha principal está dentro del rango de la excepción
@@ -372,15 +374,16 @@ class Controlador_biometrico extends Controller
 
                     // Si coincide, utilizar el horario de excepción
                     if (!empty($dia_semana_excepcion4)) {
-                        $hora_inicio4       = $contrato->horario->rango_hora[3]->hora_inicio;
-                        $hora_final4        = $excepcion_horario_cuarto->hora;
+                        $hora_inicio4       = $excepcion_horario_cuarto->hora;
+                        $hora_final4        = $contrato->horario->rango_hora[3]->hora_final;
+                        $hora_final_new4    = date("H:i:s", strtotime($hora_final4) + 30 * 60);
                     }
                 }
             }
 
             // Verificar si la hora actual está dentro del rango de salida de la tarde
-            if ($hora >= $hora_inicio4 && $hora <= $hora_final4) {
-            $biometrico->hora_salida_ta = $hora;
+            if ($hora >= $hora_inicio4 && $hora <= $hora_final_new4) {
+                $biometrico->hora_salida_ta = $hora;
             }
         }
 

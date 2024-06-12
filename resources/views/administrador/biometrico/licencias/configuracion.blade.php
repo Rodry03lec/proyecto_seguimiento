@@ -227,13 +227,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('especial_licencias_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_tipo_licencia('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_tipo_licencia('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('especial_licencias_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_tipo_licencia('${row.id}')" type="button">
+                                        <button type="button" onclick="eliminar_tipo_licencia('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan

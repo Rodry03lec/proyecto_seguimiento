@@ -268,6 +268,17 @@
         return saldoRespuesta;
     }
 
+
+    function conSeparadorComas_normal(monto) {
+        // Usar Intl.NumberFormat para formatear el número sin el símbolo de la moneda
+        let formateador = new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        let saldoRespuesta = formateador.format(monto);
+        return saldoRespuesta;
+    }
+
     // Obtener todos los inputs con la clase 'uppercase-input'
     let inputs = document.querySelectorAll('.uppercase-input');
 

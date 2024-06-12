@@ -31,7 +31,7 @@ class Controlador_contrato extends Controller
 {
     /**
      * @version 1.0
-     * @author  Rodrigo Lecoña Quispe <rodrigolecona03@gmail.com>
+     * @author  Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
      * @param Controlador Administrar la parte de la administracion de los contratos
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */
@@ -296,6 +296,20 @@ class Controlador_contrato extends Controller
         $data['id_persona']     = $id_persona;
         $data['tipo_baja']      = Tipo_baja::where('estado','activo')->OrderBy('id','asc')->get();
         $data['persona']        = Persona::find($id_persona);
+
+        //para la parte de los contratos
+        $data['lis_genero']             = Genero::where('estado','activo')->Orderby('id', 'asc')->get();
+        $data['lis_estado_civil']       = Estado_civil::OrderBy('id','asc')->get();
+        $data['lis_tipo_contrato']      = Tipo_contrato::OrderBy('id','asc')->get();
+        $data['lis_categoria']          = Tipo_categoria::OrderBy('id', 'asc')->get();
+        $data['lis_ambito']             = Ambito::OrderBy('id', 'asc')->get();
+        $data['lis_horario']            = Horario::Orderby('id', 'asc')->get();
+        $data['grado_academico']        = Grado_academico::OrderBy('id', 'asc')->get();
+        $data['listar_mae']             = Mae::OrderBy('id','asc')->get();
+        $data['secretaria_municipal']   = Secretaria_municipal::where('estado', 'activo')->OrderBy('id', 'asc')->get();
+        $data['unidad_administrativa']  = Unidades_administrativas::where('estado', 'activo')->OrderBy('id','asc')->get();
+        //fin de la parte de los contratos
+
         return view('administrador.contrato.listar_contratos', $data);
     }
 
@@ -324,7 +338,6 @@ class Controlador_contrato extends Controller
 
         //print_r($contrato);
         $data['contrato'] = $contrato;
-
         return view('administrador.contrato.vizualizar_contrato', $data);
 
     }
@@ -420,4 +433,164 @@ class Controlador_contrato extends Controller
         }
         return response()->json($data);
     }
+
+    /**
+     * PARA EDITAR CONTRATO
+     */
+    public function editar_contrato(Request $request){
+        //try {
+            $contrato = Contrato::with([
+                'nivel'=>function($niv){
+                    $niv->with(['categoria'=>function($cat){
+                        $cat->with(['nivel']);
+                    }]);
+                },
+                'tipo_contrato',
+                'persona'=>function($per){
+                    $per->with([
+                        'genero',
+                        'estado_civil',
+                        'contrato'
+                    ]);
+                },
+                'cargo_mae'=>function($car_mae){
+                    $car_mae->with([
+                        'unidad_mae'=>function($uni_mae){
+                            $uni_mae->with([
+                                'cargos',
+                                'mae'=>function($mae){
+                                    $mae->with(['unidades_mae']);
+                                }
+                            ]);
+                        }
+                    ]);
+                },
+                'cargo_sm'=>function($car_sm){
+                    $car_sm->with([
+                        'unidades_admnistrativas',
+                        'direccion'=>function($direc){
+                            $direc->with(['cargos','secretaria_municipal'=>function($sec_mun){
+                                $sec_mun->with([
+                                    'direcciones'
+                                ]);
+                            }]);
+                        }
+                    ]);
+                },
+                'profesion'=>function($profe){
+                    $profe->with(['ambito'=>function($amb){
+                        $amb->with(['profesion']);
+                    }]);
+                },
+                'grado_academico',
+                'horario'=>function($hor){
+                    $hor->with([
+                        'rango_hora'=>function($rang_hora){
+                            $rang_hora->with([
+                                'horarios'
+                            ]);
+                        }
+                    ]);
+                },
+                'usuario',
+                'baja'=>function ($baja) {
+                    $baja->with([
+                        'contrato'
+                    ]);
+                }
+                ])
+            ->find($request->id);
+
+            if($contrato){
+                $data = mensaje_mostrar('success', $contrato);
+            }else{
+                $data = mensaje_mostrar('error', 'Ocurrio un error');
+            }
+        /* } catch (\Throwable $th) {
+            $data = mensaje_mostrar('error', 'Ocurrio un error');
+        } */
+        return response()->json($data);
+    }
+
+    //para guardar el registro del contrato editado
+    public function editar_contrato_save(Request $request){
+        $validar = Validator::make($request->all(),[
+            //desde aqio informacion para el contrato
+            'fecha_inicio'      => 'required',
+            //'fecha_conclusion'  => 'required',
+            'tipo_contrato'     => 'required',
+            'numero_contrato'   => 'required',
+            'haber_basico'      => 'required',
+            'categoria'         => 'required',
+            'nivel'             => 'required',
+            'horario'           => 'required',
+            //INFORMACIÓN ACADEMICA
+            'ambito_profesional'=> 'required',
+            'profesion'         => 'required',
+            'grado_academico'   => 'required',
+        ]);
+        if($validar->fails()){
+            $data = mensaje_mostrar('errores', $validar->errors());
+        }else{
+            //ahora iniciamos el registro de rl_contrato
+            $contrato                       = Contrato::find($request->id_contrato_);
+            $contrato->fecha_inicio         = $request->fecha_inicio;
+            if($request->fecha_conclusion != '' || $request->fecha_conclusion != null){
+                $contrato->fecha_conclusion     = $request->fecha_conclusion;
+            }
+            $contrato->numero_contrato      = $request->numero_contrato;
+            $contrato->haber_basico         = sin_separador_comas($request->haber_basico);
+            $contrato->id_nivel             = $request->nivel;
+            $contrato->id_tipo_contrato     = $request->tipo_contrato;
+
+            //ahora creamos o seleccionamos el cargo mae
+            if($request->mae_sm=='1'){
+                $contrato->id_cargo_sm = null;
+                if($request->cargo_mae != 'selected' || $request->cargo_mae != ''){
+                    $valor1 = $request->cargo_mae;
+                }
+                if($request->cargo_mae_descripcion != ''){
+                    $cargo_mae_guardar              = new Cargo_mae();
+                    $cargo_mae_guardar->nombre      = $request->cargo_mae_descripcion;
+                    $cargo_mae_guardar->id_unidad   = $request->unidad_mae;
+                    $cargo_mae_guardar->save();
+                    $valor1 = $cargo_mae_guardar->id;
+                }
+                $contrato->id_cargo_mae         = $valor1;
+            }
+
+            if($request->mae_sm=='2'){
+                $contrato->id_cargo_mae = null;
+                //ahora creamos o seleccionamos el cargo sm
+                if($request->cargo_sm != 'selected' || $request->cargo_sm != ''){
+                    $valor2 = $request->cargo_sm;
+                }
+                if($request->cargo_sm_descripcion != ''){
+                    $cargo_sm_guardar               = new Cargo_sm();
+                    $cargo_sm_guardar->nombre       = $request->cargo_sm_descripcion;
+                    $cargo_sm_guardar->id_direccion = $request->direccion_sm;
+                    $cargo_sm_guardar->id_unidad    = $request->unidad_administrativa_sm;
+                    $cargo_sm_guardar->save();
+                    $valor2 = $cargo_sm_guardar->id;
+                }
+                $contrato->id_cargo_sm          = $valor2;
+            }
+            $contrato->id_profesion         = $request->profesion;
+            $contrato->id_grado_academico   = $request->grado_academico;
+            $contrato->id_horario           = $request->horario;
+            $contrato->id_usuario           = Auth::user()->id;
+            $contrato->save();
+
+            if($contrato->id){
+                $data = mensaje_mostrar('success', 'Se Editó con éxito ');
+            }else{
+                $data = mensaje_mostrar('error', 'Ocurrio un problema al insertar el registro!');
+            }
+        }
+        return response()->json($data);
+    }
+    /**
+     * FIN DE LA PARTE DE EDITAR CONTRATO
+     */
+
 }

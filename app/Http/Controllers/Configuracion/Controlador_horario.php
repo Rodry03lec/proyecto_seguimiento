@@ -16,12 +16,12 @@ class Controlador_horario extends Controller
 {
     /**
      * @version 1.0
-     * @author  Rodrigo Lecoña Quispe <rodrigolecona03@gmail.com>
+     * @author  Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
      * @param Controlador Administrar la parte los horarios y los rangos
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */
-    
-    
+
+
     /** PARA LA PARTE DE LA ADMINSTRACION DE LOS HORARIOS
      */
 
@@ -220,7 +220,7 @@ class Controlador_horario extends Controller
      * EXCEPCION DE HORARIO
      */
     public function excepcion_horario($id){
-        $data['menu']           = '11'; 
+        $data['menu']           = '11';
         $id_rango_hora          = desencriptar($id);
         $data['id_rango_hora']  = $id_rango_hora;
         $data['rango_hora']     = Rango_hora::find($id_rango_hora);
@@ -283,7 +283,7 @@ class Controlador_horario extends Controller
             if($excepcion_horario->id){
                 $data = mensaje_mostrar('success', 'Se desbilito con éxito');
             }else{
-                $data = mensaje_mostrar('error', 'Ocurrio un problema interno');  
+                $data = mensaje_mostrar('error', 'Ocurrio un problema interno');
             }
         } catch (\Throwable $th) {
             $data = mensaje_mostrar('error', 'Ocurrio un problema interno');

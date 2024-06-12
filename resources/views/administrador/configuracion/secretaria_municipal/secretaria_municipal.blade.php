@@ -240,7 +240,7 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('secretaria_municipales_direccion_vizualizar')
-                                        <button class="btn btn-sm btn-icon" onclick="vista_direccion('${row.id}')" type="button">
+                                        <button type="button" onclick="vista_direccion('${row.id}')" class="btn btn-icon rounded-pill btn-info" data-toggle="tooltip" data-placement="top" title="VIZUALIZAR DIRECCIONES">
                                             <i class="ti ti-eye" ></i>
                                         </button>
                                     @endcan
@@ -256,13 +256,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('secretaria_municipales_direccion_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_secretaria_municipal('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_secretaria_municipal('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('secretaria_municipales_direccion_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_secretaria_municipal('${row.id}')" type="button">
+                                        <button type="button" onclick="eliminar_secretaria_municipal('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan
@@ -596,13 +596,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('secretaria_municipales_direccion_vizualizar_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_direccion('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_direccion('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('secretaria_municipales_direccion_vizualizar_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_direccion('${row.id}',${row.id_secretaria})" type="button">
+                                        <button type="button" onclick="eliminar_direccion('${row.id}',${row.id_secretaria})" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan

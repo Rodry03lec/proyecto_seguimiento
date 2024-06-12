@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>BOLETA - LICENCIA</title>
-    {{-- <link rel="stylesheet" href="rodry/estilos_pdf/pdf.css"> --}}
-
     <style>
 
         @page {
@@ -53,7 +51,7 @@
             left: 8%;
             transform: translate(-50%, -50%);
             z-index: -1;
-            width: 14%;
+            width: 18%;
         }
 
         .seccion {
@@ -109,7 +107,7 @@
         }
 
         #estilo_dashed>p {
-            transform: rotate(-45deg);
+            transform: rotate(-35deg);
             font-size: 15px;
             color: rgba(0, 0, 0, 0.234);
         }
@@ -183,7 +181,7 @@
         $img_logo_gradiante = public_path('rodry/img_logos/gradiante.jpg');
         $imagen_logo_gradiante = 'data:image/png;base64,' . base64_encode(file_get_contents($img_logo_gradiante));
 
-        $img_logo_caranavi = public_path('rodry/img_logos/logo_oficialb.jpg');
+        $img_logo_caranavi = public_path('rodry/img_logos/logo_oficial.jpg');
         $imagen_logo_caranavi = 'data:image/png;base64,' . base64_encode(file_get_contents($img_logo_caranavi));
 
     @endphp
@@ -200,9 +198,6 @@
         <!-- Contenido de la primera sección -->
     </div>
 
-    <div class="imagen_oficial_a">
-        <img src="{{ $imagen_logo_caranavi }}" alt="" style="width: 400px; height: 400px">
-    </div>
 
 
     <div style="text-align: center; padding-top:-60% ">
@@ -374,16 +369,13 @@
         </table>
     </div>
 
-    <div  style="text-align: center; margin-top: 75px; padding: 30px;">
+    <div  style="text-align: center; margin-top: 50px; padding: 30px;">
         <img src="{{ $imagen_logo_gradiante }}" style="width: 100%; height: 5px;" />
     </div>
 
-    <div class="imagen_oficial_b">
-        <img src="{{ $imagen_logo_caranavi }}" alt="" style="width: 400px; height: 400px">
-    </div>
 
     <div class="seccion_2">
-        <img src="{{ $imagen_logo }}" class="img_fondo" >
+        <img src="{{ $imagen_logo }}" class="img_fondo">
         <!-- Contenido de la primera sección -->
     </div>
 

@@ -31,4 +31,8 @@ class Secretaria_municipal extends Model
             get: fn ($value) => mb_strtoupper($value),
         );
     }
+    //para listar las direcciones
+    public function direcciones(){
+        return $this->hasMany(Direccion_municipal::class, 'id_secretaria', 'id');
+    }
 }

@@ -294,6 +294,7 @@
                     alerta_top(dato.tipo, dato.mensaje);
                     actulizar_tabla_excepcion();
                     cerrar_modal_excepcion();
+                    validar_boton(false, 'Guardar', 'btn_guardar_excepcion');
                 }
                 if (dato.tipo === 'error') {
                     alerta_top(dato.tipo, dato.mensaje);
@@ -411,8 +412,8 @@
                                 return `
                                     @can('horarios_vizualizar_especificacion_horas_excepciones_editar')
                                         <div class="d-inline-block tex-nowrap">
-                                            <button class="btn btn-sm btn-icon" onclick="editar_excepcion('${row.id}')" type="button">
-                                            <i class="ti ti-edit" ></i>
+                                            <button type="button" onclick="editar_excepcion('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
+                                                <i class="ti ti-edit" ></i>
                                             </button>
                                         </div>
                                     @endcan

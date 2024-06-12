@@ -39,4 +39,9 @@ class Direccion_municipal extends Model
     public function secretaria_municipal(){
         return $this->belongsTo(Secretaria_municipal::class, 'id_secretaria', 'id');
     }
+
+    //de uno a muchos los cargos
+    public function cargos(){
+        return $this->hasMany(Cargo_sm::class, 'id_direccion', 'id');
+    }
 }

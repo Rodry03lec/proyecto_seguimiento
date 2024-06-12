@@ -203,8 +203,8 @@
                                 return `
                                     @can('especial_permisos_desglose')
                                         <div class="d-inline-block tex-nowrap">
-                                            <button class="btn btn-sm btn-icon" onclick="mostrar_desglose_permiso('${row.id}')" type="button">
-                                            <i class="ti ti-settings" ></i>
+                                            <button type="button" onclick="mostrar_desglose_permiso('${row.id}')" class="btn btn-icon rounded-pill btn-primary" data-toggle="tooltip" data-placement="top" title="DESGLOSE">
+                                                <i class="ti ti-settings" ></i>
                                             </button>
                                         </div>
                                     @endcan
@@ -221,13 +221,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('especial_permisos_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_tipo_permiso('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_tipo_permiso('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('especial_permisos_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_tipo_permiso('${row.id}')" type="button">
+                                        <button type="button" onclick="eliminar_tipo_permiso('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan
@@ -386,7 +386,6 @@
                     }
                 } else {
                     alerta_top('error', 'Se cancelo');
-                    actulizar_tabla();
                 }
             });
         }
@@ -571,19 +570,19 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('especial_permisos_desglose_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_desglose_permiso('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_desglose_permiso('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('especial_permisos_desglose_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_desglose_permiso('${row.id}',${row.id_tipo_permiso})" type="button">
+                                        <button type="button" onclick="eliminar_desglose_permiso('${row.id}',${row.id_tipo_permiso})" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan
 
                                     @can('especial_permisos_desglose_vizualizar')
-                                        <button class="btn btn-sm btn-icon" onclick="vizualizar_desglose_permiso('${row.id}')" type="button">
+                                        <button type="button" onclick="vizualizar_desglose_permiso('${row.id}')" class="btn btn-icon rounded-pill btn-info" data-toggle="tooltip" data-placement="top" title="VIZUALIZAR">
                                             <i class="ti ti-eye" ></i>
                                         </button>
                                     @endcan

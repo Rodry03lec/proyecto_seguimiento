@@ -1,15 +1,18 @@
 @extends('principal')
 @section('titulo', ' | PERMISO BOLETA')
+@section('estilos')
+
+@endsection
 @section('contenido')
 
     <div class="card p-0 mb-2">
+
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">:::::::: BOLETA - PERMISO :::::::: </h5>
         </div>
         <div class="card-body d-flex flex-column flex-md-row justify-content-between p-0 pt-4">
             <div class="app-academy-md-25 card-body py-0">
-                <img src="{{ asset('admin_template/img/illustrations/bulb-light.png') }}"
-                    class="img-fluid app-academy-img-height scaleX-n1-rtl" height="90" />
+                <img src="{{ asset('admin_template/img/illustrations/bulb-light.png') }}" class="img-fluid app-academy-img-height scaleX-n1-rtl" height="90" />
             </div>
             <div class="col-12 card-body d-flex align-items-md-center flex-column" style="width: 100%">
                 <h3 class="card-title mb-4 lh-sm px-md-5 lh-lg">
@@ -25,13 +28,19 @@
                     </select>
                 </div>
 
+                {{-- <div class="select2-container" >
+                    <select id="buscar_ci_persona"></select>
+                </div> --}}
+
+
             </div>
             <div class="app-academy-md-25 d-flex align-items-end justify-content-end">
-                <img src="{{ asset('admin_template/img/illustrations/pencil-rocket.png') }}" alt="pencil rocket"
-                    height="188" class="scaleX-n1-rtl" />
+                <img src="{{ asset('admin_template/img/illustrations/pencil-rocket.png') }}" alt="pencil rocket" height="188" class="scaleX-n1-rtl" />
             </div>
         </div>
     </div>
+
+
 
 
     <div class="card mb-1">
@@ -118,7 +127,7 @@
                         <th>FECHA GENERADA</th>
                         <th>FECHA Y HORA INICIO</th>
                         <th>FECHA Y HORA FINAL</th>
-                        <th>DESCRIPCIÓN</th>
+                        {{-- <th>DESCRIPCIÓN</th> --}}
                         <th>APROBADO</th>
                         <th>CONSTANCIA</th>
                     </tr>
@@ -236,7 +245,48 @@
 
     @endsection
     @section('scripts')
+
+
         <script>
+
+            /* $(document).ready(function() {
+                $('#buscar_ci_persona').select2({
+                    placeholder: "[ BUSQUEDA DE PERSONA ]",
+                    minimumInputLength: 1,
+                    ajax: {
+                        url: '{{ route("buscar_persona_bol") }}',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term // término de búsqueda
+                            };
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        id: item.ci,
+                                        text: item.ci + ' - ' + item.nombres + ' ' + item.ap_paterno + ' ' + item.ap_materno
+                                    };
+                                })
+                            };
+                        }
+                    },
+                    cache: true,
+                    dropdownCssClass: "select2-dropdown-custom" // Agrega una clase personalizada al menú desplegable
+                });
+
+                // Estilos personalizados para el menú desplegable de Select2
+                $('.select2-dropdown-custom').css({
+                    'border': '1px solid #ccc',
+                    'background-color': '#fff',
+                    'color': '#333',
+                    'width': '100% !important'
+                });
+            });
+ */
+
 
             hora_flatpickr('hora_inicio');
             hora_flatpickr('hora_final');
@@ -248,8 +298,11 @@
                     noCalendar: true,
                     dateFormat: "H:i",
                     defaultDate: "08:00",
+                    minTime: "08:00",
+                    maxTime: "19:00"
                 });
             }
+
 
             fechas_flatpicker('fecha_inicio');
             fechas_flatpicker('fecha_final');
@@ -290,10 +343,11 @@
             let contrato_id         = document.getElementById('id_contrato');
 
 
+            let regex = /^[0-9]+$/;
             //PARA LA VALIDACION DE LA PERSONA SI ES QUE TIENE CONTRATO ESTABLECIDO O NO
             async function buscar_ci(ci){
                 vaciar_errores_form_boleta_permiso();
-                if(ci.length >= 5){
+                if(ci.length >= 5 && regex.test(ci)){
                     try {
                         let respuesta = await fetch("{{ route('cbol_persona_ci') }}",{
                             method: 'POST',
@@ -352,7 +406,8 @@
                             desabilitar_habilitar(true);
                             vaciar_datos();
                             actulizar_tabla();
-                            listar_bolestas_permisos(0);
+                            //listar_bolestas_permisos(0);
+                            $('#tabla_boleta_permiso').DataTable().clear().draw();
                         }
                     } catch (error) {
                         console.log('Ocurrio un error :' + error );
@@ -363,7 +418,8 @@
                         desabilitar_habilitar(true);
                         vaciar_datos();
                         actulizar_tabla();
-                        listar_bolestas_permisos(0);
+                        //listar_bolestas_permisos(0);
+                        $('#tabla_boleta_permiso').DataTable().clear().draw();
                     }
                 }else{
                     mensaje_persona.innerHTML   = ``;
@@ -374,6 +430,7 @@
                     vaciar_datos();
                     /* actulizar_tabla();
                     listar_bolestas_permisos(0); */
+                    $('#tabla_boleta_permiso').DataTable().clear().draw();
                 }
             }
 
@@ -503,9 +560,10 @@
                         desabilitar_habilitar(false);
                         actulizar_tabla();
                         listar_bolestas_permisos(dato.id_persona);
+                        //aqui va tener que ir la imprecion de la boleta de permiso
                         setTimeout(() => {
                             imprimir_boleta_permiso(dato.id_permiso_new);
-                        }, 1500);
+                        }, 1000);
                     }
                     if(dato.tipo === 'error'){
                         alerta_top(dato.tipo, dato.mensaje);
@@ -565,29 +623,32 @@
                                     render: function(data, type, row, meta) {
                                         return `
                                             <div class="d-inline-block tex-nowrap">
+
+                                                @can('boletas_generar_permiso_pdf')
+                                                    <button type="button" onclick="imprimir_boleta_permiso('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ABRIR PDF">
+                                                        <i class="ti ti-cloud-down" ></i>
+                                                    </button>
+                                                @endcan
+
                                                 @can('boletas_generar_permiso_editar')
-                                                    <button class="btn btn-sm btn-icon" onclick="editar_permiso_boleta('${row.id}')" type="button">
+                                                    <button type="button" onclick="editar_permiso_boleta('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                                         <i class="ti ti-edit" ></i>
                                                     </button>
                                                 @endcan
 
                                                 @can('boletas_generar_permiso_vizualizar')
-                                                    <button class="btn btn-sm btn-icon" onclick="vizualizar_detalles_permiso('${row.id}')" type="button">
+                                                    <button type="button" onclick="vizualizar_detalles_permiso('${row.id}')" class="btn btn-icon rounded-pill btn-info" data-toggle="tooltip" data-placement="top" title="VIZUALIZAR PERMISO">
                                                         <i class="ti ti-eye" ></i>
                                                     </button>
                                                 @endcan
 
                                                 @can('boletas_generar_permiso_eliminar')
-                                                    <button class="btn btn-sm btn-icon" onclick="eliminar_permiso_boleta('${row.id}')" type="button">
+                                                    <button type="button" onclick="eliminar_permiso_boleta('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                                         <i class="ti ti-trash" ></i>
                                                     </button>
                                                 @endcan
 
-                                                @can('boletas_generar_permiso_pdf')
-                                                    <button class="btn btn-sm btn-icon" onclick="imprimir_boleta_permiso('${row.id}')" type="button">
-                                                        <i class="ti ti-cloud-down" ></i>
-                                                    </button>
-                                                @endcan
+
                                             </div>
                                         `;
                                     }
@@ -617,10 +678,10 @@
                                             +fecha_literal(data.fecha_final, 4)+` `+data.hora_final+` </div>`;
                                     }
                                 },
-                                {
+                                /* {
                                     data: 'descripcion',
                                     className: 'table-td'
-                                },
+                                }, */
 
                                 {
                                     data: null,
@@ -629,7 +690,7 @@
                                         return `
                                             @can('boletas_generar_permiso_aprobado')
                                                 <label class="switch switch-primary">
-                                                    <input onclick="permiso_aprobado('${row.id}', '${row.id_persona}')" type="checkbox" class="switch-input" ${row.aprobado === true ? 'checked' : ''} />
+                                                    <input onclick="permiso_aprobado('${row.id}', '${row.id_persona}')" type="checkbox" class="switch-input" ${row.aprobado === 1 || row.aprobado === true ? 'checked' : ''} />
                                                     <span class="switch-toggle-slider">
                                                         <span class="switch-on">
                                                             <i class="ti ti-check"></i>
@@ -650,7 +711,7 @@
                                         return `
                                             @can('boletas_generar_permiso_constancia')
                                                 <label class="switch switch-primary">
-                                                    <input onclick="permiso_constancia('${row.id}', '${row.id_persona}')" type="checkbox" class="switch-input" ${row.constancia === true ? 'checked' : ''} />
+                                                    <input onclick="permiso_constancia('${row.id}', '${row.id_persona}')" type="checkbox" class="switch-input" ${row.constancia === 1 || row.constancia === true ? 'checked' : ''} />
                                                     <span class="switch-toggle-slider">
                                                         <span class="switch-on">
                                                             <i class="ti ti-check"></i>
@@ -903,7 +964,6 @@
                             option.text     = '['+value.nombre+'] : '+value.descripcion;
                             permis_desglose_edit.appendChild(option);
                         });
-
                     }catch(error){
                         console.log('Ocurrio un error : '+error);
                         permis_desglose_edit.innerHTML = `<option selected disabled>[ SELECCIONE DESGLOSE PERMISO ]</option>`;

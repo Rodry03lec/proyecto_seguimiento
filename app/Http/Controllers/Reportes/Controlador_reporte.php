@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Biometrico;
+namespace App\Http\Controllers\Reportes;
 
 use App\Http\Controllers\Controller;
 use App\Models\Biometrico\Biometrico;
@@ -13,28 +13,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
-class Controlador_asistencias extends Controller
-{
-    /**
-     * @version 1.0
-     * @author  Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
-     * @param Controlador Administrar la parte de VER O MODIFICAR LAS ASISTENCIAS OJO SOLO PARA PERSONAL AUTORIZADO
-     * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
-     */
 
-    //PARA LA PARTE DE LA ADMINISTRACION DE LAS ASISTENCIAS
-    public function asistencia()
-    {
-        $data['menu'] = '17';
-        $data['listar_dias'] = Dias_semana::OrderBy('id', 'asc')->get();
-        return view('administrador.biometrico.asistencia.listar_asistencia', $data);
+
+use Dompdf\Dompdf;
+use Illuminate\Support\Facades\View;
+use Dompdf\Options;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+class Controlador_reporte extends Controller
+{
+
+    //para la vista de la asistencia
+    public function  vista_asistencia() {
+        $data['listar_dias'] = Dias_semana::get();
+        return view('asistencia.vista_asistencia', $data);
     }
 
+    public function asitencia_reporte(Request $request){
 
-    public function generar_asistencia(Request $request)
-    {
+        $requ_dias = ['1','2','3','4','5'];
         // Define las reglas de validación
         $rules = [
+            'ci'            => 'required',
             'fecha_inicial' => 'required|date',
             'fecha_final'   => 'required|date',
         ];
@@ -46,8 +46,8 @@ class Controlador_asistencias extends Controller
         if ($validator->fails()) {
             // Redirige de vuelta con los errores y los datos antiguos
             return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+                        ->withErrors($validator)
+                        ->withInput();
         } else {
             $data['menu'] = '17';
             $data['ci_persona'] = $request->ci;
@@ -57,6 +57,12 @@ class Controlador_asistencias extends Controller
 
             // Identificamos la persona por CI
             $persona = Persona::where('ci', $request->ci)->first();
+
+            // Verificar si la persona existe
+            if (!$persona) {
+                return redirect()->back()->withErrors(['ci' => 'Persona no encontrada'])->withInput();
+            }
+
             // Identificamos las fechas inicial y final en la tabla principal
             $fecha_inicial_emp = Fecha_principal::where('fecha', $request->fecha_inicial)->first();
             $fecha_final_emp = Fecha_principal::where('fecha', $request->fecha_final)->first();
@@ -64,6 +70,7 @@ class Controlador_asistencias extends Controller
             //vamos a enviar para ver los datos
             $data['fecha_inicial']  = $fecha_inicial_emp;
             $data['fecha_final']    = $fecha_final_emp;
+
 
             // Listamos las fechas dentro del rango
             $fecha_principal_listar = Fecha_principal::with(['dias_semana'])
@@ -73,7 +80,7 @@ class Controlador_asistencias extends Controller
 
             // Consulta los permisos y licencias de la persona
             $permiso_listar = Permiso::where('id_persona', $persona->id)
-                ->where(function ($query) use ($request) {
+                ->where(function($query) use ($request) {
                     $query->whereBetween('fecha_inicio', [$request->fecha_inicial, $request->fecha_final])
                         ->orWhereBetween('fecha_final', [$request->fecha_inicial, $request->fecha_final]);
                 })
@@ -81,7 +88,7 @@ class Controlador_asistencias extends Controller
                 ->get(['id', 'fecha_inicio', 'fecha_final', 'hora_inicio', 'hora_final', 'descripcion']);
 
             $licencia_listar = Licencia::where('id_persona', $persona->id)
-                ->where(function ($query) use ($request) {
+                ->where(function($query) use ($request) {
                     $query->whereBetween('fecha_inicio', [$request->fecha_inicial, $request->fecha_final])
                         ->orWhereBetween('fecha_final', [$request->fecha_inicial, $request->fecha_final]);
                 })
@@ -91,15 +98,15 @@ class Controlador_asistencias extends Controller
             $biometricos_lis = [];
 
             foreach ($fecha_principal_listar as $lis) {
-                if (in_array($lis->id_dia_sem, $request->dias)) {
-                    $biometrico = Biometrico::with(['usuario', 'usuario_edit', 'fecha_principal' => function ($fp1) {
+                if (in_array($lis->id_dia_sem, $requ_dias)) {
+                    $biometrico = Biometrico::with(['usuario', 'usuario_edit', 'fecha_principal'=>function($fp1){
                         $fp1->with(['dias_semana', 'feriado']);
-                    }, 'contrato' => function ($c1) {
-                        $c1->with(['horario' => function ($h1) {
-                            $h1->with(['rango_hora' => function ($rh1) {
-                                $rh1->with(['excepcion_horario' => function ($exh1) {
+                    },'contrato'=>function($c1){
+                        $c1->with(['horario'=>function($h1){
+                            $h1->with(['rango_hora'=>function($rh1){
+                                $rh1->with(['excepcion_horario'=>function($exh1){
                                     $exh1->with(['dias_semana_excepcion']);
-                                }, 'horarios']);
+                                },'horarios']);
                             }]);
                         }]);
                     }])->where('id_persona', $persona->id)
@@ -116,62 +123,74 @@ class Controlador_asistencias extends Controller
 
             $data['listar_biometrico'] = $biometricos_lis;
 
-            $data['persona'] = Persona::with(['contrato' => function ($co) {
-                $co->with(['profesion', 'grado_academico', 'cargo_sm' => function ($cs) {
-                    $cs->with(['unidades_admnistrativas', 'direccion' => function ($dir) {
+            $data['persona'] = Persona::with(['contrato'=>function($co){
+                $co->with(['profesion', 'grado_academico', 'cargo_sm'=>function($cs){
+                    $cs->with(['unidades_admnistrativas', 'direccion'=>function($dir){
                         $dir->with(['secretaria_municipal']);
                     }]);
-                }, 'cargo_mae' => function ($cm) {
+                }, 'cargo_mae'=>function($cm){
                     $cm->with(['unidad_mae']);
                 }]);
                 $co->where('estado', 'activo');
             }])->find($persona->id);
 
-            return view('administrador.biometrico.asistencia.vista_asistencia', $data);
+
+
+            // Crear el objeto Dompdf
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isFontSubsettingEnabled', true);
+        $options->set('isRemoteEnabled', true);
+        $options->set('tempDir', '/path/to/temp');
+        $options->set('chroot', '/path/to/chroot');
+        $options->set('logOutputFile', '/path/to/logfile');
+        $options->set('defaultPaperSize', 'letter');
+        $options->set('defaultPaperOrientation', 'portrait');
+        $dompdf = new Dompdf($options);
+
+
+        // Crear el contexto HTTP para Dompdf
+        $context = stream_context_create([
+            'ssl' => [
+                'allow_self_signed' => true,
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ],
+        ]);
+
+        // Agregar el contexto HTTP
+        $dompdf->setHttpContext($context);
+
+        // Renderizar la vista como HTML
+        $html = view('asistencia.reporte_asistencia', $data)->render();
+
+        // Cargar el HTML en Dompdf y renderizar el PDF
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('letter', 'portrait');
+
+        // Registrar el evento para agregar el número de página
+        $dompdf->setCallbacks([
+            'pageNumber' => function() use ($dompdf) {
+                return $dompdf->getCanvas()->get_page_number();
+            },
+            'totalPages' => function() use ($dompdf) {
+                return $dompdf->getCanvas()->get_page_count();
+            },
+        ]);
+
+        // Renderizar el PDF
+        $dompdf->render();
+
+        // Obtener el contenido del PDF como una cadena
+        $pdfContent = $dompdf->output();
+
+        $persona_detalle = $persona->ci.'-'.$persona->nombres.'-'.$persona->ap_paterno.'-'.$persona->ap_materno;
+        $nombre_archivo = 'reporte_asistencia-' . $persona_detalle . '.pdf';
+
+        // Retornar el PDF como una respuesta HTTP con el encabezado adecuado para mostrar en el navegador
+        return response($pdfContent)
+        ->header('Content-Type', 'application/pdf')
+        ->header('Content-Disposition', 'inline; filename="'.$nombre_archivo.'"');
         }
-    }
-
-
-
-
-
-
-
-    //para editar la parte de las asistenciass
-    public function editar_asistencia(Request $request)
-    {
-        try {
-            $biometrico = Biometrico::find($request->id);
-            if ($biometrico) {
-                $data = mensaje_mostrar('success', $biometrico);
-            } else {
-                $data = mensaje_mostrar('error', 'Ocurrio un error al editar los datos');
-            }
-        } catch (\Throwable $th) {
-            $data = mensaje_mostrar('error', 'Ocurrio un error al editar los datos');
-        }
-        return response()->json($data);
-    }
-
-    //para guardar lo editado de la asistencia
-    public function guardar_asist_editado(Request $request)
-    {
-        try {
-            $biometrico_asistencia                      = Biometrico::find($request->id_biometrico);
-            $biometrico_asistencia->hora_ingreso_ma     = $request->entrada_maniana;
-            $biometrico_asistencia->hora_salida_ma      = $request->salida_maniana;
-            $biometrico_asistencia->hora_entrada_ta     = $request->entrada_tarde;
-            $biometrico_asistencia->hora_salida_ta      = $request->salida_tarde;
-            $biometrico_asistencia->id_user_up          = Auth::user()->id;
-            $biometrico_asistencia->save();
-            if ($biometrico_asistencia->id) {
-                $data = mensaje_mostrar('success', 'Se guardo con exito el registro');
-            } else {
-                $data = mensaje_mostrar('error', 'Ocurrio un error al insertar los datos');
-            }
-        } catch (\Throwable $th) {
-            $data = mensaje_mostrar('error', 'Ocurrio un error al insertar los datos');
-        }
-        return response()->json($data);
     }
 }

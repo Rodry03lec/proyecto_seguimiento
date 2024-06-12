@@ -174,13 +174,13 @@
                             return `
                                 <div class="d-inline-block tex-nowrap">
                                     @can('unidades_administrativas_editar')
-                                        <button class="btn btn-sm btn-icon" onclick="editar_unidad_admin('${row.id}')" type="button">
+                                        <button type="button" onclick="editar_unidad_admin('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                             <i class="ti ti-edit" ></i>
                                         </button>
                                     @endcan
 
                                     @can('unidades_administrativas_eliminar')
-                                        <button class="btn btn-sm btn-icon" onclick="eliminar_unidad_admin('${row.id}')" type="button">
+                                        <button type="button" onclick="eliminar_unidad_admin('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                             <i class="ti ti-trash" ></i>
                                         </button>
                                     @endcan

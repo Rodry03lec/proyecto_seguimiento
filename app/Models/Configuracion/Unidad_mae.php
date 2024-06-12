@@ -30,4 +30,8 @@ class Unidad_mae extends Model
             get: fn ($value) => mb_strtoupper($value),
         );
     }
+    //para relacion de uno a muchos a cargos
+    public function cargos(){
+        return $this->hasMany(Cargo_mae::class, 'id_unidad', 'id');
+    }
 }

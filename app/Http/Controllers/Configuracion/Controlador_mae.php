@@ -12,7 +12,7 @@ class Controlador_mae extends Controller
 {
     /**
      * @version 1.0
-     * @author  Rodrigo Lecoña Quispe <rodrigolecona03@gmail.com>
+     * @author  Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
      * @param Controlador Administrar la parte de LA MAE que seria el DESPACHO MUNICIPAL, Y LA SECRETARIA GENERAL
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */
@@ -54,10 +54,10 @@ class Controlador_mae extends Controller
             if($mae){
                 $data = mensaje_mostrar('success', $mae);
             }else{
-                $data = mensaje_mostrar('error', 'Ocurrio un problema al editar los datos'); 
+                $data = mensaje_mostrar('error', 'Ocurrio un problema al editar los datos');
             }
         } catch (\Throwable $th) {
-            $data = mensaje_mostrar('error', 'Ocurrio un problema al editar los datos'); 
+            $data = mensaje_mostrar('error', 'Ocurrio un problema al editar los datos');
         }
         return response()->json($data);
     }
@@ -100,12 +100,12 @@ class Controlador_mae extends Controller
     /**
      * PARA LA ADMINISTRACION DE CARGOS
      */
-    //para la administracion de los cargos 
+    //para la administracion de los cargos
     public function mae_unidad(Request $request){
         try {
             $cargos = Mae::find($request->id);
             if($cargos){
-                $data = mensaje_mostrar('success', $cargos);  
+                $data = mensaje_mostrar('success', $cargos);
             }else{
                 $data = mensaje_mostrar('error', 'Ocurrio un error al mostrar los datos');
             }
@@ -129,7 +129,7 @@ class Controlador_mae extends Controller
                 $data = mensaje_mostrar('errores', $validar->errors());
             }else{
                 $cargo                  = Unidad_mae::find($request->id_cargo);
-                $cargo->descripcion     = $request->descripcion;   
+                $cargo->descripcion     = $request->descripcion;
                 $cargo->save();
                 if($cargo->id){
                     $data = array(
@@ -150,7 +150,7 @@ class Controlador_mae extends Controller
             }else{
                 $cargo                  = new Unidad_mae();
                 $cargo->descripcion     = $request->descripcion;
-                $cargo->id_mae          = $request->id_mae_new;    
+                $cargo->id_mae          = $request->id_mae_new;
                 $cargo->save();
                 if($cargo->id){
                     $data = array(
@@ -163,7 +163,7 @@ class Controlador_mae extends Controller
                 }
             }
         }
-        
+
         return response()->json($data);
     }
 
@@ -172,7 +172,7 @@ class Controlador_mae extends Controller
         try {
             $cargo = Unidad_mae::find($request->id);
             if($cargo){
-                $data = mensaje_mostrar('success', $cargo); 
+                $data = mensaje_mostrar('success', $cargo);
             }else{
                 $data = mensaje_mostrar('error', 'Ocurrio un error al querer editar!');
             }

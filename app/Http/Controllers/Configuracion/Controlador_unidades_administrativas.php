@@ -11,7 +11,7 @@ class Controlador_unidades_administrativas extends Controller
 {
     /**
      * @version 1.0
-     * @author  Rodrigo Lecoña Quispe <rodrigolecona03@gmail.com>
+     * @author  Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
      * @param Controlador Administrar el registro de todas las unidades administrativas que existe en aqui
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */
@@ -91,7 +91,7 @@ class Controlador_unidades_administrativas extends Controller
             if($unidades_admin->delete()){
                 $data = mensaje_mostrar('success', 'Se elimino el registro con éxito');
             }else{
-                $data = mensaje_mostrar('error', 'Ocurrio un problema al eliminar');  
+                $data = mensaje_mostrar('error', 'Ocurrio un problema al eliminar');
             }
         } catch (\Throwable $th) {
             $data = mensaje_mostrar('error', 'Ocurrio un problema al eliminar');

@@ -17,7 +17,7 @@ class Controlador_boleta extends Controller
 {
     /**
      * @version 1.0
-     * @author  Rodrigo Lecoña Quispe <rodrigolecona03@gmail.com>
+     * @author  Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
      * @param Controlador ADMINISTRACION DE GENERAR BOLETAS
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */
@@ -140,8 +140,8 @@ class Controlador_boleta extends Controller
                 $permiso->fecha_final   = $request->fecha_final;
                 $permiso->hora_inicio   = $request->hora_inicio;
                 $permiso->hora_final    = $request->hora_final;
-                $permiso->aprobado      = true;
-                $permiso->constancia    = false;
+                $permiso->aprobado      = 1;
+                $permiso->constancia    = 0;
                 $permiso->id_permiso_desglose = $request->desglose_permiso;
                 $permiso->id_us_create  = Auth::user()->id;
                 $permiso->id_persona    = $request->id_persona;
@@ -176,7 +176,7 @@ class Controlador_boleta extends Controller
     public function permiso_boleta_aprobar(Request $request){
         try {
             $permiso                = Permiso::find($request->id);
-            $permiso->aprobado      = ($permiso->aprobado == true) ? false : true;
+            $permiso->aprobado      = ($permiso->aprobado == 1) ? 0 : 1;
             $permiso->id_us_update  = Auth::user()->id;
             $permiso->save();
             if($permiso->id){
@@ -198,7 +198,7 @@ class Controlador_boleta extends Controller
     public function permiso_boleta_constancia(Request $request) {
         try {
             $permiso                = Permiso::find($request->id);
-            $permiso->constancia    = ($permiso->constancia == true) ? false : true;
+            $permiso->constancia    = ($permiso->constancia == 1) ? 0 : 1;
             $permiso->id_us_update  = Auth::user()->id;
             $permiso->save();
             if($permiso->id){
@@ -407,8 +407,8 @@ class Controlador_boleta extends Controller
                 $licencia->fecha_final      = $request->fecha_final;
                 $licencia->hora_inicio      = $request->hora_inicio;
                 $licencia->hora_final       = $request->hora_final;
-                $licencia->aprobado         = true;
-                $licencia->constancia       = false;
+                $licencia->aprobado         = 1;
+                $licencia->constancia       = 0;
                 $licencia->id_tipo_licencia = $request->licencia;
                 $licencia->id_us_create     = Auth::user()->id;
                 $licencia->id_persona       = $request->id_persona;
@@ -416,13 +416,11 @@ class Controlador_boleta extends Controller
                 $licencia->save();
                 if($licencia->id){
                     $data = array(
-                        'tipo'              => 'success',
-                        'mensaje'           => 'Se guardo con exito el registro!',
-                        'id_persona'        => $request->id_persona,
-                        'id_licencia_new'   => $licencia->id
+                        'tipo'          => 'success',
+                        'mensaje'       => 'Se guardo con exito el registro!',
+                        'id_persona'    => $request->id_persona,
+                        'id_licencia_id'=> $licencia->id
                     );
-
-
                 }else{
                     $data = array(
                         'tipo'              => 'error',
@@ -445,7 +443,7 @@ class Controlador_boleta extends Controller
     public function boleta_licencia_aprobado(Request $request) {
         try {
             $licencia                = Licencia::find($request->id);
-            $licencia->aprobado      = ($licencia->aprobado == true) ? false : true;
+            $licencia->aprobado      = ($licencia->aprobado == 1) ? 0 : 1;
             $licencia->id_us_update  = Auth::user()->id;
             $licencia->save();
             if($licencia->id){
@@ -467,7 +465,7 @@ class Controlador_boleta extends Controller
     public function boleta_licencia_constancia(Request $request){
         try {
             $licencia                = Licencia::find($request->id);
-            $licencia->constancia    = ($licencia->constancia == true) ? false : true;
+            $licencia->constancia    = ($licencia->constancia == 1) ? 0 : 1;
             $licencia->id_us_update  = Auth::user()->id;
             $licencia->save();
             if($licencia->id){
