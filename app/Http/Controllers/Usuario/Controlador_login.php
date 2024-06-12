@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Usuario;
 
 use App\Http\Controllers\Controller;
+use App\Models\Registro\Contrato;
+use App\Models\Tramite\Tramite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -28,7 +30,7 @@ class Controlador_login extends Controller
             'password'=>'required'
         ]);
         if($validar->fails()){
-            $data = mensaje_mostrar('error', 'Todos los campos son requeridos');  
+            $data = mensaje_mostrar('error', 'Todos los campos son requeridos');
         }else{
             $usuario = User::where('usuario', $request->usuario)->get();
             if(!$usuario->isEmpty()){
@@ -58,7 +60,24 @@ class Controlador_login extends Controller
      * PARA INGRESAR AL INICIO
     */
     public function inicio(){
-        $data['menu']   = 0; 
+        $data['menu']   = 0;
+        // Obtener todos los contratos con su tipo de contrato
+        $contratos = Contrato::with(['tipo_contrato'])->get();
+
+        // Agrupar los contratos por tipo de contrato y contarlos
+        $contratosPorTipo = $contratos->groupBy('tipo_contrato.nombre')->map(function ($contratos) {
+            return $contratos->count();
+        });
+        $data['contrato_persona'] = $contratosPorTipo;
+
+        //ahora para los tramites
+        $tramite = Tramite::with(['tipo_tramite'])->get();
+
+        $contarPorTipo_tramite = $tramite->groupBy('tipo_tramite.nombre')->map(function($tramites){
+            return $tramites->count();
+        });
+
+        $data['tramite_contar'] = $contarPorTipo_tramite;
         return view('inicio', $data);
     }
     /**
@@ -75,15 +94,15 @@ class Controlador_login extends Controller
         if (!Session::has('bienvenida_mostrada')) {
             $usuario = Auth::user()->nombres.' '.Auth::user()->apellidos;
             $mensaje = "¡Bienvenido al sistema RLQ v1: Usuario $usuario!";
-            
+
             // Almacena en sesión que se mostró el mensaje
             Session::put('bienvenida_mostrada', true);
 
             $data = mensaje_mostrar('success', $mensaje);
-    
+
             return response()->json($data);
         }
-        
+
         return response()->json(['tipo' => 'error', 'mensaje' => 'Bienvenido de nuevo.']);
     }
     /**

@@ -7,7 +7,7 @@
     <title>ASISTENCIA GAMH</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="https://demos.pixinvent.com/vuexy-html-admin-template/assets/img/favicon/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('rodry/img_logos/logo_png.png') }}" />
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -151,7 +151,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.275);
+            background-color: rgba(0, 0, 0, 0.688);
             border-radius: 10px 0 0 10px;
         }
 
@@ -160,7 +160,7 @@
             position: relative;
             width: 100%;
             height: 80%;
-            padding-top: 70px;
+            padding: 10%;
         }
 
         #formulario {

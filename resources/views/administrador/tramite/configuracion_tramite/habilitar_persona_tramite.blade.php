@@ -31,8 +31,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="cerrar_modal_habilitar_tramite()"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-success alert-dismissible" id="detalle_categoria" role="alert">
-                    </div>
                     <form id="formulario_nuevo_cargo_tramite" method="post" autocomplete="off">
                         <input type="hidden" name="id_cargo_sm" id="id_cargo_sm">
                         <input type="hidden" name="id_cargo_mae" id="id_cargo_mae">
@@ -285,6 +283,7 @@
                     body: JSON.stringify({id:id})
                 });
                 let dato = await respuesta.json();
+                console.log(dato);
                 document.getElementById('nombre').value = '';
                 document.getElementById('id_usuario_cargo').value = '';
                 if(dato.tipo==='success'){

@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum=1.0" />
         <title>Login</title>
 
+        <link rel="icon" type="image/x-icon" href="{{ asset('rodry/img_logos/logo_png.png') }}" />
+
         <!-- Core CSS -->
         <link rel="stylesheet" href="{{ asset('admin_template/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
         <link rel="stylesheet" href="{{ asset('admin_template/vendor/css/rtl/theme-semi-dark.css') }}" class="template-customizer-theme-css" />

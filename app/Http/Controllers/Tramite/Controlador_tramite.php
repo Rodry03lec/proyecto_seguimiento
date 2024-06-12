@@ -22,10 +22,31 @@ class Controlador_tramite extends Controller{
     //Para la administracion de los tramites
     public function  vizualizar_cargos_tramite() {
         $data['menu'] = 60;
-        $data['listar_cargos'] = User_cargo_tramite::with(['cargo_sm','cargo_mae'])
-                                            ->where('estado', true)
-                                            ->where('id_usuario', Auth::user()->id)
-                                            ->get();
+
+        $listar_cargos = User_cargo_tramite::with([
+            'tramite' => function ($us_tramite) {
+                $us_tramite->with([
+                    'hojas_ruta',
+                    'tipo_tramite'
+                ])->withCount([
+                    'hojas_ruta as bandeja_entrada_count' => function ($query) {
+                        $query->where('estado_id', 2);
+                    },
+                    'hojas_ruta as recibidos_count' => function ($query) {
+                        $query->where('estado_id', 3);
+                    }
+                ]);
+            },
+            'cargo_sm',
+            'cargo_mae'
+        ])
+        ->where('estado', true)
+        ->where('id_usuario', Auth::user()->id)
+        ->get();
+
+
+
+        $data['listar_cargos'] = $listar_cargos;
         return view('administrador.tramite.vista_tramite', $data);
     }
     //para la administracion del tramite cargo

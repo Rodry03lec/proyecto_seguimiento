@@ -6,6 +6,7 @@ use App\Models\Configuracion\Cargo_mae;
 use App\Models\Configuracion\Cargo_sm;
 use App\Models\Registro\Contrato;
 use App\Models\Registro\Persona;
+use App\Models\Tramite\Tramite;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -48,4 +49,8 @@ class User_cargo_tramite extends Model
         return $this->belongsTo(Persona::class, 'id_persona', 'id');
     }
 
+    //para la relacion de uno a muchos con tramite
+    public function tramite(){
+        return $this->hasMany(Tramite::class, 'user_cargo_id', 'id');
+    }
 }

@@ -30,7 +30,7 @@ Route::get('/gamcasistencia', function () {
     return view('asistencia.vista_asistencia');
 })->name('asistencia');
 
-Route::get('gamcasistencia', [Controlador_reporte::class, 'vista_asistencia'])->name('crep_asistencia');
+Route::get('gamhasistencia', [Controlador_reporte::class, 'vista_asistencia'])->name('crep_asistencia');
 Route::get('AsistenciaReporte', [Controlador_reporte::class, 'asitencia_reporte'])->name('crep_asistencia_reporte');
 
 
