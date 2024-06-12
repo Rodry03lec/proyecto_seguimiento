@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Tramite\Tramite;
 use App\Models\Tramite\Ruta_archivado;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 
 class Hojas_ruta extends Model
@@ -32,6 +33,13 @@ class Hojas_ruta extends Model
         'estado_id',
         'tramite_id',
     ];
+
+    protected function instructivo(): Attribute{
+        return new Attribute(
+            set: fn ($value) => mb_strtoupper($value, 'UTF-8'),
+            get: fn ($value) => mb_strtoupper($value, 'UTF-8' ),
+        );
+    }
 
     //relacion reversa con User_cargo_tramite
     public function remitente_user(){

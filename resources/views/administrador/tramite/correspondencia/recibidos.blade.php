@@ -85,7 +85,7 @@
 
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
                                 <label class="form-label" for="instructivo">Instructivo</label>
-                                <input type="text" class="form-control" name="instructivo" id="instructivo"
+                                <input type="text" class="form-control uppercase-input" name="instructivo" id="instructivo"
                                     placeholder="Ingrese el instructivo">
                                 <div id="_instructivo"></div>
                             </div>
@@ -121,7 +121,7 @@
                             <input type="hidden" name="id_hoja_ruta_rec" id="id_hoja_ruta_rec">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
                                 <label class="form-label" for="descripcion_archivar">DESCRIPCIÓN</label>
-                                <textarea name="descripcion_archivar" id="descripcion_archivar" cols="30" rows="3"  class="form-control" placeholder="Ingrese la descripcion, por el cual esta archivando"></textarea>
+                                <textarea name="descripcion_archivar" id="descripcion_archivar" cols="30" rows="3"  class="form-control uppercase-input" placeholder="Ingrese la descripcion, por el cual esta archivando"></textarea>
                                 <div id="_descripcion_archivar" ></div>
                             </div>
                         </div>

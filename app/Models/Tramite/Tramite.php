@@ -8,6 +8,7 @@ use App\Models\Configuracion_tramite\Tipo_tramite;
 use App\Models\Configuracion_tramite\User_cargo_tramite;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Tramite extends Model
 {
@@ -41,6 +42,15 @@ class Tramite extends Model
         'destinatario_id',
         'user_cargo_id',
     ];
+
+    protected function referencia(): Attribute{
+        return new Attribute(
+            set: fn ($value) => mb_strtoupper($value, 'UTF-8'),
+            get: fn ($value) => mb_strtoupper($value, 'UTF-8'),
+        );
+    }
+
+
 
     //relacion de uno amuchos
     public function hojas_ruta(){

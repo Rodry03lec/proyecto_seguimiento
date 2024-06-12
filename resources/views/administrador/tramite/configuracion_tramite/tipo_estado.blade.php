@@ -163,11 +163,11 @@
                         render: function(data, type, row, meta) {
                             return `
                                 <div class="d-inline-block tex-nowrap">
-                                    <button class="btn btn-sm btn-icon" onclick="editar_tipo_estado('${row.id}')" type="button">
+                                    <button type="button"  onclick="editar_tipo_estado('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
                                         <i class="ti ti-edit" ></i>
                                     </button>
 
-                                    <button class="btn btn-sm btn-icon" onclick="eliminar_tipo_estado('${row.id}')" type="button">
+                                    <button type="button"  onclick="eliminar_tipo_estado('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
                                         <i class="ti ti-trash" ></i>
                                     </button>
                                 </div>

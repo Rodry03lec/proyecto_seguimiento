@@ -119,7 +119,7 @@
                         <div class="row">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
                                 <label class="form-label" for="referencia">Referencia</label>
-                                <input type="text" class="form-control" name="referencia" id="referencia"
+                                <input type="text" class="form-control uppercase-input" name="referencia" id="referencia"
                                     placeholder="Ingrese la referencia">
                                 <div id="_referencia"></div>
                             </div>
@@ -143,7 +143,7 @@
 
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
                                 <label class="form-label" for="instructivo">Instructivo</label>
-                                <input type="text" class="form-control" name="instructivo" id="instructivo"
+                                <input type="text" class="form-control uppercase-input" name="instructivo" id="instructivo"
                                     placeholder="Ingrese el instructivo">
                                 <div id="_instructivo"></div>
                             </div>
@@ -186,11 +186,11 @@
                     valor_dos.innerHTML = `
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
                             <label class="form-label" for="remitente_txt">Remitente</label>
-                            <input type="text" class="form-control" name="remitente_txt" id="remitente_txt" placeholder="Ingrese el nombre del remitente">
+                            <input type="text" class="form-control uppercase-input" name="remitente_txt" id="remitente_txt" placeholder="Ingrese el nombre del remitente">
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
                             <label class="form-label" for="cargo_txt">Cargo del Remitente</label>
-                            <input type="text" class="form-control" name="cargo_txt" id="cargo_txt" placeholder="Ingrese el cargo del remitente">
+                            <input type="text" class="form-control uppercase-input" name="cargo_txt" id="cargo_txt" placeholder="Ingrese el cargo del remitente">
                         </div>
                     `;
                     valor_general.innerHTML = ``;

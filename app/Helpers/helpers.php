@@ -624,6 +624,153 @@ function convertir($numero){
     }
 }
 
+//para la abreviacion de palabras
+function abreviarCargo($cadena) {
+    // Divide la cadena en palabras
+    $palabras = explode(' ', $cadena);
+    // Define las palabras de enlace que deben eliminarse
+    $palabras_a_eliminar = ['DE', 'Y'];
+    // Recorre las palabras y reemplaza por sus abreviaciones
+    $abreviada = [];
+    foreach ($palabras as $palabra) {
+        // Si la palabra es una palabra de enlace, se elimina
+        if (in_array($palabra, $palabras_a_eliminar)) {
+            continue;
+        }
+        // Abrevia cada palabra tomando las tres primeras letras y agregando un punto
+        if (strlen($palabra) > 2) {
+            $abreviada[] = substr($palabra, 0, 3) . '.';
+        } else {
+            $abreviada[] = $palabra;
+        }
+    }
+    // Junta las palabras abreviadas en una sola cadena
+    return implode(' ', $abreviada);
+}
+
+
+function abreviarCargo_tres($cadena) {
+    // Divide la cadena en palabras
+    $palabras = explode(' ', $cadena);
+    // Define las palabras de enlace que deben eliminarse
+    $palabras_a_eliminar = ['DE', 'Y'];
+    // Recorre las primeras tres palabras y reemplaza por sus abreviaciones
+    $abreviada = [];
+    $contador = 0;
+    foreach ($palabras as $palabra) {
+        if ($contador >= 3) {
+            break;
+        }
+        // Si la palabra es una palabra de enlace, se elimina
+        if (in_array($palabra, $palabras_a_eliminar)) {
+            continue;
+        }
+        // Abrevia cada palabra tomando las tres primeras letras y agregando un punto
+        if (strlen($palabra) > 2) {
+            $abreviada[] = substr($palabra, 0, 3) . '.';
+        } else {
+            $abreviada[] = $palabra;
+        }
+        $contador++;
+    }
+    // Junta las palabras abreviadas en una sola cadena
+    return implode(' ', $abreviada);
+}
+
+
+function numero_a_ordinal($numero) {
+    $unidades = [
+        1 => 'primer',
+        2 => 'segundo',
+        3 => 'tercer',
+        4 => 'cuarto',
+        5 => 'quinto',
+        6 => 'sexto',
+        7 => 'séptimo',
+        8 => 'octavo',
+        9 => 'noveno'
+    ];
+
+    $decenas = [
+        10 => 'décimo',
+        20 => 'vigésimo',
+        30 => 'trigésimo',
+        40 => 'cuadragésimo',
+        50 => 'quincuagésimo',
+        60 => 'sexagésimo',
+        70 => 'septuagésimo',
+        80 => 'octogésimo',
+        90 => 'nonagésimo'
+    ];
+
+    $centenas = [
+        100 => 'centésimo',
+        200 => 'ducentésimo',
+        300 => 'tricentésimo',
+        400 => 'cuadringentésimo',
+        500 => 'quingentésimo',
+        600 => 'sexcentésimo',
+        700 => 'septingentésimo',
+        800 => 'octingentésimo',
+        900 => 'noningentésimo'
+    ];
+
+    $miles = [
+        1000 => 'milésimo',
+        2000 => 'dosmilésimo'
+    ];
+
+    if (isset($unidades[$numero])) {
+        return mb_strtoupper($unidades[$numero] . ' DESTINATARIO');
+    }
+
+    if (isset($decenas[$numero])) {
+        return mb_strtoupper($decenas[$numero] . ' DESTINATARIO');
+    }
+
+    if (isset($centenas[$numero])) {
+        return mb_strtoupper($centenas[$numero] . ' DESTINATARIO');
+    }
+
+    if (isset($miles[$numero])) {
+        return mb_strtoupper($miles[$numero] . ' DESTINATARIO');
+    }
+
+    // Descomponer el número en unidades, decenas, centenas y millares
+    $u = $numero % 10;
+    $d = ($numero % 100) - $u;
+    $c = ($numero % 1000) - $d - $u;
+    $m = $numero - $c - $d - $u;
+
+    $resultado = '';
+
+    if ($m > 0) {
+        $resultado .= $miles[$m];
+    }
+
+    if ($c > 0) {
+        $resultado .= ' ' . $centenas[$c];
+    }
+
+    if ($d > 0) {
+        $resultado .= ' ' . $decenas[$d];
+    }
+
+    if ($u > 0) {
+        $resultado .= ' ' . $unidades[$u];
+    }
+
+    if ($numero === 0) {
+        return 'CERO DESTINATARIO';
+    }
+
+    // Reemplazar 'primer' y 'tercer' por 'primero' y 'tercero'
+    $resultado = str_replace(['primer', 'tercer'], ['primero', 'tercero'], $resultado);
+
+    return mb_strtoupper(trim($resultado) . ' DESTINATARIO');
+}
+
+
 
 //para solo mostrar las primeras 100 letras
 
