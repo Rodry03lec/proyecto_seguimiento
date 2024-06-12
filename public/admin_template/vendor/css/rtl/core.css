@@ -5727,7 +5727,7 @@ fieldset:disabled .btn {
 
 @media(min-width: 1200px) {
     .modal-xl {
-        --bs-modal-width: 1140px
+        --bs-modal-width: 1450px
     }
 }
 
@@ -9530,8 +9530,8 @@ label.btn {
 .btn-icon {
     --bs-btn-active-border-color: transparent;
     padding: 0;
-    width: calc(2.2546875rem + calc(var(--bs-border-width) * 2));
-    height: calc(2.2546875rem + calc(var(--bs-border-width) * 2));
+    width: calc(1.8rem + calc(var(--bs-border-width) * 1));
+    height: calc(1.8rem + calc(var(--bs-border-width) * 1));
     display: inline-flex;
     flex-shrink: 0;
     justify-content: center;
@@ -12793,7 +12793,7 @@ html:not([dir=rtl]) .modal-simple .btn-close {
 
 @media(min-width: 1200px) {
     .modal-xl .modal-dialog {
-        max-width: 1140px
+        max-width: 1450px
     }
 }
 

@@ -446,6 +446,7 @@ Route::prefix('/admin')->middleware(['autenticados','rectroceder'])->group(funct
         Route::post('correspondencia_listar','correspondencia_listar')->name('corres_listar');
         Route::post('correspondencia_vizualizar','correspondencia_vizualizar')->name('corres_vizualizar');
         Route::post('correspondencia_listar_hoja_ruta','correspondencia_listar_hoja_ruta')->name('corres_lis_ruta');
+        Route::post('correspondencia_anular','correspondencia_anular')->name('corres_lis_anular');
 
 
         //PARA LA PARTE DE BANDEJA DE ENTRADA

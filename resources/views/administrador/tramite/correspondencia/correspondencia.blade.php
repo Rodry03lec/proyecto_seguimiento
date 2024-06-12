@@ -11,6 +11,7 @@
 @section('contenido')
     @include('administrador.tramite.tipo_tramite')
 
+
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">:::::::: {{ $titulo_menu }} :::::::: </h5>
@@ -55,18 +56,21 @@
                                     onchange="tipo_tramite_validar(this.value)">
                                     <option disabled selected value="0">[SELECCIONE TIPO DE TRAMITE]</option>
                                     @foreach ($tipo_tramite as $lis)
-                                        <option value="{{ $lis->id }}">{{ '[' . $lis->sigla . '] ' . $lis->nombre }}</option>
+                                        <option value="{{ $lis->id }}">{{ '[' . $lis->sigla . '] ' . $lis->nombre }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 <div id="_tipo_tramite"></div>
                             </div>
                             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-3">
                                 <label class="form-label" for="numero_hojas">Número de hojas</label>
-                                <input type="text" class="form-control" name="numero_hojas" id="numero_hojas" placeholder="Ingrese la cantidad de hojas" onkeypress="return soloNumeros(event)">
+                                <input type="text" class="form-control" name="numero_hojas" id="numero_hojas"
+                                    placeholder="Ingrese la cantidad de hojas" onkeypress="return soloNumeros(event)">
                             </div>
                             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-3">
                                 <label class="form-label" for="numero_anexos">Número de anexos</label>
-                                <input type="text" class="form-control" name="numero_anexos" id="numero_anexos" placeholder="Ingrese el número de anexos" onkeypress="return soloNumeros(event)">
+                                <input type="text" class="form-control" name="numero_anexos" id="numero_anexos"
+                                    placeholder="Ingrese el número de anexos" onkeypress="return soloNumeros(event)">
                             </div>
                         </div>
                         <div class="row">
@@ -162,6 +166,13 @@
 
 @section('scripts')
     <script>
+
+
+        // Función para actualizar el contenido del contenedor
+        function actualizarTipoTramite(contenido) {
+            document.getElementById('tipo_tramite_container').innerHTML = contenido;
+        }
+
         //para el cargo con el cula esta
         let id_user_cargo = {{ $cargo_enum->id }};
         //para declarar variables
@@ -336,6 +347,7 @@
                 })
             });
             let dato = await respuesta.json();
+            console.log(dato);
             let i = 1;
             $('#tabla_tramite').DataTable({
                 responsive: true,
@@ -344,24 +356,60 @@
                         data: null,
                         className: 'table-td',
                         render: function(data, type, row, meta) {
-                            return `
-                                <div class="d-inline-block tex-nowrap">
-                                    <div class="demo-inline-spacing">
-                                        <button type="button" onclick="editar_tramite('${row.id}')" class="btn btn-icon rounded-pill btn-outline-success" data-toggle="tooltip" data-placement="top" title="EDITAR">
-                                            <i class="tf-icons ti ti-edit"></i>
-                                        </button>
-                                        <button type="button" onclick="anular_envio('${row.id}')" class="btn btn-icon rounded-pill btn-outline-danger" data-toggle="tooltip" data-placement="top" title="ANULAR ENVIO">
-                                            <i class="tf-icons ti ti-trash"></i>
-                                        </button>
-                                        <button type="button" onclick="ver_tramite('${row.id}')" class="btn btn-icon rounded-pill btn-outline-vimeo" data-placement="top" title="VIZUALIZAR">
-                                            <i class="tf-icons ti ti ti-eye"></i>
-                                        </button>
-                                        <button type="button" onclick="vertramite_pdf('${row.id}')" class="btn btn-icon rounded-pill btn-outline-danger" data-toggle="tooltip" data-placement="top" title="IMPRIMIR PDF">
-                                            <i class="tf-icons ti ti-clipboard"></i>
-                                        </button>
+                            if(data.id_estado === 5){
+                                /* return `
+                                    <div class="d-inline-block tex-nowrap">
+                                        <div class="demo-inline-spacing">
+                                            <button type="button" onclick="reanudar_tramite('${row.id}')" class="btn btn-icon rounded-pill btn-outline-primary" data-toggle="tooltip" data-placement="top" title="REANUDAR TRAMITE">
+                                                <i class="tf-icons ti ti-help"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            `;
+                                `; */
+                                return `
+                                    <div class="d-inline-block tex-nowrap">
+                                        <div class="demo-inline-spacing">
+                                            <span class="badge rounded-pill bg-danger bg-glow">ELIMINADO</span>
+                                        </div>
+                                    </div>
+                                `;
+                            }else{
+                                if(data.hojas_ruta_count <= 1){
+                                    return `
+                                    <div class="d-inline-block tex-nowrap">
+                                        <div class="demo-inline-spacing">
+                                            <button type="button" onclick="editar_tramite('${row.id}')" class="btn btn-icon rounded-pill btn-outline-success" data-toggle="tooltip" data-placement="top" title="EDITAR">
+                                                <i class="tf-icons ti ti-edit"></i>
+                                            </button>
+                                            <button type="button" onclick="anular_envio('${row.id}')" class="btn btn-icon rounded-pill btn-outline-danger" data-toggle="tooltip" data-placement="top" title="ANULAR ENVIO">
+                                                <i class="tf-icons ti ti-trash"></i>
+                                            </button>
+                                            <button type="button" onclick="ver_tramite('${row.id}')" class="btn btn-icon rounded-pill btn-outline-vimeo" data-placement="top" title="VIZUALIZAR">
+                                                <i class="tf-icons ti ti ti-eye"></i>
+                                            </button>
+                                            <button type="button" onclick="vertramite_pdf('${row.id}')" class="btn btn-icon rounded-pill btn-outline-danger" data-toggle="tooltip" data-placement="top" title="IMPRIMIR PDF">
+                                                <i class="tf-icons ti ti-clipboard"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    `;
+                                }else{
+                                    return `
+                                        <div class="d-inline-block tex-nowrap">
+                                            <div class="demo-inline-spacing">
+                                                <button type="button" onclick="ver_tramite('${row.id}')" class="btn btn-icon rounded-pill btn-outline-vimeo" data-placement="top" title="VIZUALIZAR">
+                                                    <i class="tf-icons ti ti ti-eye"></i>
+                                                </button>
+                                                <button type="button" onclick="vertramite_pdf('${row.id}')" class="btn btn-icon rounded-pill btn-outline-danger" data-toggle="tooltip" data-placement="top" title="IMPRIMIR PDF">
+                                                    <i class="tf-icons ti ti-clipboard"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+                            }
+
+
                         }
                     },
                     {
@@ -432,7 +480,8 @@
                             }
 
                             let nombre_destinatario = row.destinatario_user.contrato.grado_academico
-                                .abreviatura+ ' ' + row.destinatario_user.persona.nombres + ' ' + row.destinatario_user.persona.ap_paterno + ' ' +
+                                .abreviatura + ' ' + row.destinatario_user.persona.nombres + ' ' + row
+                                .destinatario_user.persona.ap_paterno + ' ' +
                                 row.destinatario_user.persona.ap_materno;
 
                             return `
@@ -462,7 +511,10 @@
                             if (row.destinatario_user && row.destinatario_user.contrato && row
                                 .destinatario_user.contrato.grado_academico && row.destinatario_user
                                 .persona) {
-                                nombre_destinatario = row.destinatario_user.contrato.grado_academico.abreviatura + ' ' +row.destinatario_user.persona.nombres + ' ' +row.destinatario_user.persona.ap_paterno + ' ' +row.destinatario_user.persona.ap_materno;
+                                nombre_destinatario = row.destinatario_user.contrato.grado_academico
+                                    .abreviatura + ' ' + row.destinatario_user.persona.nombres + ' ' +
+                                    row.destinatario_user.persona.ap_paterno + ' ' + row
+                                    .destinatario_user.persona.ap_materno;
                             }
 
                             let cargo_destinatario = '';
@@ -589,8 +641,10 @@
                 for (let key in datos) {
                     cuerpo += '<tr>';
                     cuerpo += "<td>" + i++ + "</td>";
-                    if(datos[key]['estado_id'] === 2){
-                        cuerpo += "<td class=\"font-size-10\">" + " </br><span class=\"" + datos[key]['estado_tipo']['color'] + "\">" + datos[key]['estado_tipo']['nombre'] + "</span> </td>";
+                    if (datos[key]['estado_id'] === 2) {
+                        cuerpo += "<td class=\"font-size-10\">" + " </br><span class=\"" + datos[key]['estado_tipo'][
+                            'color'
+                        ] + "\">" + datos[key]['estado_tipo']['nombre'] + "</span> </td>";
                     } else {
                         cuerpo += "<td class=\"font-size-10\">" + datos[key]['fecha_ingreso'] + "</td>";
                     }
@@ -601,15 +655,19 @@
                     let unidad_direccion = '';
                     let destinatario_usuario = '';
 
-                    if(datos[key]['destinatario_user']['cargo_sm'] != null){
+                    if (datos[key]['destinatario_user']['cargo_sm'] != null) {
                         cargo_ajustar = datos[key]['destinatario_user']['cargo_sm']['nombre'];
-                        unidad_direccion = datos[key]['destinatario_user']['cargo_sm']['direccion']['nombre'] + '</br>' + datos[key]['destinatario_user']['cargo_sm']['unidades_admnistrativas']['nombre'];
+                        unidad_direccion = datos[key]['destinatario_user']['cargo_sm']['direccion']['nombre'] +
+                            '</br>' + datos[key]['destinatario_user']['cargo_sm']['unidades_admnistrativas']['nombre'];
                     } else {
                         cargo_ajustar = datos[key]['destinatario_user']['cargo_mae']['nombre'];
                         unidad_direccion = datos[key]['destinatario_user']['cargo_mae']['unidad_mae']['descripcion'];
                     }
 
-                    destinatario_usuario = datos[key]['destinatario_user']['contrato']['grado_academico']['abreviatura'] + ' ' + datos[key]['destinatario_user']['persona']['nombres'] + ' ' + datos[key]['destinatario_user']['persona']['ap_paterno'] + ' ' + datos[key]['destinatario_user']['persona']['ap_materno'];
+                    destinatario_usuario = datos[key]['destinatario_user']['contrato']['grado_academico'][
+                        'abreviatura'] + ' ' + datos[key]['destinatario_user']['persona']['nombres'] + ' ' + datos[key][
+                            'destinatario_user'
+                        ]['persona']['ap_paterno'] + ' ' + datos[key]['destinatario_user']['persona']['ap_materno'];
 
                     cuerpo += "<td class=\"font-size-10\">" + unidad_direccion + "</td>";
                     cuerpo += "<td class=\"font-size-10\">" + cargo_ajustar + "</td>";
@@ -617,7 +675,7 @@
                     cuerpo += "<td class=\"font-size-10\">" + datos[key]['instructivo'] + "</td>";
                     cuerpo += '</tr>';
 
-                    if(datos[key]['ruta_archivado'] != null){
+                    if (datos[key]['ruta_archivado'] != null) {
                         archivado_resp = datos[key]['ruta_archivado']['descripcion'];
                     }
                 }
@@ -625,43 +683,95 @@
 
                 document.getElementById('listar_hojas_ruta').innerHTML = cuerpo;
 
-                if(archivado_resp != null && archivado_resp != ''){
+                if (archivado_resp != null && archivado_resp != '') {
                     document.getElementById('contenido_txt').innerHTML = `
                         <div class="alert alert-danger alert-dismissible d-flex align-items-baseline" role="alert">
-                            `+archivado_resp+`
+                            ` + archivado_resp + `
                         </div>
                     `;
-                }else{
+                } else {
                     document.getElementById('contenido_txt').innerHTML = '';
                 }
 
 
             } catch (error) {
-                console.log('error : '+error);
+                console.log('error : ' + error);
             }
         }
 
         //PARA LA IMPRESION DEL PDF DE LA HOJA DE RUTA
-        async function vertramite_pdf(id_tramite){
+        async function vertramite_pdf(id_tramite) {
             try {
-                let respuesta = await fetch("{{ route('enc_crypt') }}",{
+                let respuesta = await fetch("{{ route('enc_crypt') }}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': token
                     },
-                    body: JSON.stringify({id:id_tramite})
+                    body: JSON.stringify({
+                        id: id_tramite
+                    })
                 });
                 let dato = await respuesta.json();
                 alerta_top_end('success', 'Abriendo pdf con éxito, espere un momento!');
                 setTimeout(() => {
                     let url_permiso = "{{ route('crt_reporte_tramite', ['id' => ':id']) }}";
-                    url_permiso     = url_permiso.replace(':id', dato.mensaje);
+                    url_permiso = url_permiso.replace(':id', dato.mensaje);
                     window.open(url_permiso, '_blank');
                 }, 2000);
             } catch (error) {
-                console.log('error : ' +error);
+                console.log('error : ' + error);
             }
         }
+
+
+        //PARA CANCELAR ENVIO
+        function anular_envio(id_tramite){
+            Swal.fire({
+                title: "¿Estás seguro de anular el tramite?",
+                text: "¡NOTA!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, anular",
+                cancelButtonText: "Cancelar",
+                customClass: {
+                    confirmButton: "btn btn-primary me-3 waves-effect waves-light",
+                    cancelButton: "btn btn-label-secondary waves-effect waves-light"
+                },
+                buttonsStyling: false
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        let respuesta = await fetch("{{ route('corres_lis_anular') }}", {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': token
+                            },
+                            body: JSON.stringify({
+                                id: id_tramite
+                            })
+                        });
+                        let dato = await respuesta.json();
+                        console.log(dato);
+                        if (dato.tipo === 'success') {
+                            //destruimos la tabla
+                            actulizar_tabla();
+                            //mostrando la alerta
+                            alerta_top(dato.tipo, dato.mensaje);
+                        }
+                        if (dato.tipo === 'error') {
+                            alerta_top(dato.tipo, dato.mensaje);
+                        }
+                    } catch (error) {
+                        console.log('Error de datos : ' + error);
+                    }
+                } else {
+                    alerta_top('error', 'Se cancelo');
+                }
+            });
+        }
+
+
     </script>
 @endsection

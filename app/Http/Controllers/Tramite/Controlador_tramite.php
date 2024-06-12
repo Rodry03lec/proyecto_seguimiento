@@ -97,17 +97,38 @@ class Controlador_tramite extends Controller{
 
     //para listar los tramites del cargo de la persona
     public function correspondencia_listar(Request $request){
-        $listar_correspondencia = Tramite::with(['tipo_prioridad','tipo_tramite', 'estado_tipo', 'remitente_user'=>function ($ruse) {
-            $ruse->with(['persona', 'contrato'=>function($cotn){
-                $cotn->with(['grado_academico']);
+        $listar_correspondencia = Tramite::withCount(['hojas_ruta'])->with([
+            'hojas_ruta',
+            'tipo_prioridad',
+            'tipo_tramite',
+            'estado_tipo',
+            'remitente_user'=>function ($ruse) {
+            $ruse->with([
+                'persona',
+                'contrato'=>function($cotn){
+                $cotn->with([
+                    'grado_academico'
+                ]);
             }]);
         }, 'destinatario_user'=>function($des_user){
-            $des_user->with(['cargo_sm','cargo_mae','persona', 'contrato'=>function ($cdes) {
-                $cdes->with(['grado_academico']);
+            $des_user->with([
+                'cargo_sm',
+                'cargo_mae',
+                'persona',
+                'contrato'=>function ($cdes) {
+                $cdes->with([
+                    'grado_academico'
+                ]);
             }]);
         }, 'user_cargo_tramite'=>function ($uct) {
-            $uct->with(['cargo_sm','cargo_mae','persona', 'contrato'=>function($cto){
-                $cto->with(['grado_academico']);
+            $uct->with([
+                'cargo_sm',
+                'cargo_mae',
+                'persona',
+                'contrato'=>function($cto){
+                $cto->with([
+                    'grado_academico'
+                ]);
             }]);
         }])->where('user_cargo_id', $request->id)->OrderBy('id', 'desc')->get();
         return response()->json($listar_correspondencia);
@@ -292,6 +313,29 @@ class Controlador_tramite extends Controller{
 
         return response()->json($listar_hojas_ruta);
     }
+
+    //para anular el tramite
+    public function correspondencia_anular(Request $request){
+        try {
+            $tramite = Tramite::with(['hojas_ruta'])->find($request->id);
+
+            if ($tramite && $tramite->hojas_ruta()->count() === 1) {
+                // Si el tramite tiene exactamente una hoja_ruta, eliminarla
+                $tramite->hojas_ruta()->delete();
+                $tramite->id_estado = 5;
+                $tramite->save();
+                $data = mensaje_mostrar('success', 'El tramite se anulo con éxito' );
+            } else {
+                // Si no tiene exactamente una hoja_ruta, retornar un mensaje adecuado
+                $data = mensaje_mostrar('error', 'No se pudo eliminar, por que ya tiene mas de 1 registro');
+            }
+
+        } catch (\Throwable $th) {
+            $data = mensaje_mostrar('error', 'Ocurrio un error inesperado');
+        }
+        return response()->json($data);
+    }
+
     /**
      * FIN DE LA PARTE DE CORRESPONDENCIA
      */
