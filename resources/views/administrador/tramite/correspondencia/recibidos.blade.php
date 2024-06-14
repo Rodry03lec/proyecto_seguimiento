@@ -394,7 +394,7 @@
                         <table>
                             <tr>
                                 <th><strong>Nº </strong> </th>
-                                <th>: ${dato.tramite.numero_unico}</th>
+                                <th>: ${dato.tramite.numero_unico}/${new Date(dato.tramite.fecha_creada).getFullYear()}</th>
                             </tr>
 
                             <tr>

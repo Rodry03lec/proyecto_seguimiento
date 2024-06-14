@@ -1105,4 +1105,63 @@ class Controlador_tramite extends Controller{
      * FIN DE LA PARTE DE LOS ARCHIVADOS
      */
 
+
+
+    /**
+        * PARA LA PARTE DE CONSULTA DE DATOS
+    */
+
+    public function seguimiento_correspondencia(Request $request){
+
+        $tramite = Tramite::with([
+            'hojas_ruta'=>function($horu){
+                $horu->with([
+                    'remitente_user'=>function($rem_user){
+                        $rem_user->with([
+                            'cargo_sm',
+                            'cargo_mae',
+                            'contrato'=>function($con){
+                                $con->with([
+                                    'grado_academico'
+                                ]);
+                            },
+                            'persona',
+                        ]);
+                    },
+                    'destinatario_user'=>function($des_user){
+                        $des_user->with([
+                            'cargo_sm',
+                            'cargo_mae',
+                            'contrato'=>function($con){
+                                $con->with([
+                                    'grado_academico'
+                                ]);
+                            },
+                            'persona',
+                        ]);
+                    },
+                ]);
+            },
+            'remitente_user',
+            'tipo_tramite',
+            ])->where('numero_unico', $request->numero)->first();
+
+        if($tramite){
+            $data = mensaje_mostrar('success', $tramite);
+            $numero_unico = $tramite->numero_unico;
+            $fecha_creada = $tramite->fecha_creada;
+            $nombre_remitente = "";
+            if($tramite->remitente_nombre != null || $tramite->remitente_nombre != ''){
+                $nombre_remitente = $tramite->remitente_nombre;
+            }
+        }else{
+            $data = mensaje_mostrar('error', 'No hay hoja de ruta');
+        }
+        return response()->json($data);
+    }
+
+    /**
+     * FIN DE LA PARTE
+     */
+
 }

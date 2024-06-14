@@ -26,12 +26,20 @@ use App\Http\Controllers\Tramite\Controlador_tramite;
 use App\Http\Controllers\Reportes\Controlador_reporte;
 
 //PARA LA PARTE DE LAS ASISTENCIAS
-Route::get('/gamcasistencia', function () {
+Route::get('/gamhasistencia', function () {
     return view('asistencia.vista_asistencia');
 })->name('asistencia');
 
 Route::get('gamhasistencia', [Controlador_reporte::class, 'vista_asistencia'])->name('crep_asistencia');
 Route::get('AsistenciaReporte', [Controlador_reporte::class, 'asitencia_reporte'])->name('crep_asistencia_reporte');
+
+
+//PARA LA PARTE DE LA CORRESPONDENCIA
+Route::get('/gamhcorrespondenica', function () {
+    return view('correspondencia.vista_correspondencia');
+})->name('correspondencia_vista');
+
+Route::post('seguimiento_correspondencia', [Controlador_tramite::class, 'seguimiento_correspondencia'])->name('crep_seguimiento_correspondencia');
 
 
 //AQUI PARA LOS NO AUTENTICADOS DE LOS USUSARIOS
@@ -485,6 +493,7 @@ Route::prefix('/admin')->middleware(['autenticados', 'rectroceder'])->group(func
         Route::post('Archivados_guardar', 'archivados_guardar')->name('tcar_archivados_save');
         Route::post('Archivados_listar', 'archivados_listar')->name('tcar_archivados_listar');
     });
+
 
 
     //PARA LA PARTE DE LOS REPORTES

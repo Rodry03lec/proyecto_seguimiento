@@ -50,6 +50,13 @@ class Tramite extends Model
         );
     }
 
+    protected function remitentenombre(): Attribute{
+        return new Attribute(
+            set: fn ($value) => mb_strtoupper($value, 'UTF-8'),
+            get: fn ($value) => mb_strtoupper($value, 'UTF-8'),
+        );
+    }
+
 
 
     //relacion de uno amuchos
