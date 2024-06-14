@@ -126,14 +126,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            height: 90vh;
             position: relative;
         }
 
         .authentication-inner {
             background: #fff;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             position: relative;
             z-index: 1;
@@ -201,7 +201,7 @@
             margin: auto;
             background-color: #ffffff;
             padding: 2px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
         }
         table {
             width: 100%;
@@ -209,8 +209,8 @@
         }
         th, td {
             text-align: left;
-            padding: 20px;
-            font-size: 17px;
+            padding: 13px;
+            font-size: 16px;
         }
         th {
             background-color: #0044aa;
@@ -241,6 +241,8 @@
                 <img src="{{ asset('rodry/img_logos/logo_png.png') }}" alt="logo" class="img-fluid my-4 p-8 auth-illustration">
             </div>
             <div class="d-flex col-12 col-lg-5 align-items-center p-4">
+
+
                 <div class="w-100">
 
                     <div id="formulario">
@@ -253,35 +255,37 @@
                         <input type="text" class="form-control" id="numero" name="numero" onkeypress="return soloNumeros(event)" onkeyup="validar_numero(this.value)" placeholder="Ingrese el Nº de hoja de ruta" maxlength="10">
                     </div>
                     <hr>
+                    <div id="mensaje_corres" ></div>
 
                     <div class="container">
                         <table class="" >
                             <tr >
-                                <th> <strong>NUMERO UNICO</strong> </th>
-                                <th>: <span id="numero_unico" ></span></th>
+                                <th> <strong>NÚMERO ÚNICO</strong> </th>
+                                <th> : <span id="numero_unico" ></span></th>
                             </tr>
                             <tr>
                                 <th> <strong> FECHA </strong> </th>
-                                <th>: <span id="fecha_creada" ></span> </th>
+                                <th> : <span id="fecha_creada" ></span> </th>
                             </tr>
                             <tr>
                                 <th> <strong> REMITENTE  </strong> </th>
-                                <th>: <span id="nombre_remitente" ></span></th>
+                                <th> : <span id="nombre_remitente" ></span></th>
                             </tr>
                             <tr>
                                 <th> <strong> REFERENCIA </strong> </th>
-                                <th>: <span id="referencia" ></span> </th>
+                                <th> : <span id="referencia" ></span> </th>
                             </tr>
                             <tr>
                                 <th> <strong> DESTINATARIO ACTUAL  </strong> </th>
-                                <th>: <span id="destinatario_actual" ></span> </th>
+                                <th> : <span id="destinatario_actual" ></span> </th>
                             </tr>
                             <tr>
                                 <th> <strong> ESTADO </strong> </th>
-                                <th>: <span > </span> </th>
+                                <th> <span style="font-weight: bolder" id="estado_actual"> </span> </th>
                             </tr>
                         </table>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -311,10 +315,11 @@
             let nombre_remitente    = document.getElementById('nombre_remitente');
             let referencia          = document.getElementById('referencia');
             let destinatario_actual = document.getElementById('destinatario_actual');
+            let estado_actual       = document.getElementById('estado_actual');
+            let mensaje_corres      = document.getElementById('mensaje_corres');
 
-            if(numero != ''){
-                try {
-                    let respuesta = await fetch("{{ route('crep_seguimiento_correspondencia') }}", {
+            if(numero.length > 2 && numero != '' && numero != null){
+                let respuesta = await fetch("{{ route('crep_seguimiento_correspondencia') }}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -325,16 +330,35 @@
                     })
                 });
                 let dato = await respuesta.json();
-                console.log(dato);
-                } catch (error) {
-                    console.log('error de datos : ' + error );
+                console.table(dato);
+                if(dato.tipo==='success'){
+                    mensaje_corres.innerHTML        =``;
+                    numero_unico.innerHTML          = dato.numero_unico;
+                    fecha_creada.innerHTML          = dato.fecha_creada;
+                    nombre_remitente.innerHTML      = dato.nombre_remitente;
+                    referencia.innerHTML            = dato.referencia;
+                    destinatario_actual.innerHTML   = dato.destinatario_actual;
+                    estado_actual.innerHTML         = dato.estado_actual;
                 }
+
+                if(dato.tipo==='error'){
+                    mensaje_corres.innerHTML        =`<div class="alert  alert-danger" role="alert">`+dato.mensaje+`</div>`;
+                    numero_unico.innerHTML          = '';
+                    fecha_creada.innerHTML          = '';
+                    nombre_remitente.innerHTML      = '';
+                    referencia.innerHTML            = '';
+                    destinatario_actual.innerHTML   = '';
+                    estado_actual.innerHTML   = '';
+                }
+
             }else{
+                mensaje_corres.innerHTML        =``;
                 numero_unico.innerHTML          = '';
                 fecha_creada.innerHTML          = '';
                 nombre_remitente.innerHTML      = '';
                 referencia.innerHTML            = '';
                 destinatario_actual.innerHTML   = '';
+                estado_actual.innerHTML   = '';
             }
         }
     </script>

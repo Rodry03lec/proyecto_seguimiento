@@ -1111,16 +1111,18 @@ class Controlador_tramite extends Controller{
         * PARA LA PARTE DE CONSULTA DE DATOS
     */
 
-    public function seguimiento_correspondencia(Request $request){
-
+    public function seguimiento_correspondencia(Request $request)
+    {
         $tramite = Tramite::with([
-            'hojas_ruta'=>function($horu){
+            'hojas_ruta' => function($horu) {
+                $horu->where('actual', 1);
                 $horu->with([
-                    'remitente_user'=>function($rem_user){
+                    'ruta_archivado',
+                    'remitente_user' => function($rem_user) {
                         $rem_user->with([
                             'cargo_sm',
                             'cargo_mae',
-                            'contrato'=>function($con){
+                            'contrato' => function($con) {
                                 $con->with([
                                     'grado_academico'
                                 ]);
@@ -1128,11 +1130,11 @@ class Controlador_tramite extends Controller{
                             'persona',
                         ]);
                     },
-                    'destinatario_user'=>function($des_user){
+                    'destinatario_user' => function($des_user) {
                         $des_user->with([
                             'cargo_sm',
                             'cargo_mae',
-                            'contrato'=>function($con){
+                            'contrato' => function($con) {
                                 $con->with([
                                     'grado_academico'
                                 ]);
@@ -1142,23 +1144,68 @@ class Controlador_tramite extends Controller{
                     },
                 ]);
             },
-            'remitente_user',
+            'remitente_user' => function($rem_user) {
+                $rem_user->with([
+                    'cargo_sm',
+                    'cargo_mae',
+                    'contrato' => function($con) {
+                        $con->with([
+                            'grado_academico'
+                        ]);
+                    },
+                    'persona',
+                ]);
+            },
             'tipo_tramite',
-            ])->where('numero_unico', $request->numero)->first();
+        ])->where('numero_unico', $request->numero)->first();
 
-        if($tramite){
-            $data = mensaje_mostrar('success', $tramite);
+        if ($tramite) {
             $numero_unico = $tramite->numero_unico;
             $fecha_creada = $tramite->fecha_creada;
             $nombre_remitente = "";
-            if($tramite->remitente_nombre != null || $tramite->remitente_nombre != ''){
+            if ($tramite->remitente_nombre != null && $tramite->remitente_nombre != '') {
                 $nombre_remitente = $tramite->remitente_nombre;
+            } else {
+                $nombre_remitente = $tramite->remitente_user->contrato->grado_academico->abreviatura . ' ' . $tramite->remitente_user->persona->nombres . ' ' . $tramite->remitente_user->persona->ap_paterno . ' ' . $tramite->remitente_user->persona->ap_materno;
             }
-        }else{
-            $data = mensaje_mostrar('error', 'No hay hoja de ruta');
+            $referencia = $tramite->referencia;
+
+            $destinatario_actual = "";
+
+            if ($tramite->hojas_ruta->isNotEmpty()) {
+                if (!empty($tramite->hojas_ruta[0]->fecha_ingreso)) {
+                    $destinatario_actual = $tramite->hojas_ruta[0]->destinatario_user->contrato->grado_academico->abreviatura . ' ' . $tramite->hojas_ruta[0]->destinatario_user->persona->nombres . ' ' . $tramite->hojas_ruta[0]->destinatario_user->persona->ap_paterno . ' ' . $tramite->hojas_ruta[0]->destinatario_user->persona->ap_materno;
+                } else {
+                    $destinatario_actual = $tramite->hojas_ruta[0]->remitente_user->contrato->grado_academico->abreviatura . ' ' . $tramite->hojas_ruta[0]->remitente_user->persona->nombres . ' ' . $tramite->hojas_ruta[0]->remitente_user->persona->ap_paterno . ' ' . $tramite->hojas_ruta[0]->remitente_user->persona->ap_materno;
+                }
+
+                $estado_archivado = " <span class='badge rounded-pill bg-success'>EN CURSO</span> ";
+                if (isset($tramite->hojas_ruta[0]->ruta_archivado) && !is_null($tramite->hojas_ruta[0]->ruta_archivado)) {
+                    $estado_archivado = " ARCHIVADO : " . $tramite->hojas_ruta[0]->ruta_archivado->descripcion;
+
+                }
+
+                $data = [
+                    'tipo'                  => 'success',
+                    'numero_unico'          => $numero_unico.'/'.$tramite->gestion,
+                    'fecha_creada'          => $fecha_creada,
+                    'nombre_remitente'      => $nombre_remitente,
+                    'referencia'            => $referencia,
+                    'destinatario_actual'   => $destinatario_actual,
+                    'estado_actual'         => $estado_archivado,
+                ];
+            } else {
+                $data = mensaje_mostrar('error', 'No Existe el tramite');
+            }
+        } else {
+            $data = mensaje_mostrar('error', 'No se encontró el trámite');
         }
+
         return response()->json($data);
     }
+
+
+
 
     /**
      * FIN DE LA PARTE
