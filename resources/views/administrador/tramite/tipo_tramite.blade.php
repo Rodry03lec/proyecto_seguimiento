@@ -96,7 +96,7 @@
                         <div class="avatar me-2">
                             <span class="avatar-initial rounded bg-label-warning"><i class='ti ti-server ti-md'></i></span>
                         </div>
-                        <h4 class="ms-1 mb-0">3</h4>
+                        <h4 class="ms-1 mb-0">0</h4>
                     </div>
                     <p class="mb-1">ARCHIVADOS</p>
                 </div>
