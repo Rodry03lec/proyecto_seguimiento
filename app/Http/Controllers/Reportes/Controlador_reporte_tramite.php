@@ -16,8 +16,7 @@ use App\Models\Tramite\Tramite;
 
 class Controlador_reporte_tramite extends Controller
 {
-    public function reporte_tramite_pdf($id)
-    {
+    public function reporte_tramite_pdf($id){
         $id_tramite = desencriptar($id);
 
 
@@ -252,4 +251,68 @@ class Controlador_reporte_tramite extends Controller
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'inline; filename="documento.pdf"');
     }
+
+
+    //PARA EL REPORTE QUIEN TIENE MAS TRAMITE, CONRRESPONDENCIA, RECIBIDOS, ARCHIVADOS
+    public function reportes_tramite_index(Request $request){
+
+        $data['menu'] = 80;
+
+        // Obtener los trámites realizados agrupados por remitente_id
+        $tramitesRealizados = Tramite::query()
+            ->select('remitente_id', Tramite::raw('COUNT(*) as total_tramites'))
+            ->with(['remitente_user'=>function($rem_user){
+                $rem_user->with([
+                    'persona',
+                    'contrato'=>function($con){
+                        $con->with([
+                            'grado_academico'
+                        ]);
+                    },
+                ]);
+            }])
+            ->groupBy('remitente_id')
+            ->get();
+
+       // Obtener los trámites con sus hojas de ruta y relaciones anidadas
+        $tramiteRutas = Tramite::with([
+            'hojas_ruta' => function($hr) {
+                $hr->with([
+                    'destinatario_user' => function($des_user) {
+                        $des_user->with([
+                            'cargo_sm',
+                            'cargo_mae',
+                            'persona',
+                            'contrato' => function($con) {
+                                $con->with([
+                                    'grado_academico'
+                                ]);
+                            }
+                        ]);
+                    },
+                    'ruta_archivado',
+                ]);
+            }
+        ])->get();
+
+        // Contar las hojas de ruta por destinatario_id para cada trámite mientras se obtienen los trámites
+        $conteoRutasAgrupadas = $tramiteRutas->mapWithKeys(function ($tramite) {
+            $hojasRutaGrouped = $tramite->hojas_ruta->groupBy('destinatario_id');
+            // Contar las hojas de ruta agrupadas y almacenar el conteo
+            $conteoRutas = $hojasRutaGrouped->map(function ($item) {
+                return $item->count();
+            });
+            return [$tramite->id => $conteoRutas];
+        });
+
+
+        $data['tramites_hojas_ruta']    = $tramitesRealizados;
+        $data['tramitesRealizados']     = $tramiteRutas;
+        $data['conteoRutasAgrupadas']   = $conteoRutasAgrupadas;
+
+
+        return view('administrador.tramite.vista_reporte_tramite.vista_reporte_tramite', $data);
+    }
+
+
 }

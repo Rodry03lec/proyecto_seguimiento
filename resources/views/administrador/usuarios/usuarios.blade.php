@@ -118,7 +118,7 @@
                         <div class="col-12 mb-3">
                             <label class="form-label" for="usuario">Usuario</label>
                             <input type="text" id="usuario_" name="usuario_" class="form-control"
-                                placeholder="Ingrese el usuario" autofocus />
+                                placeholder="Ingrese el usuario" autofocus readonly />
                             <div id="_usuario_"></div>
                         </div>
                         <div class="col-12 mb-3">
@@ -269,8 +269,8 @@
                     let dato = await respuesta.json();
                     if(dato.tipo == 'success'){
                         id_persona.value = dato.mensaje.id;
-                        usuario_adm.value = dato.mensaje.ci+'_GAMC';
-                        password_adm.value = dato.mensaje.ci+'_gamc';
+                        usuario_adm.value = dato.mensaje.ci+'_'+dato.nombre_us;
+                        password_adm.value = dato.mensaje.ci;
                     }
                     if(dato.tipo == 'error'){
                         alerta_top(dato.tipo, dato.mensaje);

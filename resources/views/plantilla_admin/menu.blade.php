@@ -282,10 +282,30 @@
 
         {{-- PARA LA ADMINISTRACION DE LOS PERMISOS DEL 70 PARA ARRIBA --}}
         <li class="menu-item @if ($menu=='70') active @endif ">
-            <a href="{{ route('ctram_index') }}"  class="menu-link">
-                <i class="menu-icon tf-icons ti ti-filter"></i>
+            <a href="{{ route('cobus_index') }}"  class="menu-link">
+                <i class="menu-icon tf-icons ti ti-search"></i>
                 <div>BUSCAR TRAMITES</div>
             </a>
+        </li>
+
+        <!--VAMOS A UTILIZAR DESDE EL 80  PARA LA PARTE DE LOS TRAMITES-->
+        <li class="menu-item @if ($menu == '80' || $menu == '81' || $menu == '82') open @endif">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-settings"></i>
+                <div data-i18n="Users">REPORTES PDF</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item @if($menu == '80') active @endif">
+                    <a href="{{ route('crt_reportes_index') }}" class="menu-link">
+                        Reporte Tramite
+                    </a>
+                </li>
+                {{-- <li class="menu-item @if($menu == '81') active @endif">
+                    <a href="{{ route('test_index') }}" class="menu-link">
+                        Reporte del personal
+                    </a>
+                </li> --}}
+            </ul>
         </li>
 
 

@@ -24,6 +24,7 @@ use App\Http\Controllers\Reportes\Controlador_reporte_tramite;
 use App\Http\Controllers\Tramite\Controlador_configuracion;
 use App\Http\Controllers\Tramite\Controlador_tramite;
 use App\Http\Controllers\Reportes\Controlador_reporte;
+use App\Http\Controllers\Tramite\Controlador_busqueda;
 
 //PARA LA PARTE DE LAS ASISTENCIAS
 Route::get('/gamhasistencia', function () {
@@ -457,6 +458,14 @@ Route::prefix('/admin')->middleware(['autenticados', 'rectroceder'])->group(func
     });
 
 
+    //PARA LA PARTE DE LA BUSQUEDA DEL TRAMITE
+    Route::controller(Controlador_busqueda::class)->group(function(){
+        Route::get('vistaBusqueda', 'vista_busqueda')->name('cobus_index');
+        Route::post('vizualizar_busqueda_tramites', 'vizualizar_busqueda_tramites')->name('cobus_vizualizar_tramite');
+    });
+
+
+
     //para la vizualizacion de los cargos que tiene cada uno
     Route::controller(Controlador_tramite::class)->group(function () {
         //para la vizualizacion de todos los permisos
@@ -499,6 +508,11 @@ Route::prefix('/admin')->middleware(['autenticados', 'rectroceder'])->group(func
     //PARA LA PARTE DE LOS REPORTES
     Route::controller(Controlador_reporte_tramite::class)->group(function () {
         Route::get('ReporteTramite/{id}', 'reporte_tramite_pdf')->name('crt_reporte_tramite');
+
+        //PARA LOS REPORTES DE LOS TRAMITES - REPORTES PDF
+        Route::get('Reportes','reportes_tramite_index')->name('crt_reportes_index');
+
+
     });
 
     //FIN DE LA PARTE DEL SEGUIMIENTO

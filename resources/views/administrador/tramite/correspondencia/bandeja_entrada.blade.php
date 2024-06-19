@@ -280,6 +280,12 @@
                 console.log(dato);
                 if (dato.tipo === 'success') {
                     $('#modal_vizualizar').modal('show');
+                    let remitente_txt = "";
+                    if(dato.tramite.remitente_nombre != null){
+                        remitente_txt = dato.tramite.remitente_nombre;
+                    }else{
+                        remitente_txt = dato.tramite.remitente_user.contrato.grado_academico.abreviatura+' '+dato.tramite.remitente_user.persona.nombres+' '+dato.tramite.remitente_user.persona.ap_paterno+' '+dato.tramite.remitente_user.persona.ap_materno;
+                    }
                     detalles_correspondencia.innerHTML = `
                         <table>
                             <tr>
@@ -289,7 +295,7 @@
 
                             <tr>
                                 <th><strong>REMITENTE </strong> </th>
-                                <th>: ${dato.tramite.remitente_user.contrato.grado_academico.abreviatura+' '+dato.tramite.remitente_user.persona.nombres+' '+dato.tramite.remitente_user.persona.ap_paterno+' '+dato.tramite.remitente_user.persona.ap_materno}</th>
+                                <th>: ${remitente_txt}</th>
                             </tr>
 
                             <tr>
@@ -305,6 +311,13 @@
                             <tr>
                                 <th><strong>SALIDA </strong> </th>
                                 <th>: ${dato.tramite.fecha_hora_creada}</th>
+                            </tr>
+
+                            <tr>
+                                <th><strong>US. CREADO </strong> </th>
+                                <th>:
+                                    ${dato.tramite.user_cargo_tramite.contrato.grado_academico.abreviatura+' '+dato.tramite.user_cargo_tramite.persona.nombres+' '+dato.tramite.user_cargo_tramite.persona.ap_paterno+' '+dato.tramite.user_cargo_tramite.persona.ap_materno}
+                                </th>
                             </tr>
                         </table>
                     `;

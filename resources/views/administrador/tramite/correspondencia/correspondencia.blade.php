@@ -436,14 +436,14 @@
                             }
 
                             return `
-                            <div class="d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
-                                <div class="demo-inline-spacing text-center mb-2">
-                                    <span class="badge rounded-pill ${tipo_prioridad} bg-glow">${row.tipo_prioridad.nombre}</span>
+                                <div class="d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
+                                    <div class="demo-inline-spacing text-center mb-2">
+                                        <span class="badge rounded-pill ${tipo_prioridad} bg-glow">${row.tipo_prioridad.nombre}</span>
+                                    </div>
+                                    <div class="text-center">
+                                        ${row.numero_unico}
+                                    </div>
                                 </div>
-                                <div class="text-center">
-                                    ${row.numero_unico}
-                                </div>
-                            </div>
                             `;
                         }
                     },

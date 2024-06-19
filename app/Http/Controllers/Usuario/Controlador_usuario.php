@@ -92,7 +92,13 @@ class Controlador_usuario extends Controller
         try {
             $persona = Persona::find($request->id);
             if($persona){
-                $data = mensaje_mostrar('success', $persona);
+                $nombres_array = explode(" ", $persona->nombres);
+                $primer_nombre = $nombres_array[0];
+                $data = [
+                    'tipo'      => 'success',
+                    'nombre_us' => $primer_nombre,
+                    'mensaje'   => $persona
+                ];
             }else{
                 $data = mensaje_mostrar('null', '');
             }
@@ -194,7 +200,7 @@ class Controlador_usuario extends Controller
     public function update_usuario(Request $request){
         $validar = Validator::make($request->all(), [
             'rol_'       => 'required',
-            'usuario_'   => 'required|unique:users,usuario,'.$request->id_usuario_,
+            //'usuario_'   => 'required|unique:users,usuario,'.$request->id_usuario_,
             'password_'  => 'required',
         ]);
 
@@ -205,7 +211,7 @@ class Controlador_usuario extends Controller
             $rol = Role::find($request->rol_);
             // Crear nuevo usuario
             $usuario            =  User::find($request->id_usuario_);
-            $usuario->usuario   = $request->usuario_;
+            //$usuario->usuario   = $request->usuario_;
             $usuario->password  = Hash::make($request->password_);
             // Guardar usuario
             if ($usuario->save()) {
