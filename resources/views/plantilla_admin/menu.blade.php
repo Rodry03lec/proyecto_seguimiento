@@ -303,7 +303,7 @@
         <!--VAMOS A UTILIZAR DESDE EL 80  PARA LA PARTE DE LOS TRAMITES-->
         <li class="menu-item @if ($menu == '80' || $menu == '81' || $menu == '82') open @endif">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-settings"></i>
+                <i class="menu-icon tf-icons ti ti-clipboard"></i>
                 <div data-i18n="Users">REPORTES PDF</div>
             </a>
             <ul class="menu-sub">
