@@ -55,6 +55,8 @@ Route::prefix('/')->middleware(['no_autenticados'])->group(function () {
     Route::controller(Controlador_login::class)->group(function () {
         Route::post('ingresar', 'ingresar')->name('cl_ingresar');
     });
+
+    Route::get('captcha', [Controlador_login::class, 'generateCaptchaImage'])->name('captcha');
 });
 
 Route::prefix('/admin')->middleware(['autenticados', 'rectroceder'])->group(function () {

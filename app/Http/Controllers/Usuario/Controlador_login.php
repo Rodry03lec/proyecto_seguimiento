@@ -24,6 +24,12 @@ class Controlador_login extends Controller
      * PARA EL INGRESO DEL USUARIO POR USUARIO Y CONTRASEÑA
      */
     public function ingresar(Request $request){
+
+        //par arecuperar el cpacha de la session
+        $capcha_recuperado = session()->get('captchaText_recuperado');
+        //eliminar los estilos
+        $captcha_texto = strip_tags($capcha_recuperado);
+
         $mensaje = "Usuario y contraseña invalidos";
         $validar = Validator::make($request->all(),[
             'usuario'=>'required',
@@ -32,17 +38,21 @@ class Controlador_login extends Controller
         if($validar->fails()){
             $data = mensaje_mostrar('error', 'Todos los campos son requeridos');
         }else{
-            $usuario = User::where('usuario', $request->usuario)->get();
-            if(!$usuario->isEmpty()){
-                $compara = Auth::attempt([
-                    'usuario'       => $request->usuario,
-                    'password'      => $request->password,
-                    'estado'        => 'activo',
-                    'deleted_at'    => NULL
-                ]);
-                if($compara){
-                    $data = mensaje_mostrar('success', 'Inicion de session con éxito');
-                    $request->session()->regenerate();
+            if($request->captcha == $captcha_texto){
+                $usuario = User::where('usuario', $request->usuario)->get();
+                if(!$usuario->isEmpty()){
+                    $compara = Auth::attempt([
+                        'usuario'       => $request->usuario,
+                        'password'      => $request->password,
+                        'estado'        => 'activo',
+                        'deleted_at'    => NULL
+                    ]);
+                    if($compara){
+                        $data = mensaje_mostrar('success', 'Inicion de session con éxito');
+                        $request->session()->regenerate();
+                    }else{
+                        $data = mensaje_mostrar('error', $mensaje);
+                    }
                 }else{
                     $data = mensaje_mostrar('error', $mensaje);
                 }
@@ -122,4 +132,44 @@ class Controlador_login extends Controller
     /**
      * FIN DE CERRAR LA SESSIÓN
      */
+
+
+    //para la parte de captcha
+    public function generateCaptchaImage(){
+        $length = 5; // Longitud del CAPTCHA
+        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+        $captchaText = '';
+        // Genera el texto CAPTCHA aleatorio
+        for ($i = 0; $i < $length; $i++) {
+            $captchaText .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        // Distorsión del texto
+        $captchaText = $this->distortText($captchaText);
+        session()->put('captchaText_recuperado', $captchaText);
+        return $captchaText;
+    }
+
+    private function distortText($text) {
+        $distortedText = '';
+        $maxRotation = 25; // Máxima rotación en grados
+        $letterSpacing = -1; // Espaciado entre letras en píxeles
+
+        for ($i = 0; $i < strlen($text); $i++) {
+            // Genera un color aleatorio en formato hexadecimal (#RRGGBB)
+            $randomColor = 'red';
+
+            // Calcula una rotación aleatoria entre -maxRotation y maxRotation
+            $rotation = rand(-$maxRotation, $maxRotation);
+
+            // Aplica la rotación, el espaciado y el color al carácter actual
+            $distortedText .= $this->rotateAndSpaceAndColorCharacter($text[$i], $rotation, $letterSpacing, $randomColor);
+        }
+
+        return $distortedText;
+    }
+
+    private function rotateAndSpaceAndColorCharacter($char, $rotation, $letterSpacing, $color) {
+        // Rotación, espaciado y color de un carácter
+        return '<span style="transform: rotate(' . $rotation . 'deg); display: inline-block; margin-right: ' . $letterSpacing . 'px; color: ' . $color . ';">' . $char . '</span>';
+    }
 }
