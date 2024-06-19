@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Reportes;
 
 use App\Http\Controllers\Controller;
+use App\Models\Fechas\Gestion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 
 use Dompdf\Dompdf;
@@ -269,6 +271,8 @@ class Controlador_reporte_tramite extends Controller
                             'grado_academico'
                         ]);
                     },
+                    'cargo_sm',
+                    'cargo_mae',
                 ]);
             }])
             ->groupBy('remitente_id')
@@ -293,7 +297,9 @@ class Controlador_reporte_tramite extends Controller
                     'ruta_archivado',
                 ]);
             }
-        ])->get();
+        ])
+        ->orderBy('fecha_creada', 'desc')
+        ->get();
 
         // Contar las hojas de ruta por destinatario_id para cada trámite mientras se obtienen los trámites
         $conteoRutasAgrupadas = $tramiteRutas->mapWithKeys(function ($tramite) {
@@ -310,9 +316,142 @@ class Controlador_reporte_tramite extends Controller
         $data['tramitesRealizados']     = $tramiteRutas;
         $data['conteoRutasAgrupadas']   = $conteoRutasAgrupadas;
 
+        $data['gestion'] = Gestion::get();
+
 
         return view('administrador.tramite.vista_reporte_tramite.vista_reporte_tramite', $data);
     }
 
+
+    //PARA VIZUZALIZAR EL TRAMITE
+    public function reportes_vizualizar(Request $request){
+        $rules = [
+            'gestion'            => 'required',
+        ];
+
+        // Crea un validador con los datos y reglas
+        $validator = Validator::make($request->all(), $rules);
+
+        // Verifica si la validación falla
+        if ($validator->fails()) {
+            // Redirige de vuelta con los errores y los datos antiguos
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+        } else {
+            // Obtener los trámites realizados agrupados por remitente_id
+            $tramitesRealizados = Tramite::query()
+            ->select('remitente_id', Tramite::raw('COUNT(*) as total_tramites'))
+            ->with(['remitente_user'=>function($rem_user){
+                $rem_user->with([
+                    'persona',
+                    'contrato'=>function($con){
+                        $con->with([
+                            'grado_academico'
+                        ]);
+                    },
+                    'cargo_sm',
+                    'cargo_mae',
+                ]);
+            }])
+            ->groupBy('remitente_id')
+            ->where('gestion', $request->gestion)
+            ->get();
+
+            // Obtener los trámites con sus hojas de ruta y relaciones anidadas
+                $tramiteRutas = Tramite::with([
+                    'hojas_ruta' => function($hr) {
+                        $hr->with([
+                            'destinatario_user' => function($des_user) {
+                                $des_user->with([
+                                    'cargo_sm',
+                                    'cargo_mae',
+                                    'persona',
+                                    'contrato' => function($con) {
+                                        $con->with([
+                                            'grado_academico'
+                                        ]);
+                                    }
+                                ]);
+                            },
+                            'ruta_archivado',
+                        ]);
+                    }
+                ])
+                ->orderBy('fecha_creada', 'desc')
+                ->where('gestion', $request->gestion)
+                ->get();
+
+                // Contar las hojas de ruta por destinatario_id para cada trámite mientras se obtienen los trámites
+                $conteoRutasAgrupadas = $tramiteRutas->mapWithKeys(function ($tramite) {
+                    $hojasRutaGrouped = $tramite->hojas_ruta->groupBy('destinatario_id');
+                    // Contar las hojas de ruta agrupadas y almacenar el conteo
+                    $conteoRutas = $hojasRutaGrouped->map(function ($item) {
+                        return $item->count();
+                    });
+                    return [$tramite->id => $conteoRutas];
+                });
+
+                $data['gestion']                = $request->gestion;
+                $data['tramites_hojas_ruta']    = $tramitesRealizados;
+                $data['tramitesRealizados']     = $tramiteRutas;
+                $data['conteoRutasAgrupadas']   = $conteoRutasAgrupadas;
+
+
+
+            // Crear el objeto Dompdf
+            $options = new Options();
+            $options->set('isHtml5ParserEnabled', true);
+            $options->set('isFontSubsettingEnabled', true);
+            $options->set('isRemoteEnabled', true);
+            $options->set('tempDir', '/path/to/temp');
+            $options->set('chroot', '/path/to/chroot');
+            $options->set('logOutputFile', '/path/to/logfile');
+            $options->set('defaultPaperSize', 'letter');
+            $options->set('defaultPaperOrientation', 'portrait');
+            $dompdf = new Dompdf($options);
+
+
+            // Crear el contexto HTTP para Dompdf
+            $context = stream_context_create([
+                'ssl' => [
+                    'allow_self_signed' => true,
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ],
+            ]);
+
+            // Agregar el contexto HTTP
+            $dompdf->setHttpContext($context);
+
+            // Renderizar la vista como HTML
+            $html = view('administrador.reportes.tramite.reportes_vizualizar', $data)->render();
+
+            // Cargar el HTML en Dompdf y renderizar el PDF
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('letter', 'portrait');
+
+            // Registrar el evento para agregar el número de página
+            $dompdf->setCallbacks([
+                'pageNumber' => function () use ($dompdf) {
+                    return $dompdf->getCanvas()->get_page_number();
+                },
+                'totalPages' => function () use ($dompdf) {
+                    return $dompdf->getCanvas()->get_page_count();
+                },
+            ]);
+
+            // Renderizar el PDF
+            $dompdf->render();
+
+            // Obtener el contenido del PDF como una cadena
+            $pdfContent = $dompdf->output();
+
+            // Retornar el PDF como una respuesta HTTP con el encabezado adecuado para mostrar en el navegador
+            return response($pdfContent)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="GOBIERNO AUTÓNOMO MUNICIPAL DE HUATAJATA.pdf"');
+        }
+    }
 
 }

@@ -4,9 +4,11 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">:::::::: TIPOS DE ESTADO :::::::: </h5>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_tipo_estado_nuevo">
-                <i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Nuevo</span>
-            </button>
+            @can('tipos_esado_submenu_nuevo')
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_tipo_estado_nuevo">
+                    <i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Nuevo</span>
+                </button>
+            @endcan
         </div>
 
         <div class="table-responsive text-nowrap p-4">
@@ -163,13 +165,18 @@
                         render: function(data, type, row, meta) {
                             return `
                                 <div class="d-inline-block tex-nowrap">
-                                    <button type="button"  onclick="editar_tipo_estado('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
-                                        <i class="ti ti-edit" ></i>
-                                    </button>
+                                    @can('tipos_esado_submenu_editar')
+                                        <button type="button"  onclick="editar_tipo_estado('${row.id}')" class="btn btn-icon rounded-pill btn-warning" data-toggle="tooltip" data-placement="top" title="EDITAR">
+                                            <i class="ti ti-edit" ></i>
+                                        </button>
+                                    @endcan
 
-                                    <button type="button"  onclick="eliminar_tipo_estado('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
-                                        <i class="ti ti-trash" ></i>
-                                    </button>
+                                    @can('tipos_esado_submenu_eliminar')
+                                        <button type="button"  onclick="eliminar_tipo_estado('${row.id}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
+                                            <i class="ti ti-trash" ></i>
+                                        </button>
+                                    @endcan
+
                                 </div>
                             `;
                         }

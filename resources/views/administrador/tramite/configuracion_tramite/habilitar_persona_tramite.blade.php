@@ -49,9 +49,12 @@
                     </form>
 
                     <div class="row mt-3">
-                        <div class="d-grid gap-2 col-lg-6 mx-auto">
-                            <button class="btn btn-primary btn-md" id="btn_guardar_nuevo_cargo_tramite" type="button">Guardar</button>
-                        </div>
+                        @can('habilitar_tramite_submenu_vizualizar_nuevo')
+                            <div class="d-grid gap-2 col-lg-6 mx-auto">
+                                <button class="btn btn-primary btn-md" id="btn_guardar_nuevo_cargo_tramite" type="button">Guardar</button>
+                            </div>
+                        @endcan
+
                     </div>
                 </div>
 
@@ -152,7 +155,9 @@
                                 `;
                             }else{
                                 return `
-                                    <button onclick="habilitar_para_tramite('${row.id}')" type="button" class="btn btn-sm rounded-pill btn-danger">Habilitar</button>
+                                    @can('habilitar_tramite_submenu_habilitar')
+                                        <button onclick="habilitar_para_tramite('${row.id}')" type="button" class="btn btn-sm rounded-pill btn-danger">Habilitar</button>
+                                    @endcan
                                 `;
                             }
                         }
@@ -164,11 +169,13 @@
                         render: function(data, type, row, meta) {
                             if(data.user_cargo_tramite.length > 0){
                                 return `
-                                    <div class="d-inline-block tex-nowrap">
-                                        <button type="button"  onclick="vizualizar_para_tramite('${row.id}')" class="btn btn-icon rounded-pill btn-info" data-toggle="tooltip" data-placement="top" title="VIZUALIZAR">
-                                            <i class="ti ti-eye" ></i>
-                                        </button>
-                                    </div>
+                                    @can('habilitar_tramite_submenu_vizualizar')
+                                        <div class="d-inline-block tex-nowrap">
+                                            <button type="button"  onclick="vizualizar_para_tramite('${row.id}')" class="btn btn-icon rounded-pill btn-info" data-toggle="tooltip" data-placement="top" title="VIZUALIZAR">
+                                                <i class="ti ti-eye" ></i>
+                                            </button>
+                                        </div>
+                                    @endcan
                                 `;
                             }else{
                                 return `
@@ -363,17 +370,19 @@
                         className: 'table-td',
                         render: function(data, type, row, meta) {
                             return `
-                                <label class="switch switch-primary">
-                                    <input onclick="estado_user_tipo_tramite('${row.id}','${row.id_contrato}', '${row.id_usuario}')" type="checkbox" class="switch-input" ${row.estado === true ? 'checked' : ''} />
-                                    <span class="switch-toggle-slider">
-                                        <span class="switch-on">
-                                            <i class="ti ti-check"></i>
+                                @can('habilitar_tramite_submenu_vizualizar_estado')
+                                    <label class="switch switch-primary">
+                                        <input onclick="estado_user_tipo_tramite('${row.id}','${row.id_contrato}', '${row.id_usuario}')" type="checkbox" class="switch-input" ${row.estado === true ? 'checked' : ''} />
+                                        <span class="switch-toggle-slider">
+                                            <span class="switch-on">
+                                                <i class="ti ti-check"></i>
+                                            </span>
+                                            <span class="switch-off">
+                                                <i class="ti ti-x"></i>
+                                            </span>
                                         </span>
-                                        <span class="switch-off">
-                                            <i class="ti ti-x"></i>
-                                        </span>
-                                    </span>
-                                </label>
+                                    </label>
+                                @endcan
                             `;
                         }
                     },
@@ -382,11 +391,13 @@
                         className: 'table-td',
                         render: function(data, type, row, meta) {
                             return `
-                                <div class="d-inline-block tex-nowrap">
-                                    <button type="button"  onclick="eliminar_user_cargo('${row.id}','${row.id_contrato}', '${row.id_usuario}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
-                                        <i class="ti ti-trash" ></i>
-                                    </button>
-                                </div>
+                                @can('habilitar_tramite_submenu_vizualizar_eliminar')
+                                    <div class="d-inline-block tex-nowrap">
+                                        <button type="button"  onclick="eliminar_user_cargo('${row.id}','${row.id_contrato}', '${row.id_usuario}')" class="btn btn-icon rounded-pill btn-danger" data-toggle="tooltip" data-placement="top" title="ELIMINAR">
+                                            <i class="ti ti-trash" ></i>
+                                        </button>
+                                    </div>
+                                @endcan
                             `;
                         }
                     }

@@ -220,6 +220,30 @@ class Seeder_roles extends Seeder
             'boletas_generar_licencia_aprobado',
             'boletas_generar_licencia_constancia',
 
+
+            //TRAMITE
+            'menu_configuracion_tramite',
+
+            'tipos_tramite_submenu',
+            'tipos_tramite_submenu_nuevo',
+            'tipos_tramite_submenu_estado',
+            'tipos_tramite_submenu_editar',
+            'tipos_tramite_submenu_eliminar',
+
+            'tipos_esado_submenu',
+            'tipos_esado_submenu_nuevo',
+            'tipos_esado_submenu_editar',
+            'tipos_esado_submenu_eliminar',
+
+
+            'habilitar_tramite_submenu',
+            'habilitar_tramite_submenu_habilitar',
+            'habilitar_tramite_submenu_vizualizar',
+
+            'habilitar_tramite_submenu_vizualizar_nuevo',
+            'habilitar_tramite_submenu_vizualizar_estado',
+            'habilitar_tramite_submenu_vizualizar_eliminar',
+
         ];
         $rol1->syncPermissions($superadministrador_permiso);
 

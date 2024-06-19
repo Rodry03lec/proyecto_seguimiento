@@ -511,6 +511,7 @@ Route::prefix('/admin')->middleware(['autenticados', 'rectroceder'])->group(func
 
         //PARA LOS REPORTES DE LOS TRAMITES - REPORTES PDF
         Route::get('Reportes','reportes_tramite_index')->name('crt_reportes_index');
+        Route::get('ReportesVizualizar','reportes_vizualizar')->name('crt_vizualizar_index');
 
 
     });
