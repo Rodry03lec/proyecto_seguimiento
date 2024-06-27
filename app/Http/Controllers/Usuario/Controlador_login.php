@@ -15,7 +15,7 @@ class Controlador_login extends Controller
 {
     /**
      * @version 1.0
-     * @author  Rodrigo Lecoña Quispe <rodrigolecona03@gmail.com>
+     * @author   Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
      * @param Controlador Administrar la parte de usuario resgistrados LOGIN
      * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
      */

@@ -43,7 +43,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #010101d5 15%, #00000094 100%);
+            background: linear-gradient(135deg, #010101f3 15%, #000000e7 100%);
             position: relative;
             overflow: hidden;
         }

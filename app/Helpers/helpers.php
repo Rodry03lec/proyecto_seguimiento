@@ -1,6 +1,7 @@
 <?php
 
-function sumar_horas($hora_final, $tolerancia){
+function sumar_horas($hora_final, $tolerancia)
+{
 
     // Dividir las horas y los minutos
     list($horasTol, $minutosTol) = explode(':', $tolerancia);
@@ -23,7 +24,8 @@ function sumar_horas($hora_final, $tolerancia){
     return $hora_final_sumada;
 }
 
-function contar_minutos_segundos($hora_ingreso_ma, $sumado_primero) {
+function contar_minutos_segundos($hora_ingreso_ma, $sumado_primero)
+{
     // Convertir la hora de ingreso matutino a segundos desde la época Unix
     $hora_ingreso_ma_segundos = strtotime($hora_ingreso_ma);
     // Convertir la hora sumada a segundos desde la época Unix
@@ -45,7 +47,8 @@ function contar_minutos_segundos($hora_ingreso_ma, $sumado_primero) {
 }
 
 
-function sumar_tiempo($tiempo_base, $tiempo_a_sumar) {
+function sumar_tiempo($tiempo_base, $tiempo_a_sumar)
+{
     // Convertir el tiempo base a segundos
     if ($tiempo_base == '0') {
         $total_segundos_base = 0;
@@ -73,7 +76,8 @@ function sumar_tiempo($tiempo_base, $tiempo_a_sumar) {
 }
 
 
-function determinar_am_pm($hora) {
+function determinar_am_pm($hora)
+{
     // Extraemos la hora
     $hora = date('H', strtotime($hora));
 
@@ -86,7 +90,8 @@ function determinar_am_pm($hora) {
 }
 
 //PARA LA PARTE DE LOS MINTOS Y SEGUNDOS
-function horaen_palabras($hora) {
+function horaen_palabras($hora)
+{
     // Definir array con las palabras para horas
     $horasArray = array(
         1 => 'una hora',
@@ -131,20 +136,22 @@ function horaen_palabras($hora) {
 
 
 //para la parte de los mensajes
-function mensaje_mostrar($tipo, $mensaje){
+function mensaje_mostrar($tipo, $mensaje)
+{
     return array(
-        'tipo'=>$tipo,
-        'mensaje'=>$mensaje
+        'tipo' => $tipo,
+        'mensaje' => $mensaje
     );
 }
 
 
 
 //Para encriptar y desencriptar
-function encriptar($string) {
+function encriptar($string)
+{
     $method = 'AES-256-CBC';
-    $secret_key = '@Rodry';
-    $secret_iv = '03111997';
+    $secret_key = '@Graice';
+    $secret_iv = '25081999';
 
     $key = hash('sha256', $secret_key);
     $iv = substr(hash('sha256', $secret_iv), 0, 16);
@@ -159,10 +166,11 @@ function encriptar($string) {
     return $output;
 }
 
-function desencriptar($string) {
+function desencriptar($string)
+{
     $method = 'AES-256-CBC';
-    $secret_key = '@Rodry';
-    $secret_iv = '03111997';
+    $secret_key = '@Graice';
+    $secret_iv = '25081999';
 
     $key = hash('sha256', $secret_key);
     $iv_length = openssl_cipher_iv_length($method);
@@ -182,18 +190,21 @@ function desencriptar($string) {
 
 
 //para 1000000.00
-function sin_separador_comas($monto){
+function sin_separador_comas($monto)
+{
     $saldo_respuesta = str_replace(",", "", $monto);
     return $saldo_respuesta;
 }
 //para 100,000.00
-function con_separador_comas($monto){
+function con_separador_comas($monto)
+{
     $saldo_respuesta = number_format($monto, 2, '.', ',');
     return $saldo_respuesta;
 }
 
 //para las fechas
-function fecha_literal($Fecha, $Formato) {
+function fecha_literal($Fecha, $Formato)
+{
     $dias = array(
         0 => 'Domingo',
         1 => 'Lunes',
@@ -215,7 +226,8 @@ function fecha_literal($Fecha, $Formato) {
         9 => 'septiembre',
         10 => 'octubre',
         11 => 'noviembre',
-        12 => 'diciembre');
+        12 => 'diciembre'
+    );
     $aux = date_parse($Fecha);
     switch ($Formato) {
         case 1:  // 04/10/23
@@ -227,8 +239,8 @@ function fecha_literal($Fecha, $Formato) {
         case 4:   // 4 de octubre de 2023
             return $aux['day'] . ' de ' . $meses[$aux['month']] . ' de ' . $aux['year'];
         case 5:   //lunes 4 de octubre de 2023
-            $numeroDia= date('w', strtotime($Fecha));
-            return $dias[$numeroDia].' '.$aux['day'] . ' de ' . $meses[$aux['month']] . ' de ' . $aux['year'];
+            $numeroDia = date('w', strtotime($Fecha));
+            return $dias[$numeroDia] . ' ' . $aux['day'] . ' de ' . $meses[$aux['month']] . ' de ' . $aux['year'];
         case 6:
             return date('d/m/Y', strtotime($Fecha));
         default:
@@ -238,19 +250,21 @@ function fecha_literal($Fecha, $Formato) {
 
 
 //para ver si es masculino femenino o prefiere no decir
-function verificar_persona_generto($genero){
-    if($genero=='M'){
+function verificar_persona_generto($genero)
+{
+    if ($genero == 'M') {
         return 'MASCULINO';
     }
-    if($genero=='F'){
+    if ($genero == 'F') {
         return 'FEMENINO';
     }
-    if($genero=='ND'){
+    if ($genero == 'ND') {
         return 'PREFIERE NO DECIR';
     }
 }
 
-function obtenerNombreMes($numeroMes) {
+function obtenerNombreMes($numeroMes)
+{
     $nombresMeses = [
         1 => 'Enero',
         2 => 'Febrero',
@@ -276,7 +290,8 @@ function obtenerNombreMes($numeroMes) {
 
 
 
-function obtener_hora($hora) {
+function obtener_hora($hora)
+{
     // Obtener el periodo (AM o PM)
     $periodo = date('a', strtotime($hora));
     // Convertir la hora a formato de 12 horas
@@ -294,7 +309,8 @@ function obtener_hora($hora) {
 }
 
 
-function obtenerMinutosLiteral($hora) {
+function obtenerMinutosLiteral($hora)
+{
     // Obtener los minutos
     $minutos = date('i', strtotime($hora));
 
@@ -302,12 +318,13 @@ function obtenerMinutosLiteral($hora) {
     $mensaje = "";
 
     // Añadir el nombre del minuto directamente
-    $mensaje .= obtenerNombreMinuto($minutos).' minutos';
+    $mensaje .= obtenerNombreMinuto($minutos) . ' minutos';
 
     return $mensaje;
 }
 
-function obtenerNombreMinuto($minuto) {
+function obtenerNombreMinuto($minuto)
+{
     // Lista de nombres de minutos
     $nombresMinutos = [
         '00' => 'cero',
@@ -378,7 +395,8 @@ function obtenerNombreMinuto($minuto) {
 
 
 
-function cadena_sin_guion_punto($valor){
+function cadena_sin_guion_punto($valor)
+{
     $cadena_sin_guiones_y_puntos = str_replace(['-', ':'], ' ', $valor);
     // Eliminar espacios en blanco
     $cadena_sin_espacios = str_replace(' ', '', $cadena_sin_guiones_y_puntos);
@@ -386,132 +404,173 @@ function cadena_sin_guion_punto($valor){
 }
 
 
-function unidad($numuero){
-    switch ($numuero){
-        case 9: $numu = "Nueve"; break;
-        case 8: $numu = "Ocho"; break;
-        case 7: $numu = "Siete"; break;
-        case 6: $numu = "Seis"; break;
-        case 5: $numu = "Cinco"; break;
-        case 4: $numu = "Cuatro"; break;
-        case 3: $numu = "Tres"; break;
-        case 2: $numu = "Dos"; break;
-        case 1: $numu = "Uno"; break;
-        case 0: $numu = ""; break;
+function unidad($numuero)
+{
+    switch ($numuero) {
+        case 9:
+            $numu = "Nueve";
+            break;
+        case 8:
+            $numu = "Ocho";
+            break;
+        case 7:
+            $numu = "Siete";
+            break;
+        case 6:
+            $numu = "Seis";
+            break;
+        case 5:
+            $numu = "Cinco";
+            break;
+        case 4:
+            $numu = "Cuatro";
+            break;
+        case 3:
+            $numu = "Tres";
+            break;
+        case 2:
+            $numu = "Dos";
+            break;
+        case 1:
+            $numu = "Uno";
+            break;
+        case 0:
+            $numu = "";
+            break;
     }
     return $numu;
 }
 
 
-function decena($numdero){
-    if ($numdero >= 90 && $numdero <= 99){
+function decena($numdero)
+{
+    if ($numdero >= 90 && $numdero <= 99) {
         $numd = "Noventa ";
         if ($numdero > 90)
-            $numd = $numd."Y ".(unidad($numdero - 90));
-    }else if ($numdero >= 80 && $numdero <= 89){
+            $numd = $numd . "Y " . (unidad($numdero - 90));
+    } else if ($numdero >= 80 && $numdero <= 89) {
         $numd = "Ochenta ";
         if ($numdero > 80)
-            $numd = $numd."Y ".(unidad($numdero - 80));
-    }else if ($numdero >= 70 && $numdero <= 79){
+            $numd = $numd . "Y " . (unidad($numdero - 80));
+    } else if ($numdero >= 70 && $numdero <= 79) {
         $numd = "Setenta ";
         if ($numdero > 70)
-            $numd = $numd."Y ".(unidad($numdero - 70));
-    }else if ($numdero >= 60 && $numdero <= 69){
+            $numd = $numd . "Y " . (unidad($numdero - 70));
+    } else if ($numdero >= 60 && $numdero <= 69) {
         $numd = "Sesenta ";
         if ($numdero > 60)
-            $numd = $numd."Y ".(unidad($numdero - 60));
-    }else if ($numdero >= 50 && $numdero <= 59){
+            $numd = $numd . "Y " . (unidad($numdero - 60));
+    } else if ($numdero >= 50 && $numdero <= 59) {
         $numd = "Cincuenta ";
         if ($numdero > 50)
-            $numd = $numd."Y ".(unidad($numdero - 50));
-    }else if ($numdero >= 40 && $numdero <= 49){
+            $numd = $numd . "Y " . (unidad($numdero - 50));
+    } else if ($numdero >= 40 && $numdero <= 49) {
         $numd = "Cuarenta ";
         if ($numdero > 40)
-            $numd = $numd."Y ".(unidad($numdero - 40));
-    }else if ($numdero >= 30 && $numdero <= 39){
+            $numd = $numd . "Y " . (unidad($numdero - 40));
+    } else if ($numdero >= 30 && $numdero <= 39) {
         $numd = "Treinta ";
         if ($numdero > 30)
-            $numd = $numd."Y ".(unidad($numdero - 30));
-    }else if ($numdero >= 20 && $numdero <= 29){
+            $numd = $numd . "Y " . (unidad($numdero - 30));
+    } else if ($numdero >= 20 && $numdero <= 29) {
         if ($numdero == 20)
             $numd = "Veinte ";
         else
-            $numd = " Veinte".(unidad($numdero - 20));
-    }else if ($numdero >= 10 && $numdero <= 19){
-        switch ($numdero){
-            case 10: $numd = "Diez "; break;
-            case 11: $numd = "Once "; break;
-            case 12: $numd = "Doce "; break;
-            case 13: $numd = "Trece "; break;
-            case 14: $numd = "Catorce "; break;
-            case 15: $numd = "Quince "; break;
-            case 16: $numd = " Dieciseis "; break;
-            case 17: $numd = " Diecisiete"; break;
-            case 18: $numd = " Dieciocho"; break;
-            case 19: $numd = " Diecinueve";break;
+            $numd = " Veinte" . (unidad($numdero - 20));
+    } else if ($numdero >= 10 && $numdero <= 19) {
+        switch ($numdero) {
+            case 10:
+                $numd = "Diez ";
+                break;
+            case 11:
+                $numd = "Once ";
+                break;
+            case 12:
+                $numd = "Doce ";
+                break;
+            case 13:
+                $numd = "Trece ";
+                break;
+            case 14:
+                $numd = "Catorce ";
+                break;
+            case 15:
+                $numd = "Quince ";
+                break;
+            case 16:
+                $numd = " Dieciseis ";
+                break;
+            case 17:
+                $numd = " Diecisiete";
+                break;
+            case 18:
+                $numd = " Dieciocho";
+                break;
+            case 19:
+                $numd = " Diecinueve";
+                break;
         }
-    }
-    else
+    } else
         $numd = unidad($numdero);
     return $numd;
 }
 
 
-function centena($numc){
-    if ($numc >= 100){
-        if ($numc >= 900 && $numc <= 999){
+function centena($numc)
+{
+    if ($numc >= 100) {
+        if ($numc >= 900 && $numc <= 999) {
             $numce = " Novecientos ";
             if ($numc > 900)
-                $numce = $numce.(decena($numc - 900));
-        }
-        else if ($numc >= 800 && $numc <= 899){
+                $numce = $numce . (decena($numc - 900));
+        } else if ($numc >= 800 && $numc <= 899) {
             $numce = " Ochocientos ";
             if ($numc > 800)
-                $numce = $numce.(decena($numc - 800));
-        }else if ($numc >= 700 && $numc <= 799){
+                $numce = $numce . (decena($numc - 800));
+        } else if ($numc >= 700 && $numc <= 799) {
             $numce = " Setecientos ";
             if ($numc > 700)
-                $numce = $numce.(decena($numc - 700));
-        }else if ($numc >= 600 && $numc <= 699){
+                $numce = $numce . (decena($numc - 700));
+        } else if ($numc >= 600 && $numc <= 699) {
             $numce = "Seiscientos ";
             if ($numc > 600)
-                $numce = $numce.(decena($numc - 600));
-        }else if ($numc >= 500 && $numc <= 599){
+                $numce = $numce . (decena($numc - 600));
+        } else if ($numc >= 500 && $numc <= 599) {
             $numce = "Quiñientos ";
             if ($numc > 500)
-                $numce = $numce.(decena($numc - 500));
-        }else if ($numc >= 400 && $numc <= 499){
+                $numce = $numce . (decena($numc - 500));
+        } else if ($numc >= 400 && $numc <= 499) {
             $numce = "Cuatrocientos ";
             if ($numc > 400)
-                $numce = $numce.(decena($numc - 400));
-        }else if ($numc >= 300 && $numc <= 399){
+                $numce = $numce . (decena($numc - 400));
+        } else if ($numc >= 300 && $numc <= 399) {
             $numce = "Trecientos ";
             if ($numc > 300)
-                $numce = $numce.(decena($numc - 300));
-        }else if ($numc >= 200 && $numc <= 299){
+                $numce = $numce . (decena($numc - 300));
+        } else if ($numc >= 200 && $numc <= 299) {
             $numce = "Docientos ";
             if ($numc > 200)
-                $numce = $numce.(decena($numc - 200));
-        }else if ($numc >= 100 && $numc <= 199){
+                $numce = $numce . (decena($numc - 200));
+        } else if ($numc >= 100 && $numc <= 199) {
             if ($numc == 100)
                 $numce = "Cien ";
             else
-                $numce = "Ciento ".(decena($numc - 100));
+                $numce = "Ciento " . (decena($numc - 100));
         }
-    }
-    else
+    } else
         $numce = decena($numc);
 
     return $numce;
 }
 
 
-function miles($nummero){
-    if ($nummero >= 1000 && $nummero < 2000){
-        $numm = "Mil ".(centena($nummero%1000));
+function miles($nummero)
+{
+    if ($nummero >= 1000 && $nummero < 2000) {
+        $numm = "Mil " . (centena($nummero % 1000));
     }
-    if ($nummero >= 2000 && $nummero <10000){
-        $numm = unidad(Floor($nummero/1000))." mil ".(centena($nummero%1000));
+    if ($nummero >= 2000 && $nummero < 10000) {
+        $numm = unidad(Floor($nummero / 1000)) . " mil " . (centena($nummero % 1000));
     }
     if ($nummero < 1000)
         $numm = centena($nummero);
@@ -520,14 +579,15 @@ function miles($nummero){
 }
 
 
-function decmiles($numdmero){
+function decmiles($numdmero)
+{
     if ($numdmero == 10000)
         $numde = "Diez mil";
-    if ($numdmero > 10000 && $numdmero <20000){
-        $numde = decena(Floor($numdmero/1000))."Mil ".(centena($numdmero%1000));
+    if ($numdmero > 10000 && $numdmero < 20000) {
+        $numde = decena(Floor($numdmero / 1000)) . "Mil " . (centena($numdmero % 1000));
     }
-    if ($numdmero >= 20000 && $numdmero <100000){
-        $numde = decena(Floor($numdmero/1000))." Mil ".(miles($numdmero%1000));
+    if ($numdmero >= 20000 && $numdmero < 100000) {
+        $numde = decena(Floor($numdmero / 1000)) . " Mil " . (miles($numdmero % 1000));
     }
     if ($numdmero < 10000)
         $numde = miles($numdmero);
@@ -536,11 +596,12 @@ function decmiles($numdmero){
 }
 
 
-function cienmiles($numcmero){
+function cienmiles($numcmero)
+{
     if ($numcmero == 100000)
         $num_letracm = "Cien mil";
-    if ($numcmero >= 100000 && $numcmero <1000000){
-        $num_letracm = centena(Floor($numcmero/1000))." Mil ".(centena($numcmero%1000));
+    if ($numcmero >= 100000 && $numcmero < 1000000) {
+        $num_letracm = centena(Floor($numcmero / 1000)) . " Mil " . (centena($numcmero % 1000));
     }
     if ($numcmero < 100000)
         $num_letracm = decmiles($numcmero);
@@ -548,12 +609,13 @@ function cienmiles($numcmero){
 }
 
 
-function millon($nummiero){
-    if ($nummiero >= 1000000 && $nummiero <2000000){
-        $num_letramm = "Un millon ".(cienmiles($nummiero%1000000));
+function millon($nummiero)
+{
+    if ($nummiero >= 1000000 && $nummiero < 2000000) {
+        $num_letramm = "Un millon " . (cienmiles($nummiero % 1000000));
     }
-    if ($nummiero >= 2000000 && $nummiero <10000000){
-        $num_letramm = unidad(Floor($nummiero/1000000))." Millones ".(cienmiles($nummiero%1000000));
+    if ($nummiero >= 2000000 && $nummiero < 10000000) {
+        $num_letramm = unidad(Floor($nummiero / 1000000)) . " Millones " . (cienmiles($nummiero % 1000000));
     }
     if ($nummiero < 1000000)
         $num_letramm = cienmiles($nummiero);
@@ -562,14 +624,15 @@ function millon($nummiero){
 }
 
 
-function decmillon($numerodm){
+function decmillon($numerodm)
+{
     if ($numerodm == 10000000)
         $num_letradmm = "Diez millones";
-    if ($numerodm > 10000000 && $numerodm <20000000){
-        $num_letradmm = decena(Floor($numerodm/1000000))."Millones ".(cienmiles($numerodm%1000000));
+    if ($numerodm > 10000000 && $numerodm < 20000000) {
+        $num_letradmm = decena(Floor($numerodm / 1000000)) . "Millones " . (cienmiles($numerodm % 1000000));
     }
-    if ($numerodm >= 20000000 && $numerodm <100000000){
-        $num_letradmm = decena(Floor($numerodm/1000000))." Millones ".(millon($numerodm%1000000));
+    if ($numerodm >= 20000000 && $numerodm < 100000000) {
+        $num_letradmm = decena(Floor($numerodm / 1000000)) . " Millones " . (millon($numerodm % 1000000));
     }
     if ($numerodm < 10000000)
         $num_letradmm = millon($numerodm);
@@ -577,23 +640,25 @@ function decmillon($numerodm){
     return $num_letradmm;
 }
 
-function cienmillon($numcmeros){
+function cienmillon($numcmeros)
+{
     if ($numcmeros == 100000000)
         $num_letracms = "Cien millones";
-    if ($numcmeros >= 100000000 && $numcmeros <1000000000){
-        $num_letracms = centena(Floor($numcmeros/1000000))." Millones ".(millon($numcmeros%1000000));
+    if ($numcmeros >= 100000000 && $numcmeros < 1000000000) {
+        $num_letracms = centena(Floor($numcmeros / 1000000)) . " Millones " . (millon($numcmeros % 1000000));
     }
     if ($numcmeros < 100000000)
         $num_letracms = decmillon($numcmeros);
     return $num_letracms;
 }
 
-function milmillon($nummierod){
-    if ($nummierod >= 1000000000 && $nummierod <2000000000){
-        $num_letrammd = "Mil ".(cienmillon($nummierod%1000000000));
+function milmillon($nummierod)
+{
+    if ($nummierod >= 1000000000 && $nummierod < 2000000000) {
+        $num_letrammd = "Mil " . (cienmillon($nummierod % 1000000000));
     }
-    if ($nummierod >= 2000000000 && $nummierod <10000000000){
-        $num_letrammd = unidad(Floor($nummierod/1000000000))." Mil ".(cienmillon($nummierod%1000000000));
+    if ($nummierod >= 2000000000 && $nummierod < 10000000000) {
+        $num_letrammd = unidad(Floor($nummierod / 1000000000)) . " Mil " . (cienmillon($nummierod % 1000000000));
     }
     if ($nummierod < 1000000000)
         $num_letrammd = cienmillon($nummierod);
@@ -604,10 +669,11 @@ function milmillon($nummierod){
 
 
 
-function convertir($numero){
-    $num = str_replace(",","",$numero);
-    $num = number_format($num,2,'.','');
-    $cents = substr($num,strlen($num)-2,strlen($num)-1);
+function convertir($numero)
+{
+    $num = str_replace(",", "", $numero);
+    $num = number_format($num, 2, '.', '');
+    $cents = substr($num, strlen($num) - 2, strlen($num) - 1);
     $num = (int)$num;
 
 
@@ -617,15 +683,16 @@ function convertir($numero){
 
     $numf = milmillon($num);
 
-    if($cents>0){
-        return $numf." con ".centena($cents).' centavos';
-    }else{
-        return $numf. ' Bolivianos';
+    if ($cents > 0) {
+        return $numf . " con " . centena($cents) . ' centavos';
+    } else {
+        return $numf . ' Bolivianos';
     }
 }
 
 //para la abreviacion de palabras
-function abreviarCargo($cadena) {
+function abreviarCargo($cadena)
+{
     // Divide la cadena en palabras
     $palabras = explode(' ', $cadena);
     // Define las palabras de enlace que deben eliminarse
@@ -649,7 +716,8 @@ function abreviarCargo($cadena) {
 }
 
 
-function abreviarCargo_tres($cadena) {
+function abreviarCargo_tres($cadena)
+{
     // Divide la cadena en palabras
     $palabras = explode(' ', $cadena);
     // Define las palabras de enlace que deben eliminarse
@@ -678,7 +746,8 @@ function abreviarCargo_tres($cadena) {
 }
 
 
-function numero_a_ordinal($numero) {
+function numero_a_ordinal($numero)
+{
     $unidades = [
         1 => 'primer',
         2 => 'segundo',
@@ -774,14 +843,45 @@ function numero_a_ordinal($numero) {
 
 //para solo mostrar las primeras 100 letras
 
-function mostrarprimeras100letras($texto) {
+function mostrarprimeras100letras($texto)
+{
     // Obtiene las primeras 100 letras del texto
     $primeras100Letras = substr($texto, 0, 150);
     return $primeras100Letras;
 }
 
-function mostrarprimeras50letras($texto) {
+function mostrarprimeras50letras($texto)
+{
     // Obtiene las primeras 100 letras del texto
     $primeras100Letras = substr($texto, 0, 50);
     return $primeras100Letras;
+}
+
+
+function getTimeElapsed($date){
+    // Crear un objeto DateTime a partir de la fecha proporcionada
+    $inputDate = new DateTime($date);
+    // Obtener la fecha actual como un objeto DateTime
+    $currentDate = new DateTime();
+    // Calcular la diferencia entre las dos fechas
+    $interval = $inputDate->diff($currentDate);
+
+    // Formatear la diferencia en un formato legible
+    if ($interval->y > 0) {
+        $diffForHumans = $interval->y . ' año' . ($interval->y > 1 ? 's' : '');
+    } elseif ($interval->m > 0) {
+        $diffForHumans = $interval->m . ' mes' . ($interval->m > 1 ? 'es' : '');
+    } elseif ($interval->d >= 7) {
+        $diffForHumans = floor($interval->d / 7) . ' semana' . (floor($interval->d / 7) > 1 ? 's' : '');
+    } elseif ($interval->d > 0) {
+        $diffForHumans = $interval->d . ' día' . ($interval->d > 1 ? 's' : '');
+    } elseif ($interval->h > 0) {
+        $diffForHumans = $interval->h . ' hora' . ($interval->h > 1 ? 's' : '');
+    } elseif ($interval->i > 0) {
+        $diffForHumans = $interval->i . ' minuto' . ($interval->i > 1 ? 's' : '');
+    } else {
+        $diffForHumans = 'unos segundos';
+    }
+
+    return "La fecha proporcionada fue hace $diffForHumans.";
 }

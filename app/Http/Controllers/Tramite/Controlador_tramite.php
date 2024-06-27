@@ -19,6 +19,13 @@ use Illuminate\Support\Facades\Cache;
 
 class Controlador_tramite extends Controller{
 
+    /**
+     * @version 1.0
+     * @author  Graice Callizaya Chambi <graicecallizaya1234@gmail.com>
+     * @param Controlador Administrar la parte de LA ADMINISTRACION DE LOS TRAMITES QUE SE REALIZARAN
+     * ¡Muchas gracias por preferirnos! Esperamos poder servirte nuevamente
+     */
+
     //Para la administracion de los tramites
     public function  vizualizar_cargos_tramite() {
         $data['menu'] = 60;

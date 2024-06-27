@@ -13,10 +13,13 @@ use App\Models\Configuracion\Tipo_contrato;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+use Illuminate\Support\Facades\Auth;
 
 class Contrato extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
     protected $table = 'rl_contrato';
     protected $fillable=[
         'fecha_inicio',
@@ -37,6 +40,38 @@ class Contrato extends Model
     ];
     const CREATED_AT = 'creado_el';
     const UPDATED_AT = 'editado_el';
+
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+            ->logOnly([
+                'fecha_inicio',
+                'fecha_conclusion',
+                'numero_contrato',
+                'haber_basico',
+                'estado',
+                'id_nivel',
+                'id_tipo_contrato',
+                'id_persona',
+                'id_cargo_mae',
+                'id_cargo_sm',
+                'id_profesion',
+                'id_grado_academico',
+                'id_horario',
+                'id_usuario',
+                'id_baja',
+            ])
+            ->useLogName('rl_contrato')
+            ->setDescriptionForEvent(fn(string $eventName) => $this->getDescriptionForEvent($eventName))
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+
+    public function getDescriptionForEvent(string $eventName): string {
+        $user = Auth::user();
+        return "Este modelo ha sido {$eventName} por el usuario {$user->nombres} {$user->apellidos} (ID: {$user->id}) (CI: {$user->ci})";
+    }
+
 
     //relacion reversa con nivel
     public function nivel(){
